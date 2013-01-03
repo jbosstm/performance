@@ -9,6 +9,9 @@ cp -rp ~/projects/jbosstm/narayana/jboss-as/build/target/jboss-as-7.2.0.Alpha1-S
 cp server1-standalone-full.xml jts/server1/standalone/configuration/standalone-full.xml
 cp server2-standalone-full.xml jts/server2/standalone/configuration/standalone-full.xml
 
+# if you are using EAP then you need:
+/subsystem=jacorb/:write-attribute(name=transactions,value=on)
+
 # or, to run with asynchronous prepare, jts and the hornetq log store:
 cp server1-async-prepare-standalone-full.xml jts/server1/standalone/configuration/standalone-full.xml
 cp server2-async-prepare-standalone-full.xml jts/server2/standalone/configuration/standalone-full.xml
