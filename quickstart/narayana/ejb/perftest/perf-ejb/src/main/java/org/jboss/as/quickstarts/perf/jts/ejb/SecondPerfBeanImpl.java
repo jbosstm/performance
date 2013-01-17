@@ -33,7 +33,7 @@ import java.rmi.RemoteException;
 
 @RemoteHome(SecondPerfBeanHome.class)
 @Stateless
-public class SecondPerfBeanImpl {
+public class SecondPerfBeanImpl {//implements SecondPerfBeanRemote{
 
 	private TransactionManager transactionManager;
 
@@ -58,6 +58,11 @@ public class SecondPerfBeanImpl {
             }
         }
 
+        return 0;
+    }
+
+    @TransactionAttribute(TransactionAttributeType.NEVER)
+    public long doWork() throws RemoteException {
         return 0;
     }
 }

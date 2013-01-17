@@ -5,4 +5,5 @@ import javax.ejb.Remote;
 @Remote
 public interface PerfTestBeanRemote {
     Result testBMTTxns(Result result);
+    Result testCMTTxns(Result result);
 }

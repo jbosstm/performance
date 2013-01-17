@@ -38,14 +38,51 @@ public class PerfTest extends HttpServlet {
         }
     }
 
+    private Result testCMTTxns(Result result) {
+        long now = System.currentTimeMillis();
+        long nCalls = result.getNumberOfCalls();
+
+        result.setCmt(true);
+
+        for (long i = 0; i < nCalls; i++)
+            localPerfTestBean.testCMTTxns(result);
+
+        result.setTotalMillis(System.currentTimeMillis() - now);
+
+        return result;
+    }
+
+    private Result testBMTTxns(Result result) {
+        result.setCmt(false);
+
+        return localPerfTestBean.testBMTTxns(result);
+    }
+
+    private void testTxns(Result result, boolean cmt) {
+        if (cmt)
+            result = testCMTTxns(result);
+        result = testBMTTxns(result);
+
+        testResults.addFirst(result);
+    }
+
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         int count = getIntegerParameter(request, "count", 100);
+        boolean enlist = getIntegerParameter(request, "enlist", 1) != 0;
+        int remote = getIntegerParameter(request, "remote", 1199);
+        boolean cmt = getIntegerParameter(request, "cmt", 0) != 0;
+        boolean transactional = getIntegerParameter(request, "transactional", 1) != 0;
+        int how = getIntegerParameter(request, "how", 0);
 
-        testResults.addFirst(localPerfTestBean.testBMTTxns(new Result(count, true, 1199)));
-        testResults.addFirst(localPerfTestBean.testBMTTxns(new Result(count, true, 0)));
-        testResults.addFirst(localPerfTestBean.testBMTTxns(new Result(count, false, 1199)));
-        testResults.addFirst(localPerfTestBean.testBMTTxns(new Result(count, false, 0)));
+        if (how == 0) {
+            testTxns(new Result(count, enlist, remote, cmt, transactional), cmt);
+        } else {
+            testTxns(new Result(count, true, remote, cmt, transactional), cmt);
+            testTxns(new Result(count, true, 0, cmt, transactional), cmt);
+            testTxns(new Result(count, false, remote, cmt, transactional), cmt);
+            testTxns(new Result(count, false, 0, cmt, transactional), cmt);
+        }
 
         while (testResults.size() > 16)
             testResults.removeLast();
@@ -55,13 +92,13 @@ public class PerfTest extends HttpServlet {
         PrintWriter out = response.getWriter();
 
         out.println("<html><body>");
-
         out.printf("<table>\n");
         out.printf("<th>Calls</th>\n");
-        out.printf("<th>Enlist</th>\n");
+        out.printf("<th>Errors</th>\n");
+        out.printf("<th>Txn (Enlist)</th>\n");
         out.printf("<th>Local</th>\n");
         out.printf("<th>Time (ms)</th>\n");
-        out.printf("<th>Throughput</th>\n");
+        out.printf("<th>Throughput BMT (CMT)</th>\n");
 
         int i = 0;
         for (Result result : testResults) {
@@ -70,10 +107,11 @@ public class PerfTest extends HttpServlet {
 
             out.printf("<tr>\n");
             out.printf("<td>%d</td>\n", result.getNumberOfCalls());
-            out.printf("<td>%b</td>\n", result.isEnlist());
+            out.printf("<td>%d</td>\n", result.getErrorCount());
+            out.printf("<td>%b (%b)</td>\n", result.isTransactional(), result.isEnlist());
             out.printf("<td>%b</td>\n", result.isLocal());
             out.printf("<td>%d</td>\n", result.getTotalMillis());
-            out.printf("<td>%d (%d)</td>\n", result.getThroughput(), result.getOne());
+            out.printf("<td>%d (%d)</td>\n", result.getThroughputBMT(), result.getThroughputCMT());
             out.printf("</tr>\n");
         }
 

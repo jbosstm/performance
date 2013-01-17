@@ -6,4 +6,5 @@ import javax.ejb.Remote;
 public interface PerfTest2BeanRemote {
 
     long doWork(boolean enlist);
+    long doWork();
 }

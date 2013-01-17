@@ -35,36 +35,87 @@ public class PerfTestBean implements PerfTestBeanRemote {
         }
     }
 
-    private Result measureThroughput(PerfTest2BeanRemote localBean, SecondPerfBeanRemote remoteBean, Result result) {
-        long now = System.currentTimeMillis();
+    private Result measureBMTThroughput(PerfTest2BeanRemote localBean, SecondPerfBeanRemote remoteBean, Result result) {
+        long nCalls = result.getNumberOfCalls();
+        boolean enlist = result.isEnlist();
 
-        for (int i = 0; i < result.getNumberOfCalls(); i++) {
+        for (long i = 0; i < nCalls; i++) {
             try {
                 transactionManager.begin();
-                if (result.isEnlist())
+
+                if (enlist)
                     transactionManager.getTransaction().enlistResource(new DummyXAResource("local"));
 
                 if (localBean != null)
-                    localBean.doWork(result.isEnlist());
+                    localBean.doWork(enlist);
                 else
-                    remoteBean.doWork(result.isEnlist());
+                    remoteBean.doWork(enlist);
 
                 transactionManager.commit();
             } catch (Exception e) {
-                e.printStackTrace();
+                result.incrementErrorCount();
             } finally {
                 try {
-                    if (transactionManager.getTransaction().getStatus() == Status.STATUS_ACTIVE)
+                    if (transactionManager.getTransaction().getStatus() == Status.STATUS_ACTIVE) {
+                        result.incrementErrorCount();
                         transactionManager.getTransaction().rollback();
+                    }
                 } catch (Throwable e) {
                     // ignore
                 }
             }
         }
 
-        result.setTotalMillis(System.currentTimeMillis() - now);
+        return result;
+    }
+
+    private Result measureNonTransactionalThroughput(PerfTest2BeanRemote localBean, SecondPerfBeanRemote remoteBean, Result result) {
+        long nCalls = result.getNumberOfCalls();
+
+        for (long i = 0; i < nCalls; i++) {
+            boolean ok = true;
+
+            try {
+                if (localBean != null)
+                    localBean.doWork();
+                else
+                    remoteBean.doWork();
+
+            } catch (Exception e) {
+                ok = false;
+            }
+
+            if (!ok)
+                result.incrementErrorCount();
+        }
 
         return result;
+    }
+
+    private Result measureCMTThroughput(PerfTest2BeanRemote localBean, SecondPerfBeanRemote remoteBean, Result result) {
+        try {
+            if (result.isEnlist())
+                transactionManager.getTransaction().enlistResource(new DummyXAResource("local"));
+
+            if (localBean != null)
+                localBean.doWork(result.isEnlist());
+            else
+                remoteBean.doWork(result.isEnlist());
+        } catch (Exception e) {
+            result.incrementErrorCount();
+            System.out.printf("CMT error: %s\n", e.getMessage());
+            e.printStackTrace();
+        }
+
+        return result;
+    }
+
+    @Override
+    @TransactionAttribute(TransactionAttributeType.REQUIRED)
+    public Result testCMTTxns(Result result) {
+        PerfTest2BeanRemote localBean = (result.nSPort == 0 ? firstPerfBean : null);
+
+        return measureCMTThroughput(localBean, secondPerfBean, result);
     }
 
     @Override
@@ -75,6 +126,15 @@ public class PerfTestBean implements PerfTestBeanRemote {
         if (firstPerfBean == null && secondPerfBean == null)
             throw new RuntimeException("Cannot lookup remote bean");
 
-        return measureThroughput(localBean, secondPerfBean, result);
+        long now = System.currentTimeMillis();
+
+        if (result.isTransactional())
+            measureBMTThroughput(localBean, secondPerfBean, result);
+        else
+            measureNonTransactionalThroughput(localBean, secondPerfBean, result);
+
+        result.setTotalMillis(System.currentTimeMillis() - now);
+
+        return result;
     }
 }

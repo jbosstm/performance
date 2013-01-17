@@ -35,4 +35,10 @@ public class PerfTest2Bean  implements PerfTest2BeanRemote {
 
         return 0;
     }
+
+    @Override
+    @TransactionAttribute(TransactionAttributeType.NEVER)
+    public long doWork() {
+        return 0;
+    }
 }

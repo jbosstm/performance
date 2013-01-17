@@ -22,4 +22,6 @@ import java.rmi.RemoteException;
 public interface SecondPerfBeanRemote extends EJBObject {
 
 	long doWork(boolean enlist) throws RemoteException;
+
+    long doWork() throws RemoteException;
 }
