@@ -1,5 +1,8 @@
 package org.jboss.as.quickstarts.perf.jts.web;
 
+import org.javasimon.StopwatchSample;
+import org.javasimon.callback.CallbackSkeleton;
+import org.javasimon.utils.SimonUtils;
 import org.jboss.as.quickstarts.perf.jts.ejb.Lookup;
 import org.jboss.as.quickstarts.perf.jts.ejb.PerfTestBeanRemote;
 import org.jboss.as.quickstarts.perf.jts.ejb.Result;
@@ -12,6 +15,10 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import org.javasimon.Stopwatch;
+import org.javasimon.SimonManager;
+import org.javasimon.Split;
 
 public class PerfTest extends HttpServlet {
     private Deque<Result> testResults;
@@ -75,6 +82,9 @@ public class PerfTest extends HttpServlet {
         boolean transactional = getIntegerParameter(request, "transactional", 1) != 0;
         int how = getIntegerParameter(request, "how", 0);
 
+        Stopwatch stopwatch = SimonManager.getStopwatch("org.jboss.as.quickstarts.perf.jts.web");
+        Split split = stopwatch.start();
+
         if (how == 0) {
             testTxns(new Result(count, enlist, remote, cmt, transactional), cmt);
         } else {
@@ -83,6 +93,10 @@ public class PerfTest extends HttpServlet {
             testTxns(new Result(count, false, remote, cmt, transactional), cmt);
             testTxns(new Result(count, false, 0, cmt, transactional), cmt);
         }
+
+        split.stop();
+
+        System.out.println("Result: " + stopwatch);
 
         while (testResults.size() > 16)
             testResults.removeLast();

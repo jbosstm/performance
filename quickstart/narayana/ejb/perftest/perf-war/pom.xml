@@ -11,6 +11,7 @@
     <properties>
       <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
       <version.org.jboss.spec.jboss.javaee.6.0>3.0.0.Final</version.org.jboss.spec.jboss.javaee.6.0>
+      <javasimon.version>3.3.0</javasimon.version>
     </properties>
 
    <dependencyManagement>
@@ -60,6 +61,18 @@
          <artifactId>jboss-servlet-api_3.0_spec</artifactId>
          <scope>provided</scope>
       </dependency>
+      <dependency>
+         <groupId>org.javasimon</groupId>
+         <artifactId>javasimon-core</artifactId>
+         <version>${javasimon.version}</version>
+      </dependency>
+
+      <dependency>
+         <groupId>org.javasimon</groupId>
+         <artifactId>javasimon-javaee</artifactId>
+         <version>${javasimon.version}</version>
+      </dependency>
+
 
     </dependencies>
 

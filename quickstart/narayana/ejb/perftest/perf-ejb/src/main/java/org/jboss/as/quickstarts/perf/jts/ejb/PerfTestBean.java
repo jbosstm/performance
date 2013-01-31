@@ -1,5 +1,11 @@
 package org.jboss.as.quickstarts.perf.jts.ejb;
 
+import org.javasimon.SimonManager;
+import org.javasimon.Split;
+import org.javasimon.Stopwatch;
+import org.javasimon.StopwatchSample;
+import org.javasimon.callback.CallbackSkeleton;
+import org.javasimon.utils.SimonUtils;
 import org.jboss.as.quickstarts.perf.jts.resource.DummyXAResource;
 
 import javax.annotation.PostConstruct;
@@ -16,6 +22,13 @@ public class PerfTestBean implements PerfTestBeanRemote {
     private SecondPerfBeanHome secondPerfBeanHome;
     private SecondPerfBeanRemote secondPerfBean;
     private PerfTest2BeanRemote firstPerfBean;
+    private Sampler sampler;
+    private Stopwatch[] stopwatches = {
+            SimonManager.getStopwatch("PerfTestBean"),
+            SimonManager.getStopwatch("PerfTestBean.enlist"),
+            SimonManager.getStopwatch("PerfTestBean.doWork"),
+            SimonManager.getStopwatch("PerfTestBean.commit")
+    };
 
     @PostConstruct
     public void postConstruct() {
@@ -33,25 +46,42 @@ public class PerfTestBean implements PerfTestBeanRemote {
         } catch (RemoteException e) {
             throw new RuntimeException(e);
         }
+
+        sampler = new Sampler(stopwatches, 10000L);
+        sampler.setDaemon(true);
+//        sampler.start();
     }
 
     private Result measureBMTThroughput(PerfTest2BeanRemote localBean, SecondPerfBeanRemote remoteBean, Result result) {
         long nCalls = result.getNumberOfCalls();
         boolean enlist = result.isEnlist();
+        Split[] splits = {null, null, null, null};
+
+        sampler.setReport(true);
 
         for (long i = 0; i < nCalls; i++) {
+            splits[0] = stopwatches[0].start();
+
             try {
                 transactionManager.begin();
 
-                if (enlist)
+                if (enlist) {
+                    splits[1] = stopwatches[1].start() ;
                     transactionManager.getTransaction().enlistResource(new DummyXAResource("local"));
+                    splits[1].stop();
+                }
 
+                splits[2] = stopwatches[2].start() ;
                 if (localBean != null)
                     localBean.doWork(enlist);
                 else
                     remoteBean.doWork(enlist);
 
+                splits[2].stop();
+
+                splits[3]  = stopwatches[3].start() ;
                 transactionManager.commit();
+                splits[3].stop();
             } catch (Exception e) {
                 result.incrementErrorCount();
             } finally {
@@ -63,8 +93,14 @@ public class PerfTestBean implements PerfTestBeanRemote {
                 } catch (Throwable e) {
                     // ignore
                 }
+                for (Split split : splits)
+                    if (split!= null && split.isRunning())
+                        split.stop();
             }
         }
+
+        sampler.setReport(false);
+        sampler.report();
 
         return result;
     }
