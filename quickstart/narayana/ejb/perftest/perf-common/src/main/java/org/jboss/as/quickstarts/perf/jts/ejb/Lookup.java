@@ -23,10 +23,12 @@ public class Lookup {
                 else
                     return (T) (getContext(jndiUrl).lookup(name));
             } catch (NamingException e) {
-                System.out.printf("%s: lookup jndi name failed\n", name);
                 excp = e;
             }
         }
+
+        for (String name : altNames)
+            System.out.printf("%s: lookup jndi name failed\n", name);
 
         throw excp;
     }

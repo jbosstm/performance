@@ -23,6 +23,7 @@ public class PerfTestBean implements PerfTestBeanRemote {
     private SecondPerfBeanRemote secondPerfBean;
     private PerfTest2BeanRemote firstPerfBean;
     private Sampler sampler;
+    private boolean sampling = false;
     private Stopwatch[] stopwatches = {
             SimonManager.getStopwatch("PerfTestBean"),
             SimonManager.getStopwatch("PerfTestBean.enlist"),
@@ -52,42 +53,53 @@ public class PerfTestBean implements PerfTestBeanRemote {
 //        sampler.start();
     }
 
-    private Result measureBMTThroughput(PerfTest2BeanRemote localBean, SecondPerfBeanRemote remoteBean, Result result) {
-        long nCalls = result.getNumberOfCalls();
-        boolean enlist = result.isEnlist();
+    private Split startStopwatch(Stopwatch stopwatch) {
+        return sampling ? stopwatches[1].start() : null;
+    }
+
+    private void stopStopwatch(Split split) {
+        if (sampling)
+            split.stop();
+    }
+
+    private Result measureBMTThroughput(PerfTest2BeanRemote localBean, SecondPerfBeanRemote remoteBean, Result opts) {
+        long nCalls = opts.getNumberOfCalls();
         Split[] splits = {null, null, null, null};
 
         sampler.setReport(true);
 
         for (long i = 0; i < nCalls; i++) {
-            splits[0] = stopwatches[0].start();
+            splits[0] = startStopwatch(stopwatches[0]);
 
             try {
                 transactionManager.begin();
 
-                if (enlist) {
-                    splits[1] = stopwatches[1].start() ;
-                    transactionManager.getTransaction().enlistResource(new DummyXAResource("local"));
-                    splits[1].stop();
+                if (opts.getEnlist() > 0) {
+                    splits[1] = startStopwatch(stopwatches[1]) ;
+                    for (int j = opts.getEnlist(); j > 0; j--) {
+                        transactionManager.getTransaction().enlistResource(
+                                new DummyXAResource("local" + j, opts.getPrepareDelay()));
+                    }
+                    stopStopwatch(splits[1]);
                 }
 
-                splits[2] = stopwatches[2].start() ;
+                splits[2] = startStopwatch(stopwatches[2]) ;
                 if (localBean != null)
-                    localBean.doWork(enlist);
+                    localBean.doWork(opts);
                 else
-                    remoteBean.doWork(enlist);
+                    remoteBean.doWork(opts);
 
-                splits[2].stop();
+                stopStopwatch(splits[2]);
 
-                splits[3]  = stopwatches[3].start() ;
+                splits[3]  = startStopwatch(stopwatches[3]) ;
                 transactionManager.commit();
-                splits[3].stop();
+                stopStopwatch(splits[3]);
             } catch (Exception e) {
-                result.incrementErrorCount();
+                opts.incrementErrorCount();
             } finally {
                 try {
                     if (transactionManager.getTransaction().getStatus() == Status.STATUS_ACTIVE) {
-                        result.incrementErrorCount();
+                        opts.incrementErrorCount();
                         transactionManager.getTransaction().rollback();
                     }
                 } catch (Throwable e) {
@@ -95,14 +107,16 @@ public class PerfTestBean implements PerfTestBeanRemote {
                 }
                 for (Split split : splits)
                     if (split!= null && split.isRunning())
-                        split.stop();
+                        stopStopwatch(split);
             }
         }
 
         sampler.setReport(false);
-        sampler.report();
 
-        return result;
+        if (sampling)
+            sampler.report();
+
+        return opts;
     }
 
     private Result measureNonTransactionalThroughput(PerfTest2BeanRemote localBean, SecondPerfBeanRemote remoteBean, Result result) {
@@ -128,22 +142,24 @@ public class PerfTestBean implements PerfTestBeanRemote {
         return result;
     }
 
-    private Result measureCMTThroughput(PerfTest2BeanRemote localBean, SecondPerfBeanRemote remoteBean, Result result) {
+    private Result measureCMTThroughput(PerfTest2BeanRemote localBean, SecondPerfBeanRemote remoteBean, Result opts) {
         try {
-            if (result.isEnlist())
-                transactionManager.getTransaction().enlistResource(new DummyXAResource("local"));
+            for (int i = opts.getEnlist(); i > 0; i--)
+                transactionManager.getTransaction().enlistResource(
+                        new DummyXAResource("local" + i, opts.getPrepareDelay()));
 
             if (localBean != null)
-                localBean.doWork(result.isEnlist());
+                localBean.doWork(opts);
             else
-                remoteBean.doWork(result.isEnlist());
+                remoteBean.doWork(opts);
+
         } catch (Exception e) {
-            result.incrementErrorCount();
+            opts.incrementErrorCount();
             System.out.printf("CMT error: %s\n", e.getMessage());
             e.printStackTrace();
         }
 
-        return result;
+        return opts;
     }
 
     @Override

@@ -47,10 +47,10 @@ public class SecondPerfBeanImpl {//implements SecondPerfBeanRemote{
     }
 
 	@TransactionAttribute(TransactionAttributeType.MANDATORY)
-    public long doWork(boolean enlist) throws RemoteException {
-        if (enlist) {
+    public long doWork(Result opts) throws RemoteException {
+        for (int i = opts.getEnlist(); i > 0; i--) {
             try {
-                transactionManager.getTransaction().enlistResource(new DummyXAResource("subordinate"));
+                transactionManager.getTransaction().enlistResource(new DummyXAResource("subordinate" + i));
             } catch (RollbackException e) {
                 throw new RuntimeException("Transaction error", e);
             } catch (SystemException e) {

@@ -7,10 +7,16 @@ import javax.transaction.xa.Xid;
 public class DummyXAResource implements XAResource {
 
 	private String name;
+    private long delay;
 
-	public DummyXAResource(String name) {
+	public DummyXAResource(String name, long delayMillis) {
 		this.name = name;
+        this.delay = delayMillis;
 	}
+
+    public DummyXAResource(String name) {
+        this(name, 0L);
+    }
 
 	@Override
 	public void commit(Xid arg0, boolean arg1) throws XAException {
@@ -37,8 +43,15 @@ public class DummyXAResource implements XAResource {
 
 	@Override
 	public int prepare(Xid arg0) throws XAException {
-//		System.out.printf("%s prepare\n", name);
-		return 0;
+//		System.out.printf("%s prepare (with %dms dela)\n", name, delay);
+        if (delay > 0L)
+            try {
+                Thread.sleep(delay);
+            } catch (InterruptedException e) {
+                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            }
+
+        return 0;
 	}
 
 	@Override

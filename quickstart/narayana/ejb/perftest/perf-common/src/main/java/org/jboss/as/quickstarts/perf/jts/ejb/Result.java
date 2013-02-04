@@ -12,19 +12,21 @@ public class Result implements Serializable {
     int nSPort; // jndi port
     long numberOfCalls;
     long errorCount;
-    boolean enlist; // if true then an XA resource is enlisted by each party
+    int enlist; // if positive then XA resources are enlisted by each party
     boolean cmt;
     long totalMillis;
     long throughputBMT; // calls per second
     long throughputCMT; // calls per second
     long one; // time in msecs to do one call
     private boolean transactional;
+    private long prepareDelay;
 
-    public Result(long numberOfCalls, boolean enlist, int nSPort, boolean cmt, boolean transactional) {
+    public Result(long numberOfCalls, int enlist, int nSPort, boolean cmt, boolean transactional, long prepareDelay) {
         this.nSPort = nSPort;
         this.numberOfCalls = numberOfCalls;
         this.enlist = enlist;
         this.cmt = cmt;
+        this.prepareDelay = prepareDelay;
         this.totalMillis = this.throughputBMT = this.throughputCMT = 0L;
         this.errorCount = 0L;
         this.transactional = transactional;
@@ -38,7 +40,7 @@ public class Result implements Serializable {
         return numberOfCalls;
     }
 
-    public boolean isEnlist() {
+    public int getEnlist() {
         return enlist;
     }
 
@@ -93,5 +95,9 @@ public class Result implements Serializable {
 
     public void setTransactional(boolean transactional) {
         this.transactional = transactional;
+    }
+
+    public long getPrepareDelay() {
+        return prepareDelay;
     }
 }

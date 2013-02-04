@@ -22,10 +22,10 @@ public class PerfTest2Bean  implements PerfTest2BeanRemote {
 
     @Override
     @TransactionAttribute(TransactionAttributeType.MANDATORY)
-    public long doWork(boolean enlist) {
-        if (enlist) {
+    public long doWork(Result opts) {
+        for (int i = opts.getEnlist(); i > 0; i--) {
             try {
-                transactionManager.getTransaction().enlistResource(new DummyXAResource("subordinate"));
+                transactionManager.getTransaction().enlistResource(new DummyXAResource("subordinate" + i));
             } catch (RollbackException e) {
                 throw new RuntimeException("Transaction error", e);
             } catch (SystemException e) {
