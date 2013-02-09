@@ -1,0 +1,5 @@
+print Testing EAP5 and EAP6 with SSD
+versions EAP6 EAP5
+data /mnt
+test 1000 1 1 1 1
+test 100 10 1 1 1

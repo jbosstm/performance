@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 BASE_DIR=`pwd`
 RES_DIR=$BASE_DIR/results
@@ -14,6 +14,11 @@ EAP6_WAIT=20
 file_store=1
 jacorb_patch=0
 version="-"
+versions="EAP6 EAP5"
+tests=()
+index=0
+
+simulate=0
 
 [ $JBOSS_TERM ] || JBOSS_TERM=gnome 
 
@@ -21,7 +26,7 @@ server0_pid=0
 server1_pid=0
 
 function fatal {
-    echo "fatal: $1"
+    echo "fatal: $1" | tee -a $RES_FILE
     [ -f "$2" ] && cat $2
 
     stop_servers
@@ -59,7 +64,7 @@ function configure_eap5 {
     [ $? = 0 ] || fatal "enable EAP5 jts failed for server0"
     ant jts -Dtarget.server.dir=../../../server/server1
     [ $? = 0 ] || fatal "enable EAP5 jts failed for server1"
-    do_copy  $EAP5_DIR/jboss-eap-5.1/jboss-as/server/all/lib/jacorb.jar $BASE_DIR/performance/quickstart/narayana/ejb/perftest/jacorb.jar.eap5
+    do_copy  $EAP5_DIR/jboss-eap-5.1/jboss-as/server/all/lib/jacorb.jar $BASE_DIR/performance/quickstart/narayana/ejb/perftest/etc/jacorb.jar.eap5
   fi
 }
 
@@ -79,7 +84,7 @@ function configure_eap6 {
     do_copy jboss-eap-6.0 server0
     do_copy jboss-eap-6.0 server1
 
-    do_copy  $EAP6_DIR/jboss-eap-6.0/modules/org/jacorb/main/jacorb-2.3.2-redhat-2.jar $BASE_DIR/performance/quickstart/narayana/ejb/perftest/jacorb.jar.eap6
+    do_copy  $EAP6_DIR/jboss-eap-6.0/modules/org/jacorb/main/jacorb-2.3.2-redhat-2.jar $BASE_DIR/performance/quickstart/narayana/ejb/perftest/etc/jacorb.jar.eap6
 
     enable_jts EAP6 0
     enable_jts EAP6 1
@@ -159,7 +164,8 @@ function start_eap {
     server1_pid=$!
   fi
 
-  echo "server running with pid $!"
+  [ $# = 3 ] && sleep=$3
+  echo "$ver server running with pid $! sleep for $sleep"
   sleep $sleep
 }
 
@@ -270,23 +276,23 @@ function update_data_dir {
 
 function patch_jacorb {
   if [ "$1" = "EAP5" ]; then
-    do_copy  $BASE_DIR/performance/quickstart/narayana/ejb/perftest/jacorb.jar.patched $EAP5_DIR/jboss-eap-5.1/jboss-as/server/server${2}/lib/jacorb.jar
+    do_copy  $BASE_DIR/performance/quickstart/narayana/ejb/perftest/etc/jacorb.jar.patched $EAP5_DIR/jboss-eap-5.1/jboss-as/server/server${2}/lib/jacorb.jar
   else
-    do_copy  $BASE_DIR/performance/quickstart/narayana/ejb/perftest/jacorb.jar.patched $EAP6_DIR/server${2}/modules/org/jacorb/main/jacorb-2.3.2-redhat-2.jar
+    do_copy  $BASE_DIR/performance/quickstart/narayana/ejb/perftest/etc/jacorb.jar.patched $EAP6_DIR/server${2}/modules/org/jacorb/main/jacorb-2.3.2-redhat-2.jar
   fi
   jacorb_patch=1
 }
 
 function unpatch_jacorb {
   if [ "$1" = "EAP5" ]; then
-    do_copy $BASE_DIR/performance/quickstart/narayana/ejb/perftest/jacorb.jar.eap5 $EAP5_DIR/jboss-eap-5.1/jboss-as/server/server${2}/lib/jacorb.jar
+    do_copy $BASE_DIR/performance/quickstart/narayana/ejb/perftest/etc/jacorb.jar.eap5 $EAP5_DIR/jboss-eap-5.1/jboss-as/server/server${2}/lib/jacorb.jar
   else
-    do_copy $BASE_DIR/performance/quickstart/narayana/ejb/perftest/jacorb.jar.eap6 $EAP6_DIR/server${2}/modules/org/jacorb/main/jacorb-2.3.2-redhat-2.jar
+    do_copy $BASE_DIR/performance/quickstart/narayana/ejb/perftest/etc/jacorb.jar.eap6 $EAP6_DIR/server${2}/modules/org/jacorb/main/jacorb-2.3.2-redhat-2.jar
   fi
   jacorb_patch=0
 }
 
-function test {
+function onetest {
     calls=$1
     threads=$2
     transactional=$3
@@ -296,7 +302,12 @@ function test {
     prepareDelay=0
     verbose=0
 
+    if [ $simulate = 1 ]; then
+      printf "%9s %11s %9s %9s %9s %9s %11s %9s %9s\n" $version $throughput $calls $jacorb_patch $file_store $threads $transactional $enlist $remote | tee -a $RES_FILE
+      return 0
+    fi
     qs="count=$calls&verbose=$verbose&prepareDelay=$prepareDelay&enlist=$enlist&remote=$remote&transactional=$transactional"
+    echo "qs=$qs"
 
     for (( i=1; i<=$threads; i++ )); do
         if [ $i = $threads ]; then 
@@ -317,50 +328,55 @@ function test {
         [ $? = 1 ] || fatal "run $i $1 $2" "res$i"; # failed
 
          v=$(cat res$i)
-# TODO assert v is a number
+         val=$(echo "$v" | cut -f1 -d\ )
+
+         [[ "$val" =~ ^-?[0-9]+$ ]] || echo "ERROR: servlet didn't return a number: value=$val qs=$qs" | tee -a $RES_FILE
          tot=`expr $tot + $v`
     done
 
-#    throughput=`expr $tot / $threads`
     throughput=$tot
     printf "%9s %11s %9s %9s %9s %9s %11s %9s %9s\n" $version $throughput $calls $jacorb_patch $file_store $threads $transactional $enlist $remote | tee -a $RES_FILE
 
     return 0
 }
 
-function tests {
-  start_eap $1 0
-  start_eap $1 1
+function test_group {
+  if [ $simulate != 1 ]; then
+    start_eap $1 0 0
+    start_eap $1 1
+  fi
 
-  [ -d $RES_DIR ] || mkdir $RES_DIR
   cd $RES_DIR
 
   version=$1
 
-  if [ -f "$2" ]; then
-    cat $2 | while read ln; do
-      test $ln
+  if ! test -z "$tests"; then
+    sz=${#tests[*]}
+    for ((j=0;j<$sz;j++)); do
+#      echo    ${tests[${j}]}
+      onetest ${tests[${j}]}
     done
   else
-    test 1000 1 1 1 1
-    test 100 10 1 1 1
+    echo "WARNING tests called with no test specification"
   fi
 
-  stop_servers
+  if [ $simulate != 1 ]; then
+    stop_servers
+  fi
 }
 
 function patch_eap {
-  patch_jacorb EAP5 0
-  patch_jacorb EAP6 0
-  patch_jacorb EAP5 1
-  patch_jacorb EAP6 1
+  for ver in $versions; do
+    patch_jacorb $ver 0
+    patch_jacorb $ver 1
+  done
 }
 
 function unpatch_eap {
-  unpatch_jacorb EAP5 0
-  unpatch_jacorb EAP6 0
-  unpatch_jacorb EAP5 1
-  unpatch_jacorb EAP6 1
+  for ver in $versions; do
+    unpatch_jacorb $ver 0
+    unpatch_jacorb $ver 1
+  done
 }
 
 function env_setup {
@@ -370,47 +386,95 @@ function env_setup {
   update_ear
 }
 
-function unpatched_tests {
-  unpatch_eap
-  tests EAP6
-  tests EAP5
-}
-function patched_tests {
-  patch_eap
-  tests EAP6
-  tests EAP5
+function change_data_dirs {
+  for ver in $versions; do
+    update_data_dir $ver 0 $1 $2
+    update_data_dir $ver 1 $1 $2
+  done
 }
 
-function change_data_dir {
-  update_data_dir EAP5 0 $1 "$2"
-  update_data_dir EAP5 1 $1 "$2"
-  update_data_dir EAP6 0 $1 "$2"
-  update_data_dir EAP6 1 $1 "$2"
+
+function run_tests {
+  if ! test -z "$tests"; then
+    for ver in $versions; do
+      test_group $ver
+    done
+
+    # reset the array ready for the next test group
+    tests=()
+    index=0
+  fi
+}
+
+function cmd_syntax {
+cat << HERE
+$1. You can find example command files (tests*.txt) in the perftest directory.
+
+A command file should contain lines of the form:"
+
+  print <text> # print a message to standard output"
+  versions {EAP5|EAP6} # determines which versions to test against"
+  jacorb <patch|unpatch> # apply/remove jacorb patch before running the tests"
+  hornetq <enable|disable> # use the hornetq store (if disable then the file store is used"
+  data <directory> # put the app server data directory beneath directory"
+  # {text} # annotate the command file"
+  test [calls] [threads] [transactional] [enlist] [remote] # run a test"
+
+So the general idea is to set a number of config options and then specify a group of tests to
+run against that configuration. Then you set more config options followed by another group of
+tests specifications etc.
+
+Test output goes to: results/perf.<pid>.tab
+HERE
+}
+
+function set_option {
+  [ ! -n "$1" ] && return
+  [[ $1 == \#* ]] && return
+  [ $1 != "test" ] && run_tests
+
+  case $1 in
+  "test") shift; tests[$index]="$@"; index=$(($index+1)) ;;
+  "print") shift; echo "$@";;
+  "versions") shift; versions="$@";;
+  "jacorb") if [ $2 = "patch" ]; then patch_eap; else unpatch_eap; fi;;
+  "hornetq") if [ $2 = "enable" ]; then hornetq_os_enable; else hornetq_os_disable; fi;;
+  "data") if [ $2 = "default" ]; then change_data_dirs 0 ""; else change_data_dirs 1 $2; fi;;
+  *) cmd_syntax "$2 is an unregcognised option";;
+  esac
+}
+
+function process_cmds {
+  if [ ! -f $1 ]; then
+    cmd_syntax "Cannot open command file $1"
+    fatal "Cannot open command file $1"
+  fi
+
+  [ -d $RES_DIR ] || mkdir $RES_DIR
+  touch $RES_FILE
+
+  echo "Using command file $1 and writing results to $RES_FILE"
+
+  printf "%9s %11s %9s %9s %9s %9s %9s %9s %9s\n" "Version" "Throughput" "Calls" "Patched" "FileStore" "Threads" "Transaction" "Enlist" "Remote" | tee -a $RES_FILE
+
+  while read ln ; do
+    set_option $ln
+  done < "$1"
+
+  run_tests
 }
 
 env_setup
 
-printf "%9s %11s %9s %9s %9s %9s %9s %9s %9s\n" "Version" "Throughput" "Calls" "Patched" "FileStore" "Threads" "Transaction" "Enlist" "Remote" | tee -a $RES_FILE
+# determine which file to use for commands
+if [ $# -gt 0 ]; then
+  [[ $1 == /* ]] && f=$1 || f="$BASE_DIR/$1"
+else
+  f=$BASE_DIR/performance/quickstart/narayana/ejb/perftest/etc/tests.txt
+fi
 
-#change_data_dir 1 "/mnt"
-hornetq_os_disable
-unpatched_tests
-patched_tests
+process_cmds $f
 
-hornetq_os_enable
-unpatched_tests
-patched_tests
-
+do_copy "$f" "$RES_DIR/cmds.$$.tab"
 echo "Your results are awaiting your expert analysis in $RES_FILE"
 exit 0
-
-#   test 1000 1 0 0 0
-#   test 1000 1 0 0 1
-#   echo ""
-#   test 10000 1 1 1 1
-#   test 1000 10 1 1 1
-#   echo ""
-#   test 100 10 1 0 1
-#   test 100 10 1 0 0
-#   test 100 10 1 2 1
-#   test 100 10 1 1 0

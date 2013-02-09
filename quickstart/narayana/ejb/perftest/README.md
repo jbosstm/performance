@@ -1,6 +1,19 @@
+Unattended Testing
+==================
 
-EAP 5 testing:
-==============
+Unattended operation has been scripted by running the bash shell script located in scripts/eapcmp.sh (consequently that script is the most accurate set of instructions). If you already have the zip downloads for EAP5 and EAP6 then you can avoid downloading them provided you run the script in a directory that contains the following hierarchy:
+
+	eap-6.0/jboss-eap-6.0.1.zip 
+	eap-5.1.1/jboss-eap-5.1.1.zip
+
+The performance test results are saved in a file called ./results/perf.pid.tab and the configuration used to produce those results is stored in a file called results/cmds.pid.tab (where pid is the process id of the shell used to run the script).
+
+To modify what gets tested pass a file argument to eapcmp.sh (type eapcmp.sh -help to discover the syntax of a commands file).
+
+The script starts servers using gnome-terminal (to launch them in the current terminal set JBOSS_TERM to something other than gnome)
+
+Manual EAP 5 testing:
+=====================
 
 Create two server directories 
 
@@ -33,8 +46,8 @@ Test the throughput for 100 transactional ejb calls using an HTTP client:
 	curl http://localhost:8080/perf-war/PerfTest -d "count=100
 	wget http://localhost:8080/perf-war/PerfTest?count=100
 
-EAP 6 testing:
-==============
+Manual EAP 6 testing:
+=====================
 
 	cd XXX
 	cp -r jboss-eap-6.0 server1
