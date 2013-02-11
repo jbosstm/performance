@@ -57,6 +57,7 @@ function configure_eap5 {
       [ $? = 0 ] || fatal "configure_eap5: unzip EAP5 failed"
     fi
     cd jboss-eap-5.1/jboss-as/server
+    echo "admin=admin" >> all/conf/props/jmx-console-users.properties
     do_copy all server0
     do_copy all server1
     cd ../docs/examples/transactions/
@@ -172,16 +173,17 @@ function start_eap {
 function stop_servers {
   if [ $server0_pid != 0 ]; then
     echo "killing $server0_pid"
-#    $EAP5_DIR/jboss-eap-5.1/jboss-as/bin/shutdown.sh -s localhost:1099 > /dev/null 2>&1
-#    $EAP6_DIR/server0/bin/jboss-cli.sh --connect command=:shutdown controller=localhost:9999 > /dev/null 2>&1
-    kill "$server0_pid"
+    # if not running in a separate terminal the kill only shuts down the shell that started the server
+    $EAP5_DIR/jboss-eap-5.1/jboss-as/bin/shutdown.sh -s localhost:1099 -p admin -u admin > /dev/null 2>&1
+    $EAP6_DIR/server0/bin/jboss-cli.sh --connect command=:shutdown controller=localhost:9999 > /dev/null 2>&1
+    kill "$server0_pid" > /dev/null 2>&1
     server0_pid=0
   fi
   if [ $server1_pid != 0 ]; then
     echo "killing $server1_pid"
-#    $EAP5_DIR/jboss-eap-5.1/jboss-as/bin/shutdown.sh -s localhost:1199 > /dev/null 2>&1
-#    $EAP6_DIR/server1/bin/jboss-cli.sh --connect command=:shutdown controller=localhost:10099 > /dev/null 2>&1
-    kill "$server1_pid"
+    $EAP5_DIR/jboss-eap-5.1/jboss-as/bin/shutdown.sh -s localhost:1199 -p admin -u admin > /dev/null 2>&1
+    $EAP6_DIR/server1/bin/jboss-cli.sh --connect command=:shutdown controller=localhost:10099 > /dev/null 2>&1
+    kill "$server1_pid" > /dev/null 2>&1
     server1_pid=0
   fi
 }
