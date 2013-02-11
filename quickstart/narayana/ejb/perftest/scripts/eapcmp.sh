@@ -1,7 +1,7 @@
 #!/bin/bash
 
 BASE_DIR=`pwd`
-RES_DIR=$BASE_DIR/results
+RES_DIR=$BASE_DIR/results/$$
 RES_FILE=$RES_DIR/perf.$$.tab
 EAP5_ZIP="http://download.devel.redhat.com/released/JBEAP-5/5.1.1/zip/jboss-eap-5.1.1.zip"
 EAP6_ZIP="http://download.devel.redhat.com/released/JBEAP-6/6.0.1/zip/jboss-eap-6.0.1.zip "
@@ -67,6 +67,9 @@ function configure_eap5 {
     [ $? = 0 ] || fatal "enable EAP5 jts failed for server1"
     do_copy  $EAP5_DIR/jboss-eap-5.1/jboss-as/server/all/lib/jacorb.jar $BASE_DIR/performance/quickstart/narayana/ejb/perftest/etc/jacorb.jar.eap5
   fi
+
+  rm $EAP5_DIR/jboss-eap-5.1/jboss-as/server/server0/log/*
+  rm $EAP5_DIR/jboss-eap-5.1/jboss-as/server/server1/log/*
 }
 
 function configure_eap6 {
@@ -101,6 +104,9 @@ function configure_eap6 {
     do_copy  $EAP6_DIR/server0/standalone/configuration/standalone-full.xml $BASE_DIR/performance/quickstart/narayana/ejb/perftest/standalone-full-hq-server0.xml
     do_copy  $EAP6_DIR/server1/standalone/configuration/standalone-full.xml $BASE_DIR/performance/quickstart/narayana/ejb/perftest/standalone-full-hq-server1.xml
   fi
+
+  rm $EAP6_DIR/server0/standalone/log/*
+  rm $EAP6_DIR/server1/standalone/log/*
 }
 
 function clone_perf_repo {
@@ -464,6 +470,18 @@ function process_cmds {
   done < "$1"
 
   run_tests
+
+  # save the server logs
+  for ver in $versions; do
+    case $ver in
+    "EAP5")
+      mkdir $RES_DIR/EAP5;
+      cp $EAP5_DIR/jboss-eap-5.1/jboss-as/server/server0/log/* $RES_DIR/EAP5;;
+    "EAP6")
+      mkdir $RES_DIR/EAP6;
+      cp $EAP6_DIR/server0/standalone/log/* $RES_DIR/EAP6;
+    esac
+  done
 }
 
 env_setup
