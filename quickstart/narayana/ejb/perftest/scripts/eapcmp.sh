@@ -458,7 +458,7 @@ function process_cmds {
     fatal "Cannot open command file $1"
   fi
 
-  [ -d $RES_DIR ] || mkdir $RES_DIR
+  [ -d $RES_DIR ] || mkdir -p $RES_DIR
   touch $RES_FILE
 
   echo "Using command file $1 and writing results to $RES_FILE"
@@ -479,7 +479,7 @@ function process_cmds {
       cp $EAP5_DIR/jboss-eap-5.1/jboss-as/server/server0/log/* $RES_DIR/EAP5;;
     "EAP6")
       mkdir $RES_DIR/EAP6;
-      cp $EAP6_DIR/server0/standalone/log/* $RES_DIR/EAP6;
+      cp $EAP6_DIR/server0/standalone/log/* $RES_DIR/EAP6;;
     esac
   done
 }
