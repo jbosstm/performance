@@ -6,7 +6,6 @@ RES_FILE=$RES_DIR/perf.$$.tab
 EAP5_ZIP="http://download.devel.redhat.com/released/JBEAP-5/5.1.1/zip/jboss-eap-5.1.1.zip"
 EAP6_ZIP="http://download.devel.redhat.com/released/JBEAP-6/6.0.1/zip/jboss-eap-6.0.1.zip "
 PERF_REPO=https://github.com/jbosstm/performance
-PERF_REPO=https://github.com/mmusgrov/performance
 EAP5_DIR=$BASE_DIR/eap-5.1.1
 EAP6_DIR=$BASE_DIR/eap-6.0
 EAP5_WAIT=60
@@ -45,18 +44,21 @@ function do_copy {
 
 function configure_eap5 {
   [ -d "$EAP5_DIR" ] || mkdir -p $EAP5_DIR
-  cd $EAP5_DIR
 
-  if [ ! -d jboss-eap-5.1 ]; then
-    if [ ! -f jboss-eap-5.1.1.zip ]; then
-      wget $EAP5_ZIP
-      [ $? = 0 ] || fatal "configure_eap5: wget $EAP5_ZIP failed"
-    fi
-    if [ ! -d jboss-eap-5.1/jboss-as/server/ ]; then
-      unzip jboss-eap-5.1.1.zip
-      [ $? = 0 ] || fatal "configure_eap5: unzip EAP5 failed"
-    fi
-    cd jboss-eap-5.1/jboss-as/server
+  zipfile=$BASE_DIR/jboss-eap-5.1.1.zip
+  [ ! -f $zipfile ] && zipfile=$EAP5_DIR/jboss-eap-5.1.1.zip
+
+  if [ ! -f $zipfile ]; then
+    cd $BASE_DIR
+    wget $EAP5_ZIP
+    [ $? = 0 ] || fatal "configure_eap5: wget $EAP5_ZIP failed"
+  fi
+
+  if [ ! -d $EAP5_DIR/jboss-eap-5.1 ]; then
+    unzip -d $EAP5_DIR $zipfile
+    [ $? = 0 ] || fatal "configure_eap5: unzip EAP5 failed"
+
+    cd $EAP5_DIR/jboss-eap-5.1/jboss-as/server
     echo "admin=admin" >> all/conf/props/jmx-console-users.properties
     do_copy all server0
     do_copy all server1
@@ -68,22 +70,28 @@ function configure_eap5 {
     do_copy  $EAP5_DIR/jboss-eap-5.1/jboss-as/server/all/lib/jacorb.jar $BASE_DIR/performance/quickstart/narayana/ejb/perftest/etc/jacorb.jar.eap5
   fi
 
-  rm $EAP5_DIR/jboss-eap-5.1/jboss-as/server/server0/log/*
-  rm $EAP5_DIR/jboss-eap-5.1/jboss-as/server/server1/log/*
+  rm "$EAP5_DIR/jboss-eap-5.1/jboss-as/server/server0/log/*" > /dev/null 2>&1
+  rm "$EAP5_DIR/jboss-eap-5.1/jboss-as/server/server1/log/*" > /dev/null 2>&1
+
 }
 
 function configure_eap6 {
   [ -d "$EAP6_DIR" ] || mkdir -p $EAP6_DIR
-  cd $EAP6_DIR
 
-  if [ ! -d jboss-eap-6.0 ]; then
-    if [ ! -f jboss-eap-6.0.1.zip ]; then
-      wget $EAP6_ZIP
-      [ $? = 0 ] || fatal "wget $EAP6_ZIP failed"
-    fi
+  zipfile=$BASE_DIR/jboss-eap-6.0.1.zip
+  [ ! -f $zipfile ] && zipfile=$EAP6_DIR/jboss-eap-6.0.1.zip
 
-    unzip jboss-eap-6.0.1.zip
-    [ $? = 0 ] || fatal "unzip EAP6 failed"
+  if [ ! -f $zipfile ]; then
+    cd $BASE_DIR
+    wget $EAP6_ZIP
+    [ $? = 0 ] || fatal "configure_eap6: wget $EAP6_ZIP failed"
+  fi
+
+  if [ ! -d $EAP6_DIR/jboss-eap-6.0 ]; then
+    unzip -d $EAP6_DIR $zipfile
+    [ $? = 0 ] || fatal "configure_eap6: unzip EAP6 failed"
+
+    cd $EAP6_DIR
 
     do_copy jboss-eap-6.0 server0
     do_copy jboss-eap-6.0 server1
@@ -105,8 +113,8 @@ function configure_eap6 {
     do_copy  $EAP6_DIR/server1/standalone/configuration/standalone-full.xml $BASE_DIR/performance/quickstart/narayana/ejb/perftest/standalone-full-hq-server1.xml
   fi
 
-  rm $EAP6_DIR/server0/standalone/log/*
-  rm $EAP6_DIR/server1/standalone/log/*
+  rm "$EAP6_DIR/server0/standalone/log/*" > /dev/null 2>&1
+  rm "$EAP6_DIR/server1/standalone/log/*" > /dev/null 2>&1
 }
 
 function clone_perf_repo {
