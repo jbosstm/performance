@@ -87,6 +87,16 @@ public class JBossTSProduct extends Product
             public void setLogWriter(PrintWriter out) throws SQLException {ds.setLogWriter(out);}
             public void setLoginTimeout(int seconds) throws SQLException {ds.setLoginTimeout(seconds);}
             public int getLoginTimeout() throws SQLException {return ds.getLoginTimeout();}
+
+            @Override
+            public <T> T unwrap(Class<T> tClass) throws SQLException {
+                throw new SQLException("Not a wrapper");
+            }
+
+            @Override
+            public boolean isWrapperFor(Class<?> aClass) throws SQLException {
+                return false;
+            }
         };
     }
 }

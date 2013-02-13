@@ -20,17 +20,37 @@
  */
 package org.narayana.tools.perf;
 
+import org.junit.Test;
+
 import java.lang.reflect.Constructor;
+import java.util.Date;
 import java.util.concurrent.CyclicBarrier;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import java.util.Date;
-
-public class TxnPerformanceTest
+public class ProductPerformanceTest
 {
 	private static final String syntax = "-p <product> | -i <iterations> -t <threads>: ";
+
+    @Test
+    public void testProduct() throws Exception {
+        String products[] = {
+            "org.narayana.tools.perf.NarayanaWorkerTask",
+		};
+        int iterations = Integer.valueOf(System.getProperty("iterations", "200000"));
+        int threads = Integer.valueOf(System.getProperty("iterations", "100"));
+
+		TaskResult results[] = new TaskResult[products.length];
+
+        System.out.println(iterations+ " transactions, " + threads + " threads");
+
+		for (int i = 0; i < products.length; i++)
+			results[i] = testLoop(products[i], iterations, threads);
+
+		for (int i = 0; i < products.length; i++)
+			System.out.println(results[i].toString());
+    }
 
 	public static void main(String[] args) throws Exception {
 		int iterations = 200000;
@@ -45,27 +65,6 @@ public class TxnPerformanceTest
 
 		if (args.length != 0) {
 			String[] opts = args[0].trim().split("\\s+");
-/*
-			for (int i = 0; i < opts.length; i++) {
-				if (opts[i].startsWith("-")) {
-					opt = opts[i++];
-
-					if (i < opts.length) {
-						if ("-p".equals(opt))
-							products = opts[i].split(",");
-						else if ("-i".equals(opt))
-							iterations = Integer.valueOf(opts[i]);
-						else if ("-t".equals(opt))
-							threads = Integer.valueOf(opts[i]);
-                        else
-                            fatal("Syntax error: ");
-					} else {
-                         fatal("Syntax error: ");
-                    }
-				} else {
-                    fatal("Syntax error: ");
-                }
-			}*/
 
 			for (int i = 0; i < opts.length; i++) {
 				if (opts[i].startsWith("-")) {
@@ -119,7 +118,7 @@ public class TxnPerformanceTest
 		final int nThreads = threads;
 		CyclicBarrier cyclicBarrier = new CyclicBarrier(nThreads +1); // workers + self
 		ExecutorService executorService = Executors.newCachedThreadPool();
-		WorkerTask task = TxnPerformanceTest.newWorker(workerClassName, cyclicBarrier, count, BATCH_SIZE);
+		WorkerTask task = ProductPerformanceTest.newWorker(workerClassName, cyclicBarrier, count, BATCH_SIZE);
 
         task.init();
 

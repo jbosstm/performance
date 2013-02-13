@@ -134,7 +134,7 @@ will test Atomikos, JBossTS, Bitronix and JOTM and commit 100 transactions using
     <property name="args" value="-p org.narayana.tools.perf.NarayanaWorkerTask -i 100 -t 5" />
 
     <target name="run" depends="compile">
-        <java classname="org.narayana.tools.perf.TxnPerformanceTest" fork="yes" dir=".">
+        <java classname="org.narayana.tools.perf.ProductPerformanceTest" fork="yes" dir=".">
 
             <classpath refid="classpath"/>
             <!-- config files for each supported product -->

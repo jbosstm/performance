@@ -41,14 +41,14 @@ public class NarayanaWorkerTask extends WorkerTask {
         File directory = new File(objectStoreBaseDirBaseName);
         File hornetqStoreDir = new File(directory, "HornetQStore");
 
-        try {
+/*        try {
             BeanPopulator.getDefaultInstance(HornetqJournalEnvironmentBean.class)
                     .setStoreDir(hornetqStoreDir.getCanonicalPath());
         } catch (IOException e) {
             throw new IllegalArgumentException(e);
         }
         BeanPopulator.getDefaultInstance(ObjectStoreEnvironmentBean.class)
-                .setObjectStoreType("com.arjuna.ats.internal.arjuna.objectstore.hornetq.HornetqObjectStoreAdaptor");
+                .setObjectStoreType("com.arjuna.ats.internal.arjuna.objectstore.hornetq.HornetqObjectStoreAdaptor");*/
     }
 
     @Override
