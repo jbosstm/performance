@@ -3,11 +3,14 @@
 BASE_DIR=`pwd`
 RES_DIR=$BASE_DIR/results/$$
 RES_FILE=$RES_DIR/perf.$$.tab
-EAP5_ZIP="http://download.devel.redhat.com/released/JBEAP-5/5.1.1/zip/jboss-eap-5.1.1.zip"
-EAP6_ZIP="http://download.devel.redhat.com/released/JBEAP-6/6.0.1/zip/jboss-eap-6.0.1.zip "
 PERF_REPO=https://github.com/jbosstm/performance
+EAP5_ZIP="http://download.devel.redhat.com/released/JBEAP-5/5.1.1/zip/jboss-eap-5.1.1.zip"
+EAP6_ZIP="http://download.devel.redhat.com/released/JBEAP-6/6.0.1/zip/jboss-eap-6.0.1.zip"
+DR3_ZIP="http://download.devel.redhat.com/devel/candidates/JBEAP/JBEAP-6.1.0-DR3/jboss-eap-6.1.0.DR3.zip"
 EAP5_DIR=$BASE_DIR/eap-5.1.1
 EAP6_DIR=$BASE_DIR/eap-6.0
+DR3_DIR=$BASE_DIR/dr3
+
 EAP5_WAIT=60
 EAP6_WAIT=20
 file_store=1
