@@ -62,5 +62,7 @@ will test Atomikos, JBossTS, Bitronix and JOTM and commit 100 transactions using
 
 USAGE
 
-mvn -e clean compile exec:java -Dexec.mainClass=org.narayana.tools.perf.ProductPerformanceTest \
-   -Dexec.args="-p org.narayana.tools.perf.NarayanaWorkerTask -i 100 -t 5"
+mvn test
+
+#mvn -e clean compile exec:java -Dexec.mainClass=org.narayana.tools.perf.ProductPerformanceTest \
+#   -Dexec.args="-p org.narayana.tools.perf.NarayanaWorkerTask -i 100 -t 5"
