@@ -8,6 +8,10 @@
   <description>Performance Comparison Test Harness</description>
   <packaging>jar</packaging>
 
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+  </properties>
+
   <repositories>
     <repository>
       <id>jboss-public-repository-group</id>
