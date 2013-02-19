@@ -1,4 +1,4 @@
-package com.arjuna.ats.tools.perftest;
+package com.arjuna.ats.tools.perftest.common;
 
 public interface PerfTest extends Runnable
 {

@@ -18,47 +18,46 @@
  * (C) 2011,
  * @author JBoss, by Red Hat.
  */
-package org.narayana.tools.perf;
+package com.arjuna.ats.tools.perftest.task;
 
-import com.arjuna.ats.arjuna.common.ObjectStoreEnvironmentBean;
-import com.arjuna.ats.arjuna.objectstore.StoreManager;
-import com.arjuna.ats.internal.arjuna.objectstore.hornetq.HornetqJournalEnvironmentBean;
-import com.arjuna.common.internal.util.propertyservice.BeanPopulator;
-
+import javax.naming.NamingException;
 import javax.transaction.TransactionManager;
-import java.io.File;
-import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.concurrent.CyclicBarrier;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class NarayanaWorkerTask extends WorkerTask {
-    protected NarayanaWorkerTask(CyclicBarrier cyclicBarrier, AtomicInteger count, int batch_size) {
+public class JotmWorkerTask extends WorkerTask {
+    protected JotmWorkerTask(CyclicBarrier cyclicBarrier, AtomicInteger count, int batch_size) {
         super(cyclicBarrier, count, batch_size);
-    }
-
-    protected void init() {
-        String objectStoreBaseDirBaseName = System.getProperty("ObjectStoreBaseDir", "logs");
-        File directory = new File(objectStoreBaseDirBaseName);
-        File hornetqStoreDir = new File(directory, "HornetQStore");
-
-/*        try {
-            BeanPopulator.getDefaultInstance(HornetqJournalEnvironmentBean.class)
-                    .setStoreDir(hornetqStoreDir.getCanonicalPath());
-        } catch (IOException e) {
+        try {
+            jotm = new org.objectweb.jotm.Jotm(true, false);
+        } catch (NamingException e) {
             throw new IllegalArgumentException(e);
         }
-        BeanPopulator.getDefaultInstance(ObjectStoreEnvironmentBean.class)
-                .setObjectStoreType("com.arjuna.ats.internal.arjuna.objectstore.hornetq.HornetqObjectStoreAdaptor");*/
     }
 
     @Override
     protected void fini() {
         super.fini();
-        StoreManager.shutdown();
+        org.objectweb.jotm.TimerManager.stop();
+        if (jotm != null)
+            jotm.stop();
+        jotm = null;
     }
 
     @Override
     protected TransactionManager getTransactionManager() {
-        return com.arjuna.ats.jta.TransactionManager.transactionManager();
+        return jotm.getTransactionManager();
     }
+
+    @Override
+    protected String getName() {
+        return "Jotm";
+    }
+
+    @Override
+    public void reportErrors(PrintWriter output) {
+    }
+
+    private org.objectweb.jotm.Jotm jotm;
 }

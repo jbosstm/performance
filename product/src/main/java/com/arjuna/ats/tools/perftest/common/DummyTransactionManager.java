@@ -18,7 +18,7 @@
  * (C) 2011,
  * @author JBoss, by Red Hat.
  */
-package org.narayana.tools.perf;
+package com.arjuna.ats.tools.perftest.common;
 
 import javax.transaction.*;
 

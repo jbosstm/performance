@@ -9,7 +9,7 @@ import javax.sql.DataSource;
 import java.sql.SQLException;
 import java.util.Properties;
 
-import com.arjuna.ats.tools.perftest.DbWrapper;
+import com.arjuna.ats.tools.perftest.common.DbWrapper;
 
 public class BitronixProduct extends Product
 {

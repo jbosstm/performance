@@ -18,7 +18,7 @@
  * (C) 2011,
  * @author JBoss, by Red Hat.
  */
-package org.narayana.tools.perf;
+package com.arjuna.ats.tools.perftest.task;
 
 import com.atomikos.datasource.xa.AcceptAllXATransactionalResource;
 import com.atomikos.icatch.jta.UserTransactionManager;
@@ -26,6 +26,7 @@ import com.atomikos.icatch.system.Configuration;
 
 import javax.transaction.TransactionManager;
 import javax.transaction.xa.XAResource;
+import java.io.PrintWriter;
 import java.util.concurrent.CyclicBarrier;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -44,7 +45,16 @@ class AtomikosWorkerTask extends WorkerTask {
     }
 
     @Override
+    protected String getName() {
+        return "Atomikos";
+    }
+
+    @Override
     protected TransactionManager getTransactionManager() {
        return tm;
+    }
+
+    @Override
+    public void reportErrors(PrintWriter output) {
     }
 }

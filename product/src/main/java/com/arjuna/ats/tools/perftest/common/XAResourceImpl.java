@@ -18,7 +18,7 @@
  * (C) 2010,
  * @author JBoss, by Red Hat.
  */
-package org.narayana.tools.perf;
+package com.arjuna.ats.tools.perftest.common;
 
 import javax.transaction.xa.XAResource;
 import javax.transaction.xa.Xid;

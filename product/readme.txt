@@ -19,6 +19,33 @@ MA  02110-1301, USA.
 (C) 2012
 @author JBoss Inc.
 
+
+The EAP6 build is current broken.
+
+To run a default set of tests type
+
+	./scripts/tmcmp.sh
+
+To run a single test using default config properties against EAP5 type
+
+	mvn test -P EAP5
+
+Config properties are read in from the following property file:
+
+	src/test/resources/test1.properties
+
+You may override these properties by setting system properties. For example to test against the JTS
+version of EAP5 with 200 transactions using a single thread type
+
+	mvn test -P EAP5 -Diterations=200 -Dthreads=1 -Djts=true
+
+Test results are written to
+
+	target/results.txt
+====
+
+The remaining text was copied over from the original ant script and will be updated soon.
+
 OVERVIEW
 --------
     Build file for comparing performance of various transaction products.
@@ -50,13 +77,13 @@ you have the available jars for a product remember to remove the exclude line.
 The following steps are needed to integrate a new transaction product:
 
 - obtain the required jars and add them to the classpath
-- write a class that extends the abstract class org.narayana.tools.perf.WorkerTask
+- write a class that extends the abstract class com.arjuna.ats.tools.perftest.task.WorkerTask
 
 4. Testing a product
 ====================
 To test particular products specify them on the command line with a -p flag (comma separated). For example:
 
-        ant -Dargs="-p org.narayana.tools.perf.AtomikosWorkerTask,org.narayana.tools.perf.NarayanaWorkerTask,org.narayana.tools.perf.BitronixWorkerTask,org.narayana.tools.perf.JotmWorkerTask -i 100 -t 5"
+        ant -Dargs="-p com.arjuna.ats.tools.perftest.task.AtomikosWorkerTask,com.arjuna.ats.tools.perftest.task.NarayanaWorkerTask,com.arjuna.ats.tools.perftest.task.BitronixWorkerTask,com.arjuna.ats.tools.perftest.task.JotmWorkerTask -i 100 -t 5"
 
 will test Atomikos, JBossTS, Bitronix and JOTM and commit 100 transactions using 5 threads for each product.
 
@@ -65,5 +92,9 @@ USAGE
 mvn test
 
 
-#mvn -e clean compile exec:java -Dexec.mainClass=org.narayana.tools.perf.ProductPerformanceTest \
-#   -Dexec.args="-p org.narayana.tools.perf.NarayanaWorkerTask -i 100 -t 5"
+#mvn -e clean compile exec:java -Dexec.mainClass=com.arjuna.ats.tools.perftest.task.ProductPerformanceTest \
+#   -Dexec.args="-p com.arjuna.ats.tools.perftest.task.NarayanaWorkerTask -i 100 -t 5"
+
+
+# To use a patched jacorb backup ~/.m2/repository/org/jacorb/jacorb/2.3.1.jbossorg-1/jacorb-2.3.1.jbossorg-1.jar and copy over the patched version:
+cp ../quickstart/narayana/ejb/perftest/etc/jacorb.jar.patched ~/.m2/repository/org/jacorb/jacorb/2.3.1.jbossorg-1/jacorb-2.3.1.jbossorg-1.jar

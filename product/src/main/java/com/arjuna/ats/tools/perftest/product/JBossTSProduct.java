@@ -2,7 +2,7 @@ package com.arjuna.ats.tools.perftest.product;
 
 import com.arjuna.ats.jdbc.TransactionalDriver;
 import com.arjuna.ats.arjuna.common.arjPropertyManager;
-import com.arjuna.ats.tools.perftest.DbWrapper;
+import com.arjuna.ats.tools.perftest.common.DbWrapper;
 
 import javax.sql.DataSource;
 import javax.naming.NamingException;
@@ -38,8 +38,8 @@ public class JBossTSProduct extends Product
 
     protected String getStoreType()
     {
-        String st = arjPropertyManager.getObjectStoreEnvironmentBean().getObjectStoreType();
-
+//        String st = arjPropertyManager.getObjectStoreEnvironmentBean().getObjectStoreType();
+        String st = System.getProperty("com.arjuna.ats.arjuna.objectstore.objectStoreType");
         int ind = st.lastIndexOf('.') + 1;
 
         return st.substring(ind == 0 ? 0 : ind);

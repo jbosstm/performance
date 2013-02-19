@@ -10,9 +10,9 @@ import java.sql.*;
 import java.util.*;
 import java.io.*;
 
-import com.arjuna.ats.tools.perftest.DbWrapper;
-import com.arjuna.ats.tools.perftest.TestRunner;
-import com.arjuna.ats.tools.perftest.PerfTest;
+import com.arjuna.ats.tools.perftest.common.DbWrapper;
+import com.arjuna.ats.tools.perftest.common.TestRunner;
+import com.arjuna.ats.tools.perftest.common.PerfTest;
 
 /**
  * Base class that each transaction prodcut should subclass. The main method controls test execution -

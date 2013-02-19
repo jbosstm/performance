@@ -28,13 +28,13 @@ you have the available jars for a product remember to remove the exclude line.
 ==================================
 The following steps are needed to integrate a new transaction product:
 - obtain the required jars and add them to the classpath
-- write a class that extends the abstract class org.narayana.tools.perf.WorkerTask
+- write a class that extends the abstract class com.arjuna.ats.tools.perftest.task.WorkerTask
 
 4. Testing a product
 ====================
 To test particular products specify them on the command line with a -p flag (comma separated). For example:
 
-	ant -Dargs="-p org.narayana.tools.perf.AtomikosWorkerTask,org.narayana.tools.perf.NarayanaWorkerTask,org.narayana.tools.perf.BitronixWorkerTask,org.narayana.tools.perf.JotmWorkerTask -i 100 -t 5"
+	ant -Dargs="-p com.arjuna.ats.tools.perftest.task.AtomikosWorkerTask,com.arjuna.ats.tools.perftest.task.NarayanaWorkerTask,com.arjuna.ats.tools.perftest.task.BitronixWorkerTask,com.arjuna.ats.tools.perftest.task.JotmWorkerTask -i 100 -t 5"
 
 will test Atomikos, JBossTS, Bitronix and JOTM and commit 100 transactions using 5 threads for each product.
   -->
@@ -130,11 +130,11 @@ will test Atomikos, JBossTS, Bitronix and JOTM and commit 100 transactions using
         </javac>
     </target>
 
-    <property name="args.all" value="-p org.narayana.tools.perf.AtomikosWorkerTask,org.narayana.tools.perf.NarayanaWorkerTask,org.narayana.tools.perf.BitronixWorkerTask,org.narayana.tools.perf.JotmWorkerTask -i 100 -t 5" />
-    <property name="args" value="-p org.narayana.tools.perf.NarayanaWorkerTask -i 100 -t 5" />
+    <property name="args.all" value="-p com.arjuna.ats.tools.perftest.task.AtomikosWorkerTask,com.arjuna.ats.tools.perftest.task.NarayanaWorkerTask,com.arjuna.ats.tools.perftest.task.BitronixWorkerTask,com.arjuna.ats.tools.perftest.task.JotmWorkerTask -i 100 -t 5" />
+    <property name="args" value="-p com.arjuna.ats.tools.perftest.task.NarayanaWorkerTask -i 100 -t 5" />
 
     <target name="run" depends="compile">
-        <java classname="org.narayana.tools.perf.ProductPerformanceTest" fork="yes" dir=".">
+        <java classname="com.arjuna.ats.tools.perftest.task.ProductPerformanceTest" fork="yes" dir=".">
 
             <classpath refid="classpath"/>
             <!-- config files for each supported product -->

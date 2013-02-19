@@ -18,10 +18,14 @@
  * (C) 2011,
  * @author JBoss, by Red Hat.
  */
-package org.narayana.tools.perf;
+package com.arjuna.ats.tools.perftest.task;
 
+import com.arjuna.ats.tools.perftest.common.XAResourceImpl;
+
+import java.io.PrintWriter;
 import java.util.Map;
 import java.util.HashMap;
+import java.util.Properties;
 import java.util.concurrent.CyclicBarrier;
 import java.util.concurrent.atomic.AtomicInteger;
 import javax.transaction.Transaction;
@@ -46,11 +50,13 @@ public abstract class WorkerTask implements Runnable {
         resources.put(name, new XAResourceImpl(name, 0));
     }
 
-    protected void init() {
+    protected void init(Properties config) {
     }
 
     protected void fini() {
     }
+
+    protected abstract String getName();
 
     protected void registerResource(String name, XAResource res) {
 
@@ -106,4 +112,7 @@ public abstract class WorkerTask implements Runnable {
             unregisterResources();
         }
     }
+
+
+    public abstract void reportErrors(PrintWriter output);
 }

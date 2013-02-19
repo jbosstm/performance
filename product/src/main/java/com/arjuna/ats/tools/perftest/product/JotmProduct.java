@@ -1,6 +1,6 @@
 package com.arjuna.ats.tools.perftest.product;
 
-import com.arjuna.ats.tools.perftest.DbWrapper;
+import com.arjuna.ats.tools.perftest.common.DbWrapper;
 
 import javax.transaction.UserTransaction;
 import javax.transaction.SystemException;
@@ -16,7 +16,7 @@ import java.sql.Connection;
 import java.util.Properties;
 import java.io.PrintWriter;
 
-public class JOTMProduct extends Product
+public class JotmProduct extends Product
 {
     private static final String JNDIBINDNAME = "UserTransaction";
 

@@ -18,36 +18,47 @@
  * (C) 2011,
  * @author JBoss, by Red Hat.
  */
-package org.narayana.tools.perf;
+package com.arjuna.ats.tools.perftest.task;
 
-import javax.naming.NamingException;
+import bitronix.tm.BitronixTransactionManager;
+import com.arjuna.ats.tools.perftest.common.XAResourceImpl;
+
 import javax.transaction.TransactionManager;
+import javax.transaction.xa.XAResource;
+import java.io.PrintWriter;
 import java.util.concurrent.CyclicBarrier;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class JotmWorkerTask extends WorkerTask {
-    protected JotmWorkerTask(CyclicBarrier cyclicBarrier, AtomicInteger count, int batch_size) {
-        super(cyclicBarrier, count, batch_size);
-        try {
-            jotm = new org.objectweb.jotm.Jotm(true, false);
-        } catch (NamingException e) {
-            throw new IllegalArgumentException(e);
-        }
-    }
+class BitronixWorkerTask extends WorkerTask {
 
-    @Override
-    protected void fini() {
-        super.fini();
-        org.objectweb.jotm.TimerManager.stop();
-        if (jotm != null)
-            jotm.stop();
-        jotm = null;
+    protected BitronixWorkerTask(CyclicBarrier cyclicBarrier, AtomicInteger count, int batch_size) {
+        super(cyclicBarrier, count, batch_size);
     }
 
     @Override
     protected TransactionManager getTransactionManager() {
-        return jotm.getTransactionManager();
+        return new BitronixTransactionManager();
     }
 
-    private org.objectweb.jotm.Jotm jotm;
+    protected void registerResource(String name, XAResource res) {
+        bitronix.tm.resource.ehcache.EhCacheXAResourceProducer.registerXAResource(name, res);
+    }
+
+    protected void unregisterResource(String name, XAResource res) {
+        bitronix.tm.resource.ehcache.EhCacheXAResourceProducer.unregisterXAResource(name, res);
+    }
+
+    public static void main(String[] args) {
+        XAResource res = new XAResourceImpl("x", 0);
+        bitronix.tm.resource.ehcache.EhCacheXAResourceProducer.registerXAResource("rm1", res);
+    }
+
+    @Override
+    protected String getName() {
+        return "Bitronix";
+    }
+
+    @Override
+    public void reportErrors(PrintWriter output) {
+    }
 }

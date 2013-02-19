@@ -3,7 +3,7 @@ package com.arjuna.ats.tools.perftest.product;
 import com.atomikos.icatch.config.UserTransactionServiceImp;
 import com.atomikos.icatch.jta.TransactionManagerImp;
 import com.atomikos.icatch.admin.jmx.JmxTransactionService;
-import com.arjuna.ats.tools.perftest.DbWrapper;
+import com.arjuna.ats.tools.perftest.common.DbWrapper;
 
 import javax.transaction.*;
 import javax.transaction.xa.XAException;

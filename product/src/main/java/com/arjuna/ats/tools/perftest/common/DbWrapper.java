@@ -1,4 +1,4 @@
-package com.arjuna.ats.tools.perftest;
+package com.arjuna.ats.tools.perftest.common;
 
 import com.arjuna.ats.jta.xa.XidImple;
 import com.arjuna.ats.arjuna.common.Uid;

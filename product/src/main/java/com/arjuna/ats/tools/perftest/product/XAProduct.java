@@ -1,6 +1,6 @@
 package com.arjuna.ats.tools.perftest.product;
 
-import com.arjuna.ats.tools.perftest.DbWrapper;
+import com.arjuna.ats.tools.perftest.common.DbWrapper;
 
 import javax.transaction.*;
 import javax.transaction.xa.XAResource;
