@@ -91,8 +91,7 @@ public class ProductPerformanceTest
         hackEAPVersion();
         System.setProperty("iterations", String.valueOf(iterations));
 
-        System.out.printf("iterations=%d threads=%d objectStoreDir=%s\n", iterations, threads,
-                System.getProperty("com.arjuna.ats.arjuna.objectstore.objectStoreDir", "null"));
+        System.out.printf("iterations=%d threads=%d\n", iterations, threads);
     }
 
     @Test

@@ -25,8 +25,8 @@ import com.arjuna.ats.arjuna.common.ObjectStoreEnvironmentBean;
 import com.arjuna.ats.arjuna.coordinator.TxStats;
 import com.arjuna.ats.arjuna.objectstore.StoreManager;
 import com.arjuna.ats.internal.arjuna.objectstore.hornetq.HornetqJournalEnvironmentBean;
+import com.arjuna.ats.internal.jts.orbspecific.recovery.RecoveryEnablement;
 import com.arjuna.ats.jta.common.JTAEnvironmentBean;
-import com.arjuna.ats.tools.perftest.common.ORBWrapper;
 import com.arjuna.common.internal.util.propertyservice.BeanPopulator;
 
 import java.io.File;
@@ -44,6 +44,17 @@ public class NarayanaWorkerTask extends RHWorkerTask {
     protected void init(Properties config) {
         super.init(config);
 
+        JTAEnvironmentBean jtaEnvironmentBean = BeanPopulator.getDefaultInstance(JTAEnvironmentBean.class);
+
+        if (!jts) {
+            jtaEnvironmentBean.setTransactionManagerClassName(com.arjuna.ats.internal.jta.transaction.arjunacore.TransactionManagerImple.class.getName());
+//        jtaEnvironmentBean.setTransactionSynchronizationRegistryClassName(com.arjuna.ats.internal.jta.transaction.arjunacore.TransactionSynchronizationRegistryImple.class.getName());
+            jtaEnvironmentBean.setUserTransactionClassName(com.arjuna.ats.internal.jta.transaction.arjunacore.UserTransactionImple.class.getName());
+        } else {
+            jtaEnvironmentBean.setTransactionManagerClassName(com.arjuna.ats.internal.jta.transaction.jts.TransactionManagerImple.class.getName());
+            jtaEnvironmentBean.setUserTransactionClassName(com.arjuna.ats.internal.jta.transaction.jts.UserTransactionImple.class.getName());
+        }
+
         BeanPopulator.getDefaultInstance(CoordinatorEnvironmentBean.class).setEnableStatistics(stats);
         BeanPopulator.getDefaultInstance(ObjectStoreEnvironmentBean.class).setObjectStoreDir(objectStoreDir);
         BeanPopulator.getNamedInstance(ObjectStoreEnvironmentBean.class, "communicationStore").setObjectStoreDir(objectStoreDir);
@@ -60,17 +71,8 @@ public class NarayanaWorkerTask extends RHWorkerTask {
             }
         }
 
-        JTAEnvironmentBean jtaEnvironmentBean = BeanPopulator.getDefaultInstance(JTAEnvironmentBean.class);
-
-        if (!jts) {
-            jtaEnvironmentBean.setTransactionManagerClassName(com.arjuna.ats.internal.jta.transaction.arjunacore.TransactionManagerImple.class.getName());
-//        jtaEnvironmentBean.setTransactionSynchronizationRegistryClassName(com.arjuna.ats.internal.jta.transaction.arjunacore.TransactionSynchronizationRegistryImple.class.getName());
-            jtaEnvironmentBean.setUserTransactionClassName(com.arjuna.ats.internal.jta.transaction.arjunacore.UserTransactionImple.class.getName());
-        } else {
-            jtaEnvironmentBean.setTransactionManagerClassName(com.arjuna.ats.internal.jta.transaction.jts.TransactionManagerImple.class.getName());
-            jtaEnvironmentBean.setUserTransactionClassName(com.arjuna.ats.internal.jta.transaction.jts.UserTransactionImple.class.getName());
-        }
-
+        if (jts)
+            new RecoveryEnablement().startRCservice();
 
         postInit();
     }

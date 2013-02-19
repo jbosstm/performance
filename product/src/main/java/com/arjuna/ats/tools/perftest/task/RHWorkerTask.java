@@ -29,6 +29,9 @@ public class RHWorkerTask extends WorkerTask {
         stats = (config.getProperty("stats", "false")).equals("true");
         objectStoreDir = config.getProperty("objectStoreDir", objectStoreDir);
         objectStoreType = config.getProperty("objectStoreType", objectStoreType);
+
+        System.out.printf("Testing %s in %s mode\n\tobject store type: %s\n\tobject store directory: %s\n",
+                getName(), (jts ? "JTS" : "JTA"), objectStoreType, objectStoreDir);
     }
 
     protected void postInit() {

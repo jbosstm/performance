@@ -49,6 +49,8 @@ public class JBossTSWorkerTask extends RHWorkerTask {
                     com.arjuna.ats.internal.jta.transaction.jts.TransactionManagerImple.class.getName());
             jtaPropertyManager.propertyManager.setProperty(com.arjuna.ats.jta.common.Environment.JTA_UT_IMPLEMENTATION,
                     com.arjuna.ats.internal.jta.transaction.jts.UserTransactionImple.class.getName());
+
+            new com.arjuna.ats.internal.arjuna.recovery.RecoveryManagerImple(true);
         }
 
         postInit();

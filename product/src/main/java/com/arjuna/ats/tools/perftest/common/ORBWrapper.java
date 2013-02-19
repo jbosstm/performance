@@ -26,9 +26,10 @@ public class ORBWrapper
     public void start()
     {
 
-        //           new RecoveryEnablement().startRCservice();
-        com.arjuna.ats.internal.arjuna.recovery.RecoveryManagerImple rm =
-                new com.arjuna.ats.internal.arjuna.recovery.RecoveryManagerImple(true);
+// this works for EAP6                   new RecoveryEnablement().startRCservice();
+
+        // the following line works for EAP5 but not EAP6
+//        new com.arjuna.ats.internal.arjuna.recovery.RecoveryManagerImple(true);
 
         m3();
     }

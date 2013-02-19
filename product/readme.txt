@@ -24,8 +24,6 @@ running the following script:
 
 	./scripts/install-EAP5-dependencies.sh
 
-The EAP6 build is current broken.
-
 To run a default set of tests type
 
 	./scripts/tmcmp.sh
