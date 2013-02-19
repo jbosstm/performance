@@ -1,7 +1,6 @@
 package com.arjuna.ats.tools.perftest.product;
 
 import com.arjuna.ats.jdbc.TransactionalDriver;
-import com.arjuna.ats.arjuna.common.arjPropertyManager;
 import com.arjuna.ats.tools.perftest.common.DbWrapper;
 
 import javax.sql.DataSource;

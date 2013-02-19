@@ -19,6 +19,10 @@ MA  02110-1301, USA.
 (C) 2012
 @author JBoss Inc.
 
+Some of the EAP5 dependencies are not available via maven so you will need to install them manually by
+running the following script:
+
+	./scripts/install-EAP5-dependencies.sh
 
 The EAP6 build is current broken.
 
