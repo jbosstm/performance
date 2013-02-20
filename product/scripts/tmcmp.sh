@@ -6,9 +6,6 @@ echo "sending output to target/results.txt"
 
 [ -f target/results.txt ] && cp target/results.txt target/results.txt.backup
 
-date >> target/results.txt
-#echo "unpatched jacorb" >> target/results.txt
-
 # the total number of transactions per run should be 100 times more than the following
 # but the throughput is currently so low that I've temporarily reduced the size.
 objectStoreType=com.arjuna.ats.internal.arjuna.objectstore.hornetq.HornetqObjectStoreAdaptor

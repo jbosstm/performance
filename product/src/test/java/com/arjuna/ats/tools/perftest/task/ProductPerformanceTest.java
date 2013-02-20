@@ -42,6 +42,7 @@ public class ProductPerformanceTest
             "products",
             "stats",
     };
+    private static int BATCH_SIZE = 100;
 
     private String products[];
     private Map<WorkerTask, TaskResult> tasks;
@@ -49,6 +50,7 @@ public class ProductPerformanceTest
     private int threads = 100; // 1000 gets an OOM error
     private String productOpt = "com.arjuna.ats.tools.perftest.task.RHWorkerTask";
     private Properties options = new Properties();
+    private Calendar calendar = Calendar.getInstance();
 
     private void hackEAPVersion() {
         String profile = System.getProperty("profile");
@@ -63,7 +65,7 @@ public class ProductPerformanceTest
                 else if (profile.equals("EAP5"))
                     products[i] = "com.arjuna.ats.tools.perftest.task.JBossTSWorkerTask";
                 else
-                    System.out.printf("No suitable TS class for profile %s\n", profile);
+                    System.out.printf("No suitable TS class for profile %s%n", profile);
             }
         }
     }
@@ -91,19 +93,23 @@ public class ProductPerformanceTest
         hackEAPVersion();
         System.setProperty("iterations", String.valueOf(iterations));
 
-        System.out.printf("iterations=%d threads=%d\n", iterations, threads);
+        System.out.printf("iterations=%d threads=%d%n", iterations, threads);
+
+        if (iterations < 100 || threads < 1) {
+            throw new RuntimeException("Error minimum number of iterations and threads is 100 and 1 respectively");
+        }
     }
 
     @Test
     public void testProduct() throws Exception {
         TaskResult results[] = new TaskResult[products.length];
 
-        System.out.printf("%d transactions and %d threads\n", iterations, threads);
+        System.out.printf("%d transactions and %d threads%n", iterations, threads);
 
         for (int i = 0; i < products.length; i++)
             results[i] = testLoop(products[i], iterations, threads);
 
-        System.out.printf("\nComparative Throughput:\n");
+        System.out.printf("%nComparative Throughput:%n");
         for (int i = 0; i < products.length; i++)
             System.out.println(results[i].toString());
 
@@ -126,21 +132,21 @@ public class ProductPerformanceTest
                 store = store.substring(i + 1);
 
             if (!exists)
-                output.printf("%15s %12s %12s %12s %8s %20s\n\n",
-                    "Product", "Throughput", "Iterations", "Threads", "JTS", "Store");
+                output.printf("%12s %15s %12s %12s %12s %8s %20s%n",
+                    "Time of Day", "Product", "Throughput", "Iterations", "Threads", "JTS", "Store");
 
             for (Map.Entry<WorkerTask, TaskResult> entry: tasks.entrySet()) {
                 WorkerTask task = entry.getKey();
                 TaskResult res = entry.getValue();
 
-                output.printf("%15s %12d %12s %12s %8s %20s\n",
-                        task.getName(), (int) res.getThroughput(), res.iterations, res.threads, jts, store);
+                output.printf("%12tT %15s %12d %12s %12s %8s %20s%n",
+                        calendar, task.getName(), (int) res.getThroughput(), res.iterations, res.threads, jts, store);
                 task.reportErrors(output);
             }
 
             output.close();
         } catch (IOException e) {
-            System.out.printf("%s\n", e.getMessage());
+            System.out.printf("%s%n", e.getMessage());
         }
     }
 
@@ -156,9 +162,7 @@ public class ProductPerformanceTest
     }
 
     private TaskResult testLoop(String workerClassName, int iterations, int threads) throws Exception {
-        int NUM_TX = iterations;
-        int BATCH_SIZE = 100;
-        AtomicInteger count = new AtomicInteger(NUM_TX/BATCH_SIZE);
+        AtomicInteger count = new AtomicInteger(iterations/BATCH_SIZE);
         final int nThreads = threads;
         CyclicBarrier cyclicBarrier = new CyclicBarrier(nThreads +1); // workers + self
         ExecutorService executorService = Executors.newCachedThreadPool();

@@ -29,7 +29,7 @@ public class RHWorkerTask extends WorkerTask {
         objectStoreDir = config.getProperty("objectStoreDir", objectStoreDir);
         objectStoreType = config.getProperty("objectStoreType", objectStoreType);
 
-        System.out.printf("Testing %s in %s mode\n\tobject store type: %s\n\tobject store directory: %s\n",
+        System.out.printf("Testing %s in %s mode%n\tobject store type: %s%n\tobject store directory: %s%n",
                 getName(), (jts ? "JTS" : "JTA"), objectStoreType, objectStoreDir);
     }
 
@@ -59,13 +59,13 @@ public class RHWorkerTask extends WorkerTask {
     }
 
     protected boolean validateRun(long committed, long aborted) {
-        System.out.printf("\ncommitted: %d aborted: %d\n", committed,aborted);
+        System.out.printf("%ncommitted: %d aborted: %d%n", committed,aborted);
 
         int txCount = Integer.valueOf(System.getProperty("iterations", "-1"));
 
         if (aborted != 0 && txCount != -1) {
-            errorReport = String.format("%d out of %d transactions aborted\n", aborted, txCount);
-            System.err.printf("%s\n", errorReport);
+            errorReport = String.format("%d out of %d transactions aborted%n", aborted, txCount);
+            System.err.printf("%s%n", errorReport);
 
             return false;
         }
@@ -75,6 +75,6 @@ public class RHWorkerTask extends WorkerTask {
 
     public void reportErrors(PrintWriter output) {
         if (errorReport != null)
-            output.printf("%s\n", errorReport);
+            output.printf("%s%n", errorReport);
     }
 }
