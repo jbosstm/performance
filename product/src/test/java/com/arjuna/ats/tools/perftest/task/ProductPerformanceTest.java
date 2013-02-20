@@ -74,6 +74,7 @@ public class ProductPerformanceTest
     public void setUp() throws Exception {
         String configResource = "test1.properties";
         InputStream bis = Thread.currentThread().getContextClassLoader().getResourceAsStream(configResource);
+        int txnCount;
 
         options.load(bis);
 
@@ -90,14 +91,27 @@ public class ProductPerformanceTest
         threads = Integer.valueOf(options.getProperty("threads", String .valueOf(threads)));
         tasks = new HashMap<WorkerTask, TaskResult>();
 
+        if (iterations <= 0) {
+            System.err.printf("Using a sane value for the number of iterations. Changing from %d to %d%n",
+                    iterations, BATCH_SIZE);
+            iterations = BATCH_SIZE;
+        }
+
+        txnCount = Math.round(iterations/BATCH_SIZE) * BATCH_SIZE;
+
+        if (txnCount != iterations) {
+            System.err.printf("Number of iterations must be a multiple of %d - changing it from %d to %d%n",
+                    BATCH_SIZE, iterations, txnCount + BATCH_SIZE);
+            iterations = txnCount + BATCH_SIZE;
+        }
+
+        if (threads < 1)
+            threads = 1;
+
         hackEAPVersion();
         System.setProperty("iterations", String.valueOf(iterations));
 
         System.out.printf("iterations=%d threads=%d%n", iterations, threads);
-
-        if (iterations < 100 || threads < 1) {
-            throw new RuntimeException("Error minimum number of iterations and threads is 100 and 1 respectively");
-        }
     }
 
     @Test
