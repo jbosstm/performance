@@ -2,7 +2,6 @@ package com.arjuna.ats.tools.perftest.task;
 
 
 
-import com.arjuna.ats.internal.jts.orbspecific.recovery.RecoveryEnablement;
 import com.arjuna.ats.tools.perftest.common.ORBWrapper;
 
 import javax.transaction.TransactionManager;

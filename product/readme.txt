@@ -19,14 +19,12 @@ MA  02110-1301, USA.
 (C) 2012
 @author JBoss Inc.
 
-Some of the EAP5 dependencies are not available via maven so you will need to install them manually by
-running the following script:
-
-	./scripts/install-EAP5-dependencies.sh
-
 To run a default set of tests type
 
 	./scripts/tmcmp.sh
+
+Some of the EAP5 dependencies are not available via maven so this script first checks that they are in
+your local repo and manually installs them if appropriate. Make sure your M2_HOME env variable is set.
 
 To run a single test using default config properties against EAP5 type
 

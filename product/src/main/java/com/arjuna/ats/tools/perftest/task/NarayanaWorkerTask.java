@@ -82,6 +82,10 @@ public class NarayanaWorkerTask extends RHWorkerTask {
         StoreManager.shutdown();
         super.fini();
 
+/*        TxControl.disable(true);
+        RecoveryManager.manager().terminate();
+        TransactionReaper.terminate(true);*/
+
         validateRun(TxStats.getInstance().getNumberOfCommittedTransactions(), TxStats.getInstance().getNumberOfAbortedTransactions());
     }
 

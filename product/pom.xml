@@ -145,11 +145,17 @@
                     <artifactId>jbossjts-jacorb</artifactId>
                     <version>4.6.1.GA</version>
                 </dependency>
-                <!-- TODO figure out if this jacorb version is compatible with  4.6.1.GA - 2.3.1.jbossorg-1 does work-->
                 <dependency>
                     <groupId>org.jacorb</groupId>
                     <artifactId>jacorb</artifactId>
                     <version>${EAP5.jacorb.version}</version>
+<!--
+could use system scope to avoid the user having to call scripts/install-EAP5-dependencies.sh but its not
+portable
+                    <scope>system</scope>
+                    <systemPath>${project.build.outputDirectory}/${EAP5.jacorb.version}.jar</systemPath>
+                    <systemPath>${project.basedir}/main/resources/jacorb.${EAP5.jacorb.version}.jar</systemPath>
+-->
                 </dependency>
                 <dependency>
                     <groupId>org.apache.avalon.framework</groupId>
@@ -162,8 +168,7 @@
                     <version>1.2</version>
                 </dependency>
 
-
-                <!-- keep adding dependencies until it works !! -->
+                <!-- extra dependencies -->
                 <dependency>
                     <groupId>jboss.jbossts</groupId>
                     <artifactId>jbossts-common</artifactId>
