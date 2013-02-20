@@ -62,6 +62,8 @@ public class ProductPerformanceTest
             if (products[i].endsWith("RHWorkerTask")) {
                 if (profile.equals("EAP6"))
                     products[i] = "com.arjuna.ats.tools.perftest.task.NarayanaWorkerTask";
+                else if (profile.equals("EAP6-JDKORB"))
+                    products[i] = "com.arjuna.ats.tools.perftest.task.NarayanaJdkOrbWorkerTask";
                 else if (profile.equals("EAP5"))
                     products[i] = "com.arjuna.ats.tools.perftest.task.JBossTSWorkerTask";
                 else
