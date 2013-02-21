@@ -20,6 +20,7 @@
  */
 package com.arjuna.ats.tools.perftest.task;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -51,6 +52,8 @@ public class ProductPerformanceTest
     private String productOpt = "com.arjuna.ats.tools.perftest.task.RHWorkerTask";
     private Properties options = new Properties();
     private Calendar calendar = Calendar.getInstance();
+    private String skipTestReason = null;
+    private PrintWriter output;
 
     private void hackEAPVersion() {
         String profile = System.getProperty("profile");
@@ -60,14 +63,17 @@ public class ProductPerformanceTest
 
         for (int i = 0; i < products.length; i++) {
             if (products[i].endsWith("RHWorkerTask")) {
-                if (profile.equals("EAP6"))
+                if (profile.equals("EAP6")) {
                     products[i] = "com.arjuna.ats.tools.perftest.task.NarayanaWorkerTask";
-                else if (profile.equals("EAP6-JDKORB"))
+                } else if (profile.equals("EAP6-JDKORB")) {
                     products[i] = "com.arjuna.ats.tools.perftest.task.NarayanaJdkOrbWorkerTask";
-                else if (profile.equals("EAP5"))
+                } else if (profile.equals("EAP5")) {
                     products[i] = "com.arjuna.ats.tools.perftest.task.JBossTSWorkerTask";
-                else
+                    if (options.getProperty("objectStoreType", "default").endsWith("HornetqObjectStoreAdaptor"))
+                        skipTestReason = "Test run ignored - HornetqObjectStoreAdaptor is not compatible with EAP5";
+                } else  {
                     System.out.printf("No suitable TS class for profile %s%n", profile);
+                }
             }
         }
     }
@@ -77,6 +83,8 @@ public class ProductPerformanceTest
         String configResource = "test1.properties";
         InputStream bis = Thread.currentThread().getContextClassLoader().getResourceAsStream(configResource);
         int txnCount;
+
+        skipTestReason = null;
 
         options.load(bis);
 
@@ -111,58 +119,59 @@ public class ProductPerformanceTest
             threads = 1;
 
         hackEAPVersion();
+
         System.setProperty("iterations", String.valueOf(iterations));
 
         System.out.printf("iterations=%d threads=%d%n", iterations, threads);
+
+        File file = new File(options.getProperty("resultsFile", "target/results.txt"));
+        boolean exists = file.exists();
+        FileWriter writer = new FileWriter(file, true);
+
+        output = new PrintWriter(writer);
+
+        if (!exists)
+            output.printf("%12s %15s %12s %12s %12s %8s %20s%n",
+                    "Time of Day", "Product", "Throughput", "Iterations", "Threads", "JTS", "Store");
+    }
+
+    @After
+    public void tearDown() throws Exception {
+        output.close();
     }
 
     @Test
     public void testProduct() throws Exception {
         TaskResult results[] = new TaskResult[products.length];
 
-        System.out.printf("%d transactions and %d threads%n", iterations, threads);
+        if (skipTestReason != null) {
+            String res = String.format("%12tT %s%n", calendar, skipTestReason);
+            System.out.print(res);
+            output.print(res);
+        } else {
+            for (int i = 0; i < products.length; i++)
+                results[i] = testLoop(products[i], iterations, threads);
 
-        for (int i = 0; i < products.length; i++)
-            results[i] = testLoop(products[i], iterations, threads);
-
-        System.out.printf("%nComparative Throughput:%n");
-        for (int i = 0; i < products.length; i++)
-            System.out.println(results[i].toString());
-
-        printResults();
+            printResults();
+        }
     }
 
     private void printResults() {
-        try {
-//            String resDir = options.getProperty("resultsDir", "target");
-//            File file = File.createTempFile("perf", "txt", new File(resDir));
-            File file = new File(options.getProperty("resultsFile", "target/results.txt"));
-            boolean exists = file.exists();
-            FileWriter writer = new FileWriter(file, true);
-            PrintWriter output = new PrintWriter(writer);
-            boolean jts = (options.getProperty("jts", "false")).equals("true");
-            String store = options.getProperty("objectStoreType", "default");
-            int i = store.lastIndexOf('.');
+        boolean jts = (options.getProperty("jts", "false")).equals("true");
+        String store = options.getProperty("objectStoreType", "default");
+        int i = store.lastIndexOf('.');
 
-            if (i != -1)
-                store = store.substring(i + 1);
+        if (i != -1)
+            store = store.substring(i + 1);
 
-            if (!exists)
-                output.printf("%12s %15s %12s %12s %12s %8s %20s%n",
-                    "Time of Day", "Product", "Throughput", "Iterations", "Threads", "JTS", "Store");
-
-            for (Map.Entry<WorkerTask, TaskResult> entry: tasks.entrySet()) {
-                WorkerTask task = entry.getKey();
-                TaskResult res = entry.getValue();
-
-                output.printf("%12tT %15s %12d %12s %12s %8s %20s%n",
-                        calendar, task.getName(), (int) res.getThroughput(), res.iterations, res.threads, jts, store);
-                task.reportErrors(output);
-            }
-
-            output.close();
-        } catch (IOException e) {
-            System.out.printf("%s%n", e.getMessage());
+        for (Map.Entry<WorkerTask, TaskResult> entry: tasks.entrySet()) {
+            WorkerTask task = entry.getKey();
+            TaskResult result = entry.getValue();
+            String res = String.format("%12tT %15s %12d %12s %12s %8s %20s%n", calendar, task.getName(),
+                    (int) result.getThroughput(), result.iterations, result.threads, jts, store);
+            output.print(res);
+            System.out.print(res);
+            task.reportErrors(output);
         }
     }
 
@@ -229,7 +238,7 @@ public class ProductPerformanceTest
         }
 
         public double getThroughput() {
-             return (1000.0/((1.0*duration_ms)/iterations));
+            return (1000.0/((1.0*duration_ms)/iterations));
         }
 
         public String toString() {

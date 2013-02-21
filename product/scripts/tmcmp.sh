@@ -5,48 +5,59 @@ function bail_out {
   exit 1
 }
 
-trap 'bail_out' 1 2 3 15
-
 function user_count {
     echo There are $(who | wc -l) users logged in \($(date)\)
 }
 
-echo "sending output to target/results.txt"
+function is_store_compatible {
+  [ "$1" = "EAP5" -a "$2" = "$hqStore" ]
+}
 
+function run_tests {
+  for iteration in $iterations; do
+    for thread in $threads; do
+      for store in $stores; do
+        for product in $products; do
+          for jts in $jtsModes; do
+            is_store_compatible $product $store
+            if [ $? != 0 ]; then
+              mvn test -P $product -Diterations=$iteration -Dthreads=$thread -Djts=$jts \
+                -DobjectStoreType=$store -DobjectStoreDir=$storeDir
+            fi
+          done
+        done
+      done
+    done
+  done
+}
+  
+function set_run_options {
+  fileStore=com.arjuna.ats.internal.arjuna.objectstore.ShadowNoFileLockStore
+  hqStore=com.arjuna.ats.internal.arjuna.objectstore.hornetq.HornetqObjectStoreAdaptor
+
+  #products="EAP6 EAP5 EAP6-JDKORB"
+  products="EAP6 EAP5"
+  iterations="1000 10000 100000"
+  threads="1 10 100"
+  stores="$fileStore $hqStore"
+  storeDir="target/TxStoreDir"
+  jtsModes="true"
+}
+
+# Allow the caller to abort the tests
+trap 'bail_out' 1 2 3 15
+
+# Install dependencies into the local repo
 [ -d "$M2_REPO/org/jacorb/jacorb/4.6.1.GA" -a -d "$M2_REPO/logkit/LogKit/1.2" -a -d "$M2_REPO/org/apache/avalon/framework/avalon-framework/4.1.5" ] || ./scripts/install-EAP5-dependencies.sh
 
-[ -f target/results.txt ] && cp target/results.txt target/results.txt.backup
+echo "sending output to target/results.txt"
+[ -f target/results.txt ] && cp target/results.txt target/results.txt.previous
 
-# for proper testing you should multiply the number of iterations by 100 but on slow machines
-# it would take a long time to complete
-hqstore=com.arjuna.ats.internal.arjuna.objectstore.hornetq.HornetqObjectStoreAdaptor
+set_run_options
+run_tests
 
-mvn test -P EAP6 -Diterations=2000 -Dthreads=10 -Djts=true
-mvn test -P EAP5 -Diterations=2000 -Dthreads=10 -Djts=true
-
-mvn test -P EAP6 -Diterations=20000 -Dthreads=10 -Djts=true
-mvn test -P EAP5 -Diterations=20000 -Dthreads=10 -Djts=true
-
-mvn test -P EAP6 -Diterations=20000 -Dthreads=100 -Djts=true
-mvn test -P EAP5 -Diterations=20000 -Dthreads=100 -Djts=true
-
-mvn test -P EAP6 -Diterations=2000 -Dthreads=1 -Djts=true
-mvn test -P EAP5 -Diterations=2000 -Dthreads=1 -Djts=true
-
-mvn test -P EAP5 -Diterations=20000 -Dthreads=1 -Djts=true
-mvn test -P EAP6 -Diterations=20000 -Dthreads=1 -Djts=true
-
-mvn test -P EAP6 -Diterations=2000 -Dthreads=10 -Djts=true -DobjectStoreType=$hqstore
-mvn test -P EAP6 -Diterations=20000 -Dthreads=100 -Djts=true -DobjectStoreType=$hqstore
-#mvn test -P EAP6 -Diterations=200000 -Dthreads=100 -Djts=true -DobjectStoreType=$hqstore
-
-#mvn test -P EAP6-JDKORB -Diterations=2000 -Dthreads=10 -Djts=true -DobjectStoreType=$hqstore
-#mvn test -P EAP6-JDKORB -Diterations=200000 -Dthreads=100 -Djts=true -DobjectStoreType=$hqstore
-
-#mvn test -P EAP6-JDKORB -Diterations=2000 -Dthreads=10 -Djts=true
-#mvn test -P EAP6-JDKORB -Diterations=20000 -Dthreads=10 -Djts=true
-#mvn test -P EAP6-JDKORB -Diterations=20000 -Dthreads=100 -Djts=true
-#mvn test -P EAP6-JDKORB -Diterations=2000 -Dthreads=1 -Djts=true
-#mvn test -P EAP6-JDKORB -Diterations=20000 -Dthreads=1 -Djts=true
+# if you want to do another set of runs with different options then set products, iterations etc
+# and call run_tests again
 
 cat target/results.txt
+

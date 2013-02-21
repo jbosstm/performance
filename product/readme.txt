@@ -23,7 +23,7 @@ Project for comparing performance of various transaction products.
 
 Clone the project:
 
-	git clone xxx
+	git clone https://github.com/jbosstm/performance
 	cd performance/product
 
 and run a default set of tests by typing
