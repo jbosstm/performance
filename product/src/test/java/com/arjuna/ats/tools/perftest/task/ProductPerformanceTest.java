@@ -131,7 +131,7 @@ public class ProductPerformanceTest
         output = new PrintWriter(writer);
 
         if (!exists)
-            output.printf("%12s %15s %12s %12s %8s %9s %8s %22s%n",
+            output.printf("%12s %24s %10s %10s %7s %6s %5s %26s%n",
                     "Time of Day", "Product", "Throughput", "Iterations", "Threads", "Aborts",  "JTS", "Store");
     }
 
@@ -167,7 +167,7 @@ public class ProductPerformanceTest
         for (Map.Entry<WorkerTask, TaskResult> entry: tasks.entrySet()) {
             WorkerTask task = entry.getKey();
             TaskResult result = entry.getValue();
-            String res = String.format("%12tT %15s %12d %12d %8d %9d %8s %22s%n", calendar, task.getName(),
+            String res = String.format("%12tT %24s %10d %10d %7d %6d %5s %26s%n", calendar, task.getName(),
                     (int) result.getThroughput(), result.iterations, result.threads, task.getNumberOfFailures(),
                     jts, store);
             output.print(res);
@@ -201,8 +201,8 @@ public class ProductPerformanceTest
 
         System.out.print(new Date() + " " + workerClassName);
         long start = System.nanoTime();
-        cyclicBarrier.await();
-        cyclicBarrier.await();
+        cyclicBarrier.await(); // wait for each thread to arrive at the barrier
+        cyclicBarrier.await(); // wait for each thread to finish
 
         long end = System.nanoTime();
         long duration_ms = (end - start) / 1000000L;
@@ -228,27 +228,22 @@ public class ProductPerformanceTest
             this.duration_ms =  duration_ms;
         }
 
+        public double getThroughput() {
+            return (1000.0/((1.0*duration_ms)/iterations));
+        }
+
         public StringBuilder toString(StringBuilder sb) {
             sb.append(product);
             sb.append("\n  total time (ms): ").append(duration_ms);
             sb.append("\naverage time (ms): ").append((1.0*duration_ms)/iterations);
-            sb.append("\ntx / second: ").append((1000.0/((1.0*duration_ms)/iterations)));
+            sb.append("\ntx / second: ").append(getThroughput());
             sb.append('\n').append(threads).append(" threads").append('\n');
 
             return sb;
         }
 
-        public double getThroughput() {
-            return (1000.0/((1.0*duration_ms)/iterations));
-        }
-
         public String toString() {
-            StringBuilder sb = new StringBuilder();
-
-            sb.append(product).append(": ")
-                    .append((1000.0/((1.0*duration_ms)/iterations))).append(" tx / second");
-
-            return sb.toString();
+            return toString(new StringBuilder()).toString();
         }
     }
 }

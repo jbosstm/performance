@@ -10,12 +10,17 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <jacorb.patched.version>2.3.1.patched</jacorb.patched.version>
-        <EAP5.jacorb.version>4.6.1.GA</EAP5.jacorb.version>
-        <EAP6.jacorb.version>2.3.1.jbossorg-1</EAP6.jacorb.version>
+
+        <version.EAP5>4.6.1.GA_CP12</version.EAP5>
+        <version.EAP6>4.16.4.Final </version.EAP6>
+        <version.EAP7-IDLJ>5.0.0.M2-SNAPSHOT</version.EAP7-IDLJ>
+
+        <version.jacorb.patched>2.3.1.patched</version.jacorb.patched>
+        <version.jacorb.EAP5>4.6.1.GA</version.jacorb.EAP5>
+        <version.jacorb.EAP6>2.3.1.jbossorg-1</version.jacorb.EAP6>
 <!-- To use a patched jacorb change use the following instead of the previous 2 lines
-        <EAP5.jacorb.version>${jacorb.patched.version}</EAP5.jacorb.version>
-        <EAP6.jacorb.version>${jacorb.patched.version}</EAP6.jacorb.version>
+        <version.jacorb.EAP5>${version.jacorb.patched}</version.jacorb.EAP5>
+        <version.jacorb.EAP6>${version.jacorb.patched}</version.jacorb.EAP6>
 -->
     </properties>
 
@@ -39,12 +44,12 @@
                 <dependency>
                     <groupId>org.jboss.jbossts</groupId>
                     <artifactId>jbossjts</artifactId>
-                    <version>4.16.4.Final</version>
+                    <version>${version.EAP6}</version>
                 </dependency>
                 <dependency>
                     <groupId>org.jacorb</groupId>
                     <artifactId>jacorb</artifactId>
-                    <version>${EAP6.jacorb.version}</version>
+                    <version>${version.jacorb.EAP6}</version>
                 </dependency>
                 <!-- hornetq store -->
                 <dependency>
@@ -86,6 +91,7 @@
                         <configuration>
                             <systemPropertyVariables>
                                 <profile>EAP6</profile>
+                                <product.name>${version.EAP6} JBossTS</product.name>
                             </systemPropertyVariables>
           <additionalClasspathElements>
             <additionalClasspathElement>EAP6/src/test/resources/</additionalClasspathElement>
@@ -114,7 +120,7 @@
                 <dependency>
                     <groupId>org.jboss.narayana.jts</groupId>
                     <artifactId>narayana-jts-idlj</artifactId>
-                    <version>5.0.0.M2-SNAPSHOT</version>
+                    <version>${version.EAP7-IDLJ}</version>
                 </dependency>
                 <!-- hornetq store -->
                 <dependency>
@@ -154,6 +160,7 @@
                         <configuration>
                             <systemPropertyVariables>
                                 <profile>EAP6-JDKORB</profile>
+                                <product.name>${version.EAP7-IDLJ} Narayana</product.name>
                             </systemPropertyVariables>
           <additionalClasspathElements>
             <additionalClasspathElement>EAP6/src/test/resources/</additionalClasspathElement>
@@ -219,6 +226,7 @@
                         <configuration>
                             <systemPropertyVariables>
                                 <profile>EAP5</profile>
+                                <product.name>${version.EAP5} JBossTS</product.name>
                             </systemPropertyVariables>
           <additionalClasspathElements>
             <additionalClasspathElement>EAP5/src/test/resources/</additionalClasspathElement>
@@ -231,23 +239,23 @@
                 <dependency>
                     <groupId>jboss.jbossts</groupId>
                     <artifactId>jbossjts</artifactId>
-                    <version>4.6.1.GA_CP12</version>
+                    <version>${version.EAP5}</version>
                 </dependency>
                 <dependency>
                     <groupId>jboss.jbossts</groupId>
                     <artifactId>jbossjts-jacorb</artifactId>
-                    <version>4.6.1.GA_CP12</version>
+                    <version>${version.EAP5}</version>
                 </dependency>
                 <dependency>
                     <groupId>org.jacorb</groupId>
                     <artifactId>jacorb</artifactId>
-                    <version>${EAP5.jacorb.version}</version>
+                    <version>${version.jacorb.EAP5}</version>
 <!--
 could use system scope to avoid the user having to call scripts/install-EAP5-dependencies.sh but its not
 portable
                     <scope>system</scope>
-                    <systemPath>${project.build.outputDirectory}/${EAP5.jacorb.version}.jar</systemPath>
-                    <systemPath>${project.basedir}/main/resources/jacorb.${EAP5.jacorb.version}.jar</systemPath>
+                    <systemPath>${project.build.outputDirectory}/${version.jacorb.EAP5}.jar</systemPath>
+                    <systemPath>${project.basedir}/main/resources/jacorb.${version.jacorb.EAP5}.jar</systemPath>
 -->
                 </dependency>
                 <dependency>
@@ -265,7 +273,7 @@ portable
                 <dependency>
                     <groupId>jboss.jbossts</groupId>
                     <artifactId>jbossts-common</artifactId>
-                    <version>4.6.1.GA_CP12</version>
+                    <version>${version.EAP5}</version>
                 </dependency>
                 <dependency>
                     <groupId>commons-logging</groupId>

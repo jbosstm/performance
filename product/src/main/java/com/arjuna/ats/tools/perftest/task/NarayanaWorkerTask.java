@@ -38,6 +38,9 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class NarayanaWorkerTask extends RHWorkerTask {
     protected NarayanaWorkerTask(CyclicBarrier cyclicBarrier, AtomicInteger count, int batch_size) {
         super(cyclicBarrier, count, batch_size);
+
+        if (productName.length() == 0)
+            productName = "Narayana XXX";
     }
 
     @Override
@@ -87,10 +90,5 @@ public class NarayanaWorkerTask extends RHWorkerTask {
         TransactionReaper.terminate(true);*/
 
         validateRun(TxStats.getInstance().getNumberOfCommittedTransactions(), TxStats.getInstance().getNumberOfAbortedTransactions());
-    }
-
-    @Override
-    protected String getName() {
-        return "Narayana";
     }
 }

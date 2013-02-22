@@ -19,7 +19,7 @@ function run_tests {
         for product in $products; do
           for jts in $jtsModes; do
               echo mvn test -P $product -Diterations=$iteration -Dthreads=$thread -Djts=$jts
-		mvn test -P $product -Diterations=$iteration -Dthreads=$thread -Djts=$jts
+              mvn test -P $product -Diterations=$iteration -Dthreads=$thread -Djts=$jts -DobjectStoreDir=$storeDir
           done
         done
     done
@@ -32,8 +32,8 @@ function set_run_options {
   products="EAP5 EAP6"
   iterations="1000 10000 100000"
   threads="1 10 100"
-  storeDir="target/TxStoreDir"
   jtsModes="true"
+  [ -z $storeDir ] && storeDir="target/TxStoreDir"
 }
 
 # Allow the caller to abort the tests
@@ -43,7 +43,6 @@ trap 'bail_out' 1 2 3 15
 [ -d "$M2_REPO/org/jacorb/jacorb/4.6.1.GA" -a -d "$M2_REPO/org/jacorb/jacorb/2.3.1.patched" -a -d "$M2_REPO/logkit/LogKit/1.2" -a -d "$M2_REPO/org/apache/avalon/framework/avalon-framework/4.1.5" ] || ./scripts/install-EAP5-dependencies.sh
 
 echo "sending output to target/results.txt"
-[ -f target/results.txt ] && cp target/results.txt target/results.txt.previous
 
 set_run_options
 run_tests

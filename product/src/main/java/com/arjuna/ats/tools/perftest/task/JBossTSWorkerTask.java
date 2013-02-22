@@ -32,6 +32,9 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class JBossTSWorkerTask extends RHWorkerTask {
     protected JBossTSWorkerTask(CyclicBarrier cyclicBarrier, AtomicInteger count, int batch_size) {
         super(cyclicBarrier, count, batch_size);
+
+        if (productName.length() == 0)
+            productName = "JBossTS XXX";
     }
 
     @Override
@@ -66,10 +69,5 @@ public class JBossTSWorkerTask extends RHWorkerTask {
         super.fini();
 
         validateRun(TxStats.numberOfCommittedTransactions(), TxStats.numberOfAbortedTransactions());
-    }
-
-    @Override
-    protected String getName() {
-        return "JBossTS";
     }
 }

@@ -28,10 +28,8 @@ public class NarayanaJdkOrbWorkerTask extends NarayanaWorkerTask {
 
     protected NarayanaJdkOrbWorkerTask(CyclicBarrier cyclicBarrier, AtomicInteger count, int batch_size) {
         super(cyclicBarrier, count, batch_size);
-    }
 
-    @Override
-    protected String getName() {
-        return "Narayana-JdkORB";
+        if (productName.length() == 0)
+            productName = "Narayana-JdkORB XXX";
     }
 }

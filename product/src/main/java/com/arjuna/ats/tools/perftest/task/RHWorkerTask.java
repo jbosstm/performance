@@ -16,10 +16,12 @@ public class RHWorkerTask extends WorkerTask {
     protected boolean stats = false;
     protected String objectStoreDir = "target/TxStoreDir";
     protected String objectStoreType = "com.arjuna.ats.internal.arjuna.objectstore.ShadowNoFileLockStore";
+    protected String productName;
     private String errorReport = null;
 
     protected RHWorkerTask(CyclicBarrier cyclicBarrier, AtomicInteger count, int batch_size) {
         super(cyclicBarrier, count, batch_size);
+        productName = System.getProperty("product.name", "");
     }
 
     @Override
@@ -55,7 +57,7 @@ public class RHWorkerTask extends WorkerTask {
 
     @Override
     protected String getName() {
-        return "RH TM";
+        return productName;
     }
 
     protected boolean validateRun(long committed, long aborted) {
