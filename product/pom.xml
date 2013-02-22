@@ -86,6 +86,9 @@
                             <systemPropertyVariables>
                                 <profile>EAP6</profile>
                             </systemPropertyVariables>
+          <additionalClasspathElements>
+            <additionalClasspathElement>EAP6/src/test/resources/</additionalClasspathElement>
+          </additionalClasspathElements>
                         </configuration>
                     </plugin>
                 </plugins>
@@ -150,6 +153,9 @@
                             <systemPropertyVariables>
                                 <profile>EAP6-JDKORB</profile>
                             </systemPropertyVariables>
+          <additionalClasspathElements>
+            <additionalClasspathElement>EAP6/src/test/resources/</additionalClasspathElement>
+          </additionalClasspathElements>
                         </configuration>
                     </plugin>
                 </plugins>
@@ -211,6 +217,9 @@
                             <systemPropertyVariables>
                                 <profile>EAP5</profile>
                             </systemPropertyVariables>
+          <additionalClasspathElements>
+            <additionalClasspathElement>EAP5/src/test/resources/</additionalClasspathElement>
+          </additionalClasspathElements>
                         </configuration>
                     </plugin>
                 </plugins>
@@ -253,7 +262,7 @@ portable
                 <dependency>
                     <groupId>jboss.jbossts</groupId>
                     <artifactId>jbossts-common</artifactId>
-                    <version>4.6.1.GA</version>
+                    <version>4.6.1.GA_CP12</version>
                 </dependency>
                 <dependency>
                     <groupId>commons-logging</groupId>
