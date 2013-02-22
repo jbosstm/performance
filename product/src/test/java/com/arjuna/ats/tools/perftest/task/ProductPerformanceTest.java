@@ -131,8 +131,8 @@ public class ProductPerformanceTest
         output = new PrintWriter(writer);
 
         if (!exists)
-            output.printf("%12s %15s %12s %12s %12s %8s %20s%n",
-                    "Time of Day", "Product", "Throughput", "Iterations", "Threads", "JTS", "Store");
+            output.printf("%12s %15s %12s %12s %8s %9s %8s %22s%n",
+                    "Time of Day", "Product", "Throughput", "Iterations", "Threads", "Aborts",  "JTS", "Store");
     }
 
     @After
@@ -167,8 +167,9 @@ public class ProductPerformanceTest
         for (Map.Entry<WorkerTask, TaskResult> entry: tasks.entrySet()) {
             WorkerTask task = entry.getKey();
             TaskResult result = entry.getValue();
-            String res = String.format("%12tT %15s %12d %12s %12s %8s %20s%n", calendar, task.getName(),
-                    (int) result.getThroughput(), result.iterations, result.threads, jts, store);
+            String res = String.format("%12tT %15s %12d %12d %8d %9d %8s %22s%n", calendar, task.getName(),
+                    (int) result.getThroughput(), result.iterations, result.threads, task.getNumberOfFailures(),
+                    jts, store);
             output.print(res);
             System.out.print(res);
             task.reportErrors(output);

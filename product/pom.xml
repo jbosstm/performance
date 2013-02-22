@@ -72,6 +72,7 @@
                                 <exclude>**/Jotm*.java</exclude>
                                 <exclude>**/SimpleJTA*.java</exclude>
                                 <exclude>**/JBossTSWorkerTask.java</exclude>
+                                <exclude>**/JBossTSProduct.java</exclude>
                                 <!--
                                 <exclude>**/Bitronix*.java</exclude>
         -->
@@ -141,6 +142,7 @@
                                 <exclude>**/Jotm*.java</exclude>
                                 <exclude>**/SimpleJTA*.java</exclude>
                                 <exclude>**/JBossTSWorkerTask.java</exclude>
+                                <exclude>**/JBossTSProduct.java</exclude>
                                 <!-- <exclude>**/Bitronix*.java</exclude> -->
                             </excludes>
                         </configuration>
@@ -204,6 +206,7 @@
                                 <exclude>**/Jotm*.java</exclude>
                                 <exclude>**/SimpleJTA*.java</exclude>
                                 <exclude>**/Narayana*.java</exclude>
+                                <exclude>**/JBossTSProduct.java</exclude>
                             </excludes>
                             <!--
                                                         <exclude>**/Bitronix*.java</exclude-->

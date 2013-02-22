@@ -38,11 +38,16 @@ public class JBossTSWorkerTask extends RHWorkerTask {
     protected void init(Properties config) {
         super.init(config);
 
-        if (stats)
+        if (stats) {
             arjPropertyManager.propertyManager.setProperty(Environment.ENABLE_STATISTICS, "YES");
+            System.setProperty(Environment.ENABLE_STATISTICS, "YES");
+        }
 
         arjPropertyManager.propertyManager.setProperty(Environment.OBJECTSTORE_DIR, objectStoreDir);
         arjPropertyManager.propertyManager.setProperty(Environment.OBJECTSTORE_TYPE, objectStoreType);
+
+        System.setProperty(Environment.OBJECTSTORE_DIR, objectStoreDir);
+        System.setProperty(Environment.OBJECTSTORE_TYPE, objectStoreType);
 
         if (jts) {
             jtaPropertyManager.propertyManager.setProperty(com.arjuna.ats.jta.common.Environment.JTA_TM_IMPLEMENTATION,

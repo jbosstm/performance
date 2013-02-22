@@ -28,13 +28,13 @@ import java.util.HashMap;
 import java.util.Properties;
 import java.util.concurrent.CyclicBarrier;
 import java.util.concurrent.atomic.AtomicInteger;
-import javax.transaction.Transaction;
-import javax.transaction.TransactionManager;
+import javax.transaction.*;
 import javax.transaction.xa.XAResource;
 
 public abstract class WorkerTask implements Runnable {
     protected CyclicBarrier cyclicBarrier;
     protected AtomicInteger count;
+    protected AtomicInteger failures;
     protected AtomicInteger rid = new AtomicInteger(0);
     protected int batch_size = 0;
 	protected Map<String, XAResource> resources = new HashMap<String, XAResource> ();
@@ -44,6 +44,7 @@ public abstract class WorkerTask implements Runnable {
         this.cyclicBarrier = cyclicBarrier;
         this.count = count;
         this.batch_size = batch_size;
+        failures = new AtomicInteger(0);
 
         resources.put(name, new XAResourceImpl(name, 0));
         name = Thread.currentThread().getName() + rid.incrementAndGet();
@@ -76,15 +77,25 @@ public abstract class WorkerTask implements Runnable {
             unregisterResource(e.getKey(), e.getValue());
     }
 
-	protected void doTx(TransactionManager tm) throws Exception {
-		tm.begin();
-		Transaction t = tm.getTransaction();
+	protected boolean doTx(TransactionManager tm) {
+        try {
+            tm.begin();
+            Transaction t = tm.getTransaction();
 
-		for (XAResource xar : resources.values())
-			t.enlistResource(xar);
+            for (XAResource xar : resources.values())
+                t.enlistResource(xar);
 
-		tm.commit();
-	}
+            tm.commit();
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public int getNumberOfFailures() {
+        return failures.intValue();
+    }
  
 	protected abstract TransactionManager getTransactionManager();
 //		return new DummyTransactionManager();
@@ -102,7 +113,8 @@ public abstract class WorkerTask implements Runnable {
 
             while(count.decrementAndGet() >= 0) {
                 for(int i = 0; i < batch_size; i++)
-                    doTx(tm);
+                    if (!doTx(tm))
+                        failures.incrementAndGet();
             }
 
             cyclicBarrier.await();
