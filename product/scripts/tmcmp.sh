@@ -18,10 +18,8 @@ function run_tests {
     for thread in $threads; do
         for product in $products; do
           for jts in $jtsModes; do
-            is_store_compatible $product $store
-            if [ $? != 0 ]; then
-              mvn test -P $product -Diterations=$iteration -Dthreads=$thread -Djts=$jts
-            fi
+              echo mvn test -P $product -Diterations=$iteration -Dthreads=$thread -Djts=$jts
+		mvn test -P $product -Diterations=$iteration -Dthreads=$thread -Djts=$jts
           done
         done
     done
@@ -31,7 +29,7 @@ function run_tests {
 function set_run_options {
 
   #products="EAP6 EAP5 EAP6-JDKORB"
-  products="EAP6 EAP5"
+  products="EAP5 EAP6"
   iterations="1000 10000 100000"
   threads="1 10 100"
   storeDir="target/TxStoreDir"
