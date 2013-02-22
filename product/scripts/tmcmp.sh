@@ -16,30 +16,24 @@ function is_store_compatible {
 function run_tests {
   for iteration in $iterations; do
     for thread in $threads; do
-      for store in $stores; do
         for product in $products; do
           for jts in $jtsModes; do
             is_store_compatible $product $store
             if [ $? != 0 ]; then
-              mvn test -P $product -Diterations=$iteration -Dthreads=$thread -Djts=$jts \
-                -DobjectStoreType=$store -DobjectStoreDir=$storeDir
+              mvn test -P $product -Diterations=$iteration -Dthreads=$thread -Djts=$jts
             fi
           done
         done
-      done
     done
   done
 }
   
 function set_run_options {
-  fileStore=com.arjuna.ats.internal.arjuna.objectstore.ShadowNoFileLockStore
-  hqStore=com.arjuna.ats.internal.arjuna.objectstore.hornetq.HornetqObjectStoreAdaptor
 
   #products="EAP6 EAP5 EAP6-JDKORB"
   products="EAP6 EAP5"
   iterations="1000 10000 100000"
   threads="1 10 100"
-  stores="$fileStore $hqStore"
   storeDir="target/TxStoreDir"
   jtsModes="true"
 }
