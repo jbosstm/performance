@@ -10,8 +10,13 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <jacorb.patched.version>2.3.1.patched</jacorb.patched.version>
         <EAP5.jacorb.version>4.6.1.GA</EAP5.jacorb.version>
         <EAP6.jacorb.version>2.3.1.jbossorg-1</EAP6.jacorb.version>
+<!-- To use a patched jacorb change use the following instead of the previous 2 lines
+        <EAP5.jacorb.version>${jacorb.patched.version}</EAP5.jacorb.version>
+        <EAP6.jacorb.version>${jacorb.patched.version}</EAP6.jacorb.version>
+-->
     </properties>
 
     <profiles>
@@ -36,7 +41,6 @@
                     <artifactId>jbossjts</artifactId>
                     <version>4.16.4.Final</version>
                 </dependency>
-                <!-- jacorb orb TODO test against jdk orb too -->
                 <dependency>
                     <groupId>org.jacorb</groupId>
                     <artifactId>jacorb</artifactId>

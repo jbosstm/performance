@@ -48,7 +48,7 @@ function set_run_options {
 trap 'bail_out' 1 2 3 15
 
 # Install dependencies into the local repo
-[ -d "$M2_REPO/org/jacorb/jacorb/4.6.1.GA" -a -d "$M2_REPO/logkit/LogKit/1.2" -a -d "$M2_REPO/org/apache/avalon/framework/avalon-framework/4.1.5" ] || ./scripts/install-EAP5-dependencies.sh
+[ -d "$M2_REPO/org/jacorb/jacorb/4.6.1.GA" -a -d "$M2_REPO/org/jacorb/jacorb/2.3.1.patched" -a -d "$M2_REPO/logkit/LogKit/1.2" -a -d "$M2_REPO/org/apache/avalon/framework/avalon-framework/4.1.5" ] || ./scripts/install-EAP5-dependencies.sh
 
 echo "sending output to target/results.txt"
 [ -f target/results.txt ] && cp target/results.txt target/results.txt.previous
