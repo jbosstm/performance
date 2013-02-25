@@ -7,6 +7,7 @@ PERF_REPO=https://github.com/jbosstm/performance
 EAP5_ZIP="http://download.devel.redhat.com/released/JBEAP-5/5.1.1/zip/jboss-eap-5.1.1.zip"
 EAP6_ZIP="http://download.devel.redhat.com/released/JBEAP-6/6.0.1/zip/jboss-eap-6.0.1.zip"
 DR3_ZIP="http://download.devel.redhat.com/devel/candidates/JBEAP/JBEAP-6.1.0-DR3/jboss-eap-6.1.0.DR3.zip"
+PROD_DIR=$BASE_DIR/performance/integration/ejb/perftest
 EAP5_DIR=$BASE_DIR/eap-5.1.1
 EAP6_DIR=$BASE_DIR/eap-6.0
 DR3_DIR=$BASE_DIR/dr3
@@ -70,7 +71,7 @@ function configure_eap5 {
     [ $? = 0 ] || fatal "enable EAP5 jts failed for server0"
     ant jts -Dtarget.server.dir=../../../server/server1
     [ $? = 0 ] || fatal "enable EAP5 jts failed for server1"
-    do_copy  $EAP5_DIR/jboss-eap-5.1/jboss-as/server/all/lib/jacorb.jar $BASE_DIR/performance/quickstart/narayana/ejb/perftest/etc/jacorb.jar.eap5
+    do_copy  $EAP5_DIR/jboss-eap-5.1/jboss-as/server/all/lib/jacorb.jar $PROD_DIR/etc/jacorb.jar.eap5
   fi
 
   rm "$EAP5_DIR/jboss-eap-5.1/jboss-as/server/server0/log/*" > /dev/null 2>&1
@@ -99,21 +100,21 @@ function configure_eap6 {
     do_copy jboss-eap-6.0 server0
     do_copy jboss-eap-6.0 server1
 
-    do_copy  $EAP6_DIR/jboss-eap-6.0/modules/org/jacorb/main/jacorb-2.3.2-redhat-2.jar $BASE_DIR/performance/quickstart/narayana/ejb/perftest/etc/jacorb.jar.eap6
+    do_copy  $EAP6_DIR/jboss-eap-6.0/modules/org/jacorb/main/jacorb-2.3.2-redhat-2.jar $PROD_DIR/etc/jacorb.jar.eap6
 
     enable_jts EAP6 0
     enable_jts EAP6 1
     stop_servers
 
-    do_copy  $EAP6_DIR/server0/standalone/configuration/standalone-full.xml $BASE_DIR/performance/quickstart/narayana/ejb/perftest/standalone-full-server0.xml
-    do_copy  $EAP6_DIR/server1/standalone/configuration/standalone-full.xml $BASE_DIR/performance/quickstart/narayana/ejb/perftest/standalone-full-server1.xml
+    do_copy  $EAP6_DIR/server0/standalone/configuration/standalone-full.xml $PROD_DIR/standalone-full-server0.xml
+    do_copy  $EAP6_DIR/server1/standalone/configuration/standalone-full.xml $PROD_DIR/standalone-full-server1.xml
 
     enable_hornetq_os EAP6 0
     enable_hornetq_os EAP6 1
     stop_servers
 
-    do_copy  $EAP6_DIR/server0/standalone/configuration/standalone-full.xml $BASE_DIR/performance/quickstart/narayana/ejb/perftest/standalone-full-hq-server0.xml
-    do_copy  $EAP6_DIR/server1/standalone/configuration/standalone-full.xml $BASE_DIR/performance/quickstart/narayana/ejb/perftest/standalone-full-hq-server1.xml
+    do_copy  $EAP6_DIR/server0/standalone/configuration/standalone-full.xml $PROD_DIR/standalone-full-hq-server0.xml
+    do_copy  $EAP6_DIR/server1/standalone/configuration/standalone-full.xml $PROD_DIR/standalone-full-hq-server1.xml
   fi
 
   rm "$EAP6_DIR/server0/standalone/log/*" > /dev/null 2>&1
@@ -129,7 +130,7 @@ function clone_perf_repo {
 }
 
 function update_ear {
-  cd $BASE_DIR/performance/quickstart/narayana/ejb/perftest
+  cd $PROD_DIR
   [ $? = 0 ] || fatal "perftest dir doesn't exist"
 
   if [ ! -f perf-ear/target/perf-ear.ear ]; then
@@ -260,14 +261,14 @@ JTS
 }
 
 function hornetq_os_enable {
-  do_copy $BASE_DIR/performance/quickstart/narayana/ejb/perftest/standalone-full-hq-server0.xml $EAP6_DIR/server0/standalone/configuration/standalone-full.xml
-  do_copy $BASE_DIR/performance/quickstart/narayana/ejb/perftest/standalone-full-hq-server1.xml $EAP6_DIR/server1/standalone/configuration/standalone-full.xml
+  do_copy $PROD_DIR/standalone-full-hq-server0.xml $EAP6_DIR/server0/standalone/configuration/standalone-full.xml
+  do_copy $PROD_DIR/standalone-full-hq-server1.xml $EAP6_DIR/server1/standalone/configuration/standalone-full.xml
   file_store=0
 }
 
 function hornetq_os_disable {
-  do_copy $BASE_DIR/performance/quickstart/narayana/ejb/perftest/standalone-full-server0.xml $EAP6_DIR/server0/standalone/configuration/standalone-full.xml
-  do_copy $BASE_DIR/performance/quickstart/narayana/ejb/perftest/standalone-full-server1.xml $EAP6_DIR/server1/standalone/configuration/standalone-full.xml
+  do_copy $PROD_DIR/standalone-full-server0.xml $EAP6_DIR/server0/standalone/configuration/standalone-full.xml
+  do_copy $PROD_DIR/standalone-full-server1.xml $EAP6_DIR/server1/standalone/configuration/standalone-full.xml
   file_store=1
 }
 
@@ -295,18 +296,18 @@ function update_data_dir {
 
 function patch_jacorb {
   if [ "$1" = "EAP5" ]; then
-    do_copy  $BASE_DIR/performance/quickstart/narayana/ejb/perftest/etc/jacorb.jar.patched $EAP5_DIR/jboss-eap-5.1/jboss-as/server/server${2}/lib/jacorb.jar
+    do_copy  $PROD_DIR/etc/jacorb.jar.patched $EAP5_DIR/jboss-eap-5.1/jboss-as/server/server${2}/lib/jacorb.jar
   else
-    do_copy  $BASE_DIR/performance/quickstart/narayana/ejb/perftest/etc/jacorb.jar.patched $EAP6_DIR/server${2}/modules/org/jacorb/main/jacorb-2.3.2-redhat-2.jar
+    do_copy  $PROD_DIR/etc/jacorb.jar.patched $EAP6_DIR/server${2}/modules/org/jacorb/main/jacorb-2.3.2-redhat-2.jar
   fi
   jacorb_patch=1
 }
 
 function unpatch_jacorb {
   if [ "$1" = "EAP5" ]; then
-    do_copy $BASE_DIR/performance/quickstart/narayana/ejb/perftest/etc/jacorb.jar.eap5 $EAP5_DIR/jboss-eap-5.1/jboss-as/server/server${2}/lib/jacorb.jar
+    do_copy $PROD_DIR/etc/jacorb.jar.eap5 $EAP5_DIR/jboss-eap-5.1/jboss-as/server/server${2}/lib/jacorb.jar
   else
-    do_copy $BASE_DIR/performance/quickstart/narayana/ejb/perftest/etc/jacorb.jar.eap6 $EAP6_DIR/server${2}/modules/org/jacorb/main/jacorb-2.3.2-redhat-2.jar
+    do_copy $PROD_DIR/etc/jacorb.jar.eap6 $EAP6_DIR/server${2}/modules/org/jacorb/main/jacorb-2.3.2-redhat-2.jar
   fi
   jacorb_patch=0
 }
@@ -427,7 +428,7 @@ function run_tests {
 
 function cmd_syntax {
 cat << HERE
-$1. You can find example command files (tests*.txt) in the perftest directory.
+$1. You can find example command files (tests*.txt) in the perftest/etc directory.
 
 A command file should contain lines of the form:"
 
@@ -501,7 +502,7 @@ env_setup
 if [ $# -gt 0 ]; then
   [[ $1 == /* ]] && f=$1 || f="$BASE_DIR/$1"
 else
-  f=$BASE_DIR/performance/quickstart/narayana/ejb/perftest/etc/tests.txt
+  f=$PROD_DIR/etc/tests.txt
 fi
 
 process_cmds $f
