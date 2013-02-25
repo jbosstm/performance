@@ -121,7 +121,7 @@ function configure_eap6 {
 }
 
 function clone_perf_repo {
-  if [ ! -d $BASE_DIR/performance/quickstart/narayana/ejb/perftest ]; then
+  if [ ! -d $BASE_DIR/performance/.git ]; then
     cd $BASE_DIR
     git clone $PERF_REPO
     [ $? = 0 ] || fatal "clone performance repo failed"
