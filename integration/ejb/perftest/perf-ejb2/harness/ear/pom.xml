@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project>
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>narayana.performance.ejb</groupId>
+        <artifactId>harness</artifactId>
+        <version>1.0</version>
+    </parent>
+    <artifactId>ear</artifactId>
+    <packaging>ear</packaging>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-ear-plugin</artifactId>
+                <version>2.4.2</version>
+                <configuration>
+                    <defaultLibBundleDir>lib</defaultLibBundleDir>
+                    <archive>
+                        <manifest>
+                            <addClasspath>true</addClasspath>
+                        </manifest>
+                    </archive>
+                    <modules>
+                        <jarModule>
+                            <groupId>narayana.performance.ejb</groupId>
+                            <artifactId>ejb</artifactId>
+                            <includeInApplicationXml>true</includeInApplicationXml>
+                        </jarModule>
+                    </modules>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+    <dependencies>
+        <dependency>
+            <groupId>narayana.performance.ejb</groupId>
+            <artifactId>ejb</artifactId>
+            <version>1.0</version>
+        </dependency>
+        <dependency>
+            <groupId>narayana.performance.ejb</groupId>
+            <artifactId>api</artifactId>
+            <version>1.0</version>
+        </dependency>
+        <dependency>
+            <groupId>narayana.performance.ejb</groupId>
+            <artifactId>ejb2</artifactId>
+            <version>1.0</version>
+            <classifier>client</classifier>
+        </dependency>
+    </dependencies>
+</project>
+
