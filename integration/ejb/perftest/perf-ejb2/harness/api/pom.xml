@@ -40,6 +40,21 @@
             <version>5.0.1.GA</version>
             <scope>provided</scope>
         </dependency>
+
+        <!-- the next two dependencies are made up - install them manually into your local repo ../../scripts/inst..-->
+        <dependency>
+            <groupId>org.jboss.jbossas</groupId>
+            <artifactId>jboss-as-iiop</artifactId>
+            <version>3.2.3</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.jbossas</groupId>
+            <artifactId>jnpserver</artifactId>
+            <version>3.2.3</version>
+            <scope>provided</scope>
+        </dependency>
+
     </dependencies>
 </project>
 

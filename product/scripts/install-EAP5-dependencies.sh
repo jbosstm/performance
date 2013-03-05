@@ -44,3 +44,19 @@ mvn install:install-file  -Dfile=lib/logkit-1.2.jar \
                           -Dpackaging=jar \
                           -DlocalRepositoryPath=$M2_REPO
 
+# guess the version
+mvn install:install-file  -Dfile=lib/jboss-iiop.jar \
+                          -DgroupId=org.jboss.jbossas \
+                          -DartifactId=jboss-as-iiop \
+                          -Dversion=3.2.3 \
+                          -Dpackaging=jar \
+                          -DlocalRepositoryPath=$M2_REPO
+
+# guess the version
+mvn install:install-file  -Dfile=lib/jnpserver.jar \
+                          -DgroupId=org.jboss.jbossas \
+                          -DartifactId=jnpserver \
+                          -Dversion=3.2.3 \
+                          -Dpackaging=jar \
+                          -DlocalRepositoryPath=$M2_REPO
+

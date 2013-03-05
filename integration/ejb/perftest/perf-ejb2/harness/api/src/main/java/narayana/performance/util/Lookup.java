@@ -89,11 +89,11 @@ public class Lookup {
         properties.setProperty(Context.PROVIDER_URL, url);
 
         if (useOTS) {
-/*            org.omg.CORBA.ORB norb = org.jboss.iiop.naming.ORBInitialContextFactory.getORB();
+            org.omg.CORBA.ORB norb = org.jboss.iiop.naming.ORBInitialContextFactory.getORB();
             // if norb is not null then we are running inside the AS so make sure that its root name context
             // is used in preferenance to the one defined by Context.PROVIDER_URL
             if (norb != null)
-                properties.put("java.naming.corba.orb", norb);*/
+                properties.put("java.naming.corba.orb", norb);
 
             properties.setProperty(Context.URL_PKG_PREFIXES, "org.jboss.iiop.naming:org.jboss.naming.client:org.jnp.interfaces");
             properties.setProperty(Context.INITIAL_CONTEXT_FACTORY, "com.sun.jndi.cosnaming.CNCtxFactory");

@@ -31,7 +31,7 @@ public class HelloWorldTest {
         properties.put("java.naming.provider.url", "localhost:1099");
 
         Context ctx = new InitialContext(properties);
-        Result result = new Result(1, 1, 1199, true, false, true, 0);
+        Result result = new Result(100, 1, 1199, true, false, true, 0);
 
         HelloWorld bean = (HelloWorld) ctx.lookup(hwName);
         result = bean.doWork(result, useIIOP, true, iiopNS);

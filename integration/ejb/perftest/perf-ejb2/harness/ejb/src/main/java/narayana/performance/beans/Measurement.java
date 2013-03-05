@@ -11,6 +11,7 @@ public class Measurement {
 
     public Result measureBMTThroughput(TransactionManager transactionManager, EJB2Remote bean, Result opts) {
         long nCalls = opts.getNumberOfCalls();
+        long now = System.currentTimeMillis();
 
         for (long i = 0; i < nCalls; i++) {
             boolean ok = true;
@@ -46,6 +47,8 @@ public class Measurement {
                     opts.incrementErrorCount();
             }
         }
+
+        opts.setTotalMillis(System.currentTimeMillis() - now);
 
         return opts;
     }
