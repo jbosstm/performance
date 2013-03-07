@@ -20,13 +20,9 @@ import java.rmi.RemoteException;
 @RemoteBinding(jndiBinding = "HelloWorldJNDIName")
 //@RemoteBinding(factory= RemoteBindingDefaults.PROXY_FACTORY_IMPLEMENTATION_IOR, jndiBinding = "HelloWorldJNDIName")
 @IIOP(interfaceRepositorySupported=false)
-
-
 //@RemoteBindings({@RemoteBinding(factory=IORFactory.class),@RemoteBinding(factory=StatelessRemoteProxyFactory.class)})
-
 public class HelloWorldBean implements HelloWorld {
     private TransactionManager transactionManager;
-    private String msg = null;
 
     @PostConstruct
     public void postConstruct() {
@@ -38,38 +34,25 @@ public class HelloWorldBean implements HelloWorld {
     }
 
     @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
-    public Result doWork(Result opts, boolean iiop, boolean ejb2, String namingProvider) {
-        System.out.printf("%s%n", getMsg());
+    public Result doWork(Result opts) {
+        String jndiName = opts.isIiop() ? "OTSEjb2StatelessBean" : "Ejb2StatelessBean";
 
-        String jndiName = iiop ? "OTSEjb2StatelessBean" : "Ejb2StatelessBean";
         try {
-            Object ro = Lookup.getNamingContextForEJB2(iiop, namingProvider).lookup(jndiName);
-
+            Object ro = Lookup.getNamingContextForEJB2(opts.isIiop(), opts.getNamingProvider()).lookup(jndiName);
             EJB2Home home = (EJB2Home) PortableRemoteObject.narrow(ro, EJB2Home.class);
-
             EJB2Remote remote = home.create();
 
             if (remote != null) {
-                opts = Result.validateOpts(opts);
-                System.out.printf("Calling remote %s%n", remote.getClass().getName());
-                Measurement m = new Measurement();
-                return m.measureBMTThroughput(transactionManager, remote, opts);
+//                opts = Result.validateOpts(opts); // should already have been validated
+//
+                return new Measurement(transactionManager, remote, opts).call();
             }
         } catch (Exception e) {
+            opts.setErrorCount(opts.getNumberOfCalls());
             e.printStackTrace();
         }
 
         return opts;
-    }
-
-    private String getMsg() {
-        if (msg == null) {
-            msg = String.format("WorkBean: bindAddress=%s portBindings=%s",
-                    System.getProperty("jboss.service.binding.set", "unknown"),
-                    System.getProperty("jboss.bind.address", "unknown"));
-        }
-
-        return msg;
     }
 }
 

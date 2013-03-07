@@ -1,6 +1,7 @@
 package narayana.performance.util;
 
 import java.io.Serializable;
+import java.util.Map;
 
 /**
  * // TODO: Document this
@@ -9,50 +10,74 @@ import java.io.Serializable;
  * @since 4.0
  */
 public class Result implements Serializable {
-    String productVersion = "xxx";
-    String patchedJacorb = "unknown";
+    String productVersion = "Unknown";
+    String patchedJacorb = "Unknown";
     String storeType = "unknown";
     int threadCount = 1;
     String info = "";
-
+    String namingProvider;
+    boolean local;
     int nSPort; // jndi port
-    long numberOfCalls;
-    long errorCount;
+    int numberOfCalls;
+    int errorCount;
     int enlist; // if positive then XA resources are enlisted by each party
     boolean cmt;
     long totalMillis;
-    long throughputBMT; // calls per second
-    long throughputCMT; // calls per second
-    long one; // time in msecs to do one call
+    int throughputBMT; // calls per second
+    int throughputCMT; // calls per second
+    int one; // time in msecs to do one call
     private boolean transactional;
     private long prepareDelay;
     private boolean iiop;
+    private boolean verbose;
+    private boolean useHtml;
 
-    public Result(String info) {
-        this.info = info;
-    }
-
-    public static StringBuilder getHeader(StringBuilder sb) {
-        return sb.append(String.format("%9s %11s %9s %9s %9s %9s %9s %9s %9s %9s",
-                "Version", "Throughput", "Calls", "Errors", "Patched", "FileStore", "Threads", "Transaction", "Enlist", "Remote"));
-    }
-
-    public String toString() {
-        return String.format("%9s %11d %9d %9d %9s %9s %9d %11b %9d %9d",
-                productVersion, getThroughputBMT(), getNumberOfCalls(), getErrorCount(), patchedJacorb, storeType,
-                threadCount, transactional, enlist, nSPort);
-    }
-
-    public Result(long numberOfCalls, int enlist, int nSPort, boolean iiop, boolean cmt, boolean transactional, long prepareDelay) {
-        this.nSPort = nSPort;
+    public Result(String namingProvider, boolean local, int threadCount, int numberOfCalls, int enlist, boolean iiop, boolean cmt,
+                  boolean transactional, long prepareDelay, boolean verbose, boolean useHtml) {
+        this.namingProvider = namingProvider;
+        this.local = local;
+        this.threadCount = threadCount;
         this.numberOfCalls = numberOfCalls;
         this.enlist = enlist;
         this.cmt = cmt;
         this.prepareDelay = prepareDelay;
-        this.totalMillis = this.throughputBMT = this.throughputCMT = 0L;
-        this.errorCount = 0L;
+        this.totalMillis = this.throughputBMT = this.throughputCMT = 0;
+        this.errorCount = 0;
         this.transactional = transactional;
         this.iiop = iiop;
+        this.verbose = verbose;
+        this.useHtml = useHtml;
+    }
+
+    public Result(Result result) {
+        this(result.namingProvider, result.local, result.threadCount, result.numberOfCalls, result.enlist, result.iiop, result.cmt,
+                result.transactional, result.prepareDelay, result.verbose, true);
+
+        this.totalMillis = result.totalMillis;
+        this.throughputBMT = result.throughputBMT;
+        this.throughputCMT = result.throughputCMT;
+        this.errorCount = 0;
+
+    }
+
+    public void setProductVersion(String productVersion) {
+        this.productVersion = productVersion;
+    }
+
+    public void setPatchedJacorb(String patchedJacorb) {
+        this.patchedJacorb = patchedJacorb;
+    }
+
+    public String getNamingProvider() {
+        return namingProvider;
+    }
+
+    public int getThreadCount() {
+        return threadCount;
+    }
+
+    public void setThreadCount(int threadCount) {
+        this.threadCount = threadCount;
     }
 
     public String getInfo() {
@@ -63,12 +88,12 @@ public class Result implements Serializable {
         this.info = info;
     }
 
-    public long getNSPort() {
-        return nSPort;
+    public int getNumberOfCalls() {
+        return numberOfCalls;
     }
 
-    public long getNumberOfCalls() {
-        return numberOfCalls;
+    public void setNumberOfCalls(int numberOfCalls) {
+        this.numberOfCalls = numberOfCalls;
     }
 
     public int getEnlist() {
@@ -76,27 +101,33 @@ public class Result implements Serializable {
     }
 
     public boolean isLocal() {
-        return nSPort == 0;
+        return local;
     }
 
     public long getTotalMillis() {
         return totalMillis;
     }
 
-    public void setTotalMillis(long totalMillis) {
-        this.totalMillis = totalMillis;
-        this.one = totalMillis > 0 ? totalMillis / numberOfCalls : 0L;
-        if (cmt)
-            this.throughputCMT = (1000 * numberOfCalls) / totalMillis;
-        else
-            this.throughputBMT = (1000 * numberOfCalls) / totalMillis;
+    public void setStoreType(String storeType) {
+        this.storeType = storeType;
     }
 
-    public long getThroughputCMT() {
+    public void setTotalMillis(long totalMillis) {
+        this.totalMillis = totalMillis;
+        if (totalMillis != 0) {
+            this.one = totalMillis > 0 ? (int) (totalMillis / numberOfCalls) : 0;
+            if (cmt)
+                this.throughputCMT = (int) ((1000 * numberOfCalls) / totalMillis);
+            else
+                this.throughputBMT = (int) ((1000 * numberOfCalls) / totalMillis);
+        }
+    }
+
+    public int getThroughputCMT() {
         return throughputCMT;
     }
 
-    public long getThroughputBMT() {
+    public int getThroughputBMT() {
         return throughputBMT;
     }
 
@@ -112,8 +143,12 @@ public class Result implements Serializable {
         this.cmt = cmt;
     }
 
-    public long getErrorCount() {
+    public int getErrorCount() {
         return errorCount;
+    }
+
+    public void setErrorCount(int errorCount) {
+        this.errorCount = errorCount;
     }
 
     public void incrementErrorCount() {
@@ -136,14 +171,124 @@ public class Result implements Serializable {
         return prepareDelay;
     }
 
+    public boolean isVerbose() {
+        return verbose;
+    }
+
+    public boolean isUseHtml() {
+        return useHtml;
+    }
+
     public static Result getDefaultOpts() {
-        return new Result(100, 1, 1199, true, false, true, 0);
+        return new Result("localhost:1199", false, 1, 100, 1, true, false, true, 0, false, true);
     }
 
     public static Result validateOpts(Result opts) {
         if (opts == null)
             opts = getDefaultOpts();
+        else if (opts.threadCount < 1)
+            opts.threadCount = 1;
 
         return opts;
+    }
+
+    public String toString() {
+        if (useHtml)
+            return toHtml();
+        else
+            return String.format("%16s %11d %6d %9d %9s %11d %7b %9d %6b %9s%n",
+                productVersion, getThroughputBMT(), getNumberOfCalls(), getErrorCount(), patchedJacorb,
+                threadCount, transactional, enlist, !isLocal(), storeType);
+    }
+
+    public static StringBuilder getHeaderAsText(StringBuilder sb) {
+        return sb.append(String.format("%16s %11s %6s %9s %9s %9s %11s %7s %6s %9s%n",
+                "Version", "Throughput", "Calls", "Errors", "Patched",
+                "Threads", "Transaction", "Enlist", "Remote", "StoreType"));
+    }
+
+    public String toHtml() {
+        if (verbose) {
+            return String.format(
+                    "<tr>\n<td>%d</td>\n<td>%d</td>\n<td>%d</td>\n<td>%b (%b)</td>\n<td>%b</td>\n<td>%d</td>\n<td>%d (%d)</td>\n</tr>\n",
+                    getNumberOfCalls(), getErrorCount(), getThreadCount(), isTransactional(), getEnlist() > 0, !isLocal(),
+                    getTotalMillis(), getThroughputBMT(), getThroughputCMT()
+            );
+        } else {
+            return String.format("%d ", getThroughputBMT());
+        }
+    }
+
+    public String getHeader() {
+        if (useHtml)
+            return getHeaderAsHtml(new StringBuilder()).toString();
+        else
+            return getHeaderAsText(new StringBuilder()).toString();
+    }
+
+    public static StringBuilder getHeaderAsHtml(StringBuilder sb) {
+        return sb.append(
+                "<html><body>\n"
+                        + "<table>\n"
+                        + "<th>Calls</th>\n"
+                        + "<th>Errors</th>\n"
+                        + "<th>Threads</th>\n"
+                        + "<th>Txn (Enlist)</th>\n"
+                        + "<th>Local</th>\n"
+                        + "<th>Time (ms)</th>\n"
+                        + "<th>Throughput BMT</th>\n");
+    }
+
+    private static int getIntegerParameter(Map<String, String[]> opts, String name, int deValue) {
+        try {
+            if (opts.containsKey(name))
+                return Integer.parseInt(opts.get(name)[0]);
+        } catch (NumberFormatException e) {
+            // ignore
+        }
+
+        return deValue;
+    }
+    private static String getStringParameter(Map<String, String[]> opts, String name, String deValue) {
+        try {
+            if (opts.containsKey(name))
+                return opts.get(name)[0];
+        } catch (NumberFormatException e) {
+            // ignore
+        }
+
+        return deValue;
+    }
+    private static boolean getBooleanParameter(Map<String, String[]> opts, String name, boolean deValue) {
+        try {
+            if (opts.containsKey(name))
+                return Boolean.parseBoolean(opts.get(name)[0]);
+        } catch (NumberFormatException e) {
+            // ignore
+        }
+
+        return deValue;
+    }
+    public static Result toResult(Map<String, String[]> opts) {
+        Result res = validateOpts(new Result(
+                getStringParameter(opts, "naming_ep", "localhost:3628"),
+                getBooleanParameter(opts, "local", false),
+                getIntegerParameter(opts, "threads", 1),
+                getIntegerParameter(opts, "count", 100),
+                getIntegerParameter(opts, "enlist", 1),
+                getBooleanParameter(opts, "iiop", true) ,
+                getBooleanParameter(opts, "cmt", true),
+                getBooleanParameter(opts, "transactional", true),
+                getIntegerParameter(opts, "prepareDelay", 0),
+                getBooleanParameter(opts, "verbose", true),
+                getBooleanParameter(opts, "html", true)));
+
+        res.setProductVersion(getStringParameter(opts, "version", "Unknown"));
+        if (opts.containsKey("patchedjacorb"))
+            res.setPatchedJacorb("Unknown");
+        else
+            res.setPatchedJacorb(Boolean.toString(getBooleanParameter(opts, "patchedjacorb", false)));
+
+        return res;
     }
 }

@@ -6,10 +6,21 @@ import narayana.performance.util.Result;
 
 import javax.transaction.Status;
 import javax.transaction.TransactionManager;
+import java.util.concurrent.Callable;
 
-public class Measurement {
+public class Measurement implements Callable<Result> {
+    private TransactionManager transactionManager;
+    private EJB2Remote bean;
+    private Result opts;
 
-    public Result measureBMTThroughput(TransactionManager transactionManager, EJB2Remote bean, Result opts) {
+    public Measurement(TransactionManager transactionManager, EJB2Remote bean, Result opts) {
+        this.transactionManager = transactionManager;
+        this.bean = bean;
+        this.opts = opts;
+    }
+
+    @Override
+    public Result call() throws Exception {
         long nCalls = opts.getNumberOfCalls();
         long now = System.currentTimeMillis();
 
@@ -52,5 +63,4 @@ public class Measurement {
 
         return opts;
     }
-
 }

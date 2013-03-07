@@ -7,6 +7,7 @@
         <version>1.0</version>
     </parent>
     <artifactId>ear</artifactId>
+    <name>packaging (war and ejb)</name>
     <packaging>ear</packaging>
     <build>
         <plugins>
@@ -22,6 +23,12 @@
                         </manifest>
                     </archive>
                     <modules>
+                        <webModule>
+                            <groupId>narayana.performance.ejb</groupId>
+                            <artifactId>ejb2-war-client</artifactId>
+                            <bundleFileName>ejb2-war-client.war</bundleFileName>
+                            <contextRoot>/perf-war2</contextRoot>
+                        </webModule>
                         <jarModule>
                             <groupId>narayana.performance.ejb</groupId>
                             <artifactId>ejb</artifactId>
@@ -33,6 +40,12 @@
         </plugins>
     </build>
     <dependencies>
+        <dependency>
+            <groupId>narayana.performance.ejb</groupId>
+            <artifactId>ejb2-war-client</artifactId>
+            <version>1.0</version>
+            <type>war</type>
+        </dependency>
         <dependency>
             <groupId>narayana.performance.ejb</groupId>
             <artifactId>ejb</artifactId>

@@ -14,9 +14,9 @@ function is_store_compatible {
 }
 
 function run_tests {
-  for iteration in $iterations; do
-    for thread in $threads; do
-        for product in $products; do
+  for product in $products; do
+    for iteration in $iterations; do
+      for thread in $threads; do
           for jts in $jtsModes; do
               echo mvn test -P $product -Diterations=$iteration -Dthreads=$thread -Djts=$jts
               mvn test -P $product -Diterations=$iteration -Dthreads=$thread -Djts=$jts -DobjectStoreDir=$storeDir

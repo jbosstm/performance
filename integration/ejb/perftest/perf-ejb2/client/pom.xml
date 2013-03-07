@@ -9,6 +9,7 @@
     </parent>
 
     <artifactId>client</artifactId>
+    <name>test client</name>
     <packaging>jar</packaging>
 
     <repositories>

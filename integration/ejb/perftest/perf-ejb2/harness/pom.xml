@@ -12,6 +12,7 @@
         <module>api</module>
         <module>ejb</module>
         <module>ejb2</module>
+        <module>ejb2-war-client</module>
         <module>ear</module>
         <module>ear2</module>
     </modules>

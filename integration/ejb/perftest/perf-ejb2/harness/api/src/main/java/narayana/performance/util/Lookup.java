@@ -38,16 +38,6 @@ public class Lookup {
         return iiop ? getIIOPContext(jndiUrl) : getContext(jndiUrl);
     }
 
-    private static Context getContext(String jndiUrl) throws NamingException {
-        Properties properties = new Properties();
-//TODO XXX these settings dont work on EAP6
-        properties.put("java.naming.factory.initial", "org.jnp.interfaces.NamingContextFactory");
-        properties.put("java.naming.factory.url.pkgs", "org.jboss.naming:org.jnp.interfaces");
-        properties.put("java.naming.provider.url", jndiUrl);
-
-        return new InitialContext(properties);
-    }
-
     private static Context getIIOPContext(String endPoint) throws NamingException {
         Properties properties = new Properties();
 
@@ -73,7 +63,15 @@ public class Lookup {
         }
     }
 
+     public static Context getContext(String jndiUrl) throws NamingException {
+        Properties properties = new Properties();
+//TODO XXX these settings dont work on EAP6
+        properties.put("java.naming.factory.initial", "org.jnp.interfaces.NamingContextFactory");
+        properties.put("java.naming.factory.url.pkgs", "org.jboss.naming:org.jnp.interfaces");
+        properties.put("java.naming.provider.url", jndiUrl);
 
+        return new InitialContext(properties);
+    }
 
     private static final String EJB2_JNDI_CORBA_URL = "corbaloc::EP/NameService";
     private static final String JNDI_URL = "jnp://EP";

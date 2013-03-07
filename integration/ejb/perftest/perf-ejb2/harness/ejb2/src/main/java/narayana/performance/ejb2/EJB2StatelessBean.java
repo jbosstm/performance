@@ -34,48 +34,20 @@ import java.util.Properties;
 
 public class EJB2StatelessBean implements SessionBean
 {
-    String msg = null;
+    String msg = "";
 
     public Result doWork(Result opts) {
-        System.out.printf("%s%n", getMsg());
-        opts.setInfo(getMsg());
+        opts.setInfo(msg);
+
         return opts;
     }
 
-/*    public Result doWork2(Result opts, boolean iiop, boolean ejb2, String namingProvider) {
-        System.out.printf("%s%n", getMsg());
-        String jndiName = iiop ? "OTSEjb2StatelessBean" : "Ejb2StatelessBean";
-        try {
-            Object ro = Lookup.getNamingContextForEJB2(iiop, namingProvider).lookup(jndiName);
-
-            EJB2Home home = (EJB2Home) PortableRemoteObject.narrow(ro, EJB2Home.class);
-
-            EJB2Remote remote = home.create();
-
-            if (remote != null) {
-                System.out.printf("Calling remote %s%n", remote.getClass().getName());
-                return remote.doWork(opts);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return new Result(getMsg());
-    }*/
-
-    private String getMsg() {
-        if (msg == null) {
+    public void setSessionContext(SessionContext context) { }
+    public void ejbCreate() {
             msg = String.format("WorkBean: bindAddress=%s portBindings=%s",
                     System.getProperty("jboss.service.binding.set", "unknown"),
                     System.getProperty("jboss.bind.address", "unknown"));
-        }
-
-        return msg;
     }
-
-
-    public void setSessionContext(SessionContext context) { }
-    public void ejbCreate() { }
     public void ejbActivate() { }
     public void ejbPassivate() { }
     public void ejbRemove() { }
