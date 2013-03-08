@@ -19,9 +19,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 public class PerfTest extends HttpServlet {
-    private static int BATCH_SIZE = 100;
-    private static final int POOL_SIZE = 50;
     private static final String jndiName = "HelloWorldJNDIName";
+
+    private int BATCH_SIZE;
+    private int POOL_SIZE;
     private HelloWorld localBean;
     private ExecutorService executor;
     private String objStoreType;
@@ -29,6 +30,11 @@ public class PerfTest extends HttpServlet {
     @Override
     public void init() throws ServletException {
         super.init();
+        String maxThreads = getServletContext().getInitParameter("max_threads");
+        String batchSize = getServletContext().getInitParameter("batch_size");
+
+        POOL_SIZE = maxThreads != null ? Integer.parseInt(maxThreads) : 32; // must be >=  jacorb.poa.thread_pool_max
+        BATCH_SIZE = batchSize != null ? Integer.parseInt(batchSize) : 100;
 
         executor = Executors.newFixedThreadPool(POOL_SIZE);
         objStoreType = System.getProperty("com.arjuna.ats.arjuna.objectstore.objectStoreType", "Unknown");

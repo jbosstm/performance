@@ -14,22 +14,8 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <version.org.jboss.spec.jboss.javaee.6.0>3.0.0.Final</version.org.jboss.spec.jboss.javaee.6.0>
-        <version.EAP5>4.6.1.GA_CP12</version.EAP5>
     </properties>
 
-    <repositories>
-        <repository>
-            <id>mead-repository.redhat.com</id>
-            <name>JBoss Production Releases MEAD Repository</name>
-            <url>http://download.lab.bos.redhat.com/brewroot/repos/jb-eap-5.1.2-repo/latest/maven</url>
-            <releases>
-                <enabled>true</enabled>
-            </releases>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-        </repository>
-    </repositories>
     <dependencyManagement>
         <dependencies>
             <dependency>
@@ -68,12 +54,6 @@
             <groupId>narayana.performance.ejb</groupId>
             <artifactId>api</artifactId>
             <version>1.0</version>
-        </dependency>
-
-        <dependency>
-            <groupId>jboss.jbossts</groupId>
-            <artifactId>jbossjts</artifactId>
-            <version>${version.EAP5}</version>
         </dependency>
     </dependencies>
 
