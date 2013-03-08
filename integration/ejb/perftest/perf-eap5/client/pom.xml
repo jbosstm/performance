@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project>
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>narayana.performance.ejb</groupId>
+        <artifactId>perf-eap5-parent</artifactId>
+        <version>1.0</version>
+    </parent>
+
+    <artifactId>client</artifactId>
+    <name>test client</name>
+    <packaging>jar</packaging>
+
+    <properties>
+      <skipTests>true</skipTests>
+    </properties>
+
+    <repositories>
+        <repository>
+            <id>jboss-deprecated-repository</id>
+            <name>JBoss Deprecated Maven Repository</name>
+            <url>https://repository.jboss.org/nexus/content/repositories/deprecated/</url>
+            <layout>default</layout>
+            <releases>
+                <enabled>true</enabled>
+                <updatePolicy>never</updatePolicy>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+                <updatePolicy>never</updatePolicy>
+            </snapshots>
+        </repository>
+
+        <repository>
+            <id>mead-repository.redhat.com</id>
+            <name>JBoss Production Releases MEAD Repository</name>
+            <url>http://download.lab.bos.redhat.com/brewroot/repos/jb-eap-5.1.2-repo/latest/maven</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+
+    </repositories>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>2.6</version>
+                <configuration>
+                  <skipTests>${skipTests}</skipTests>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+    <dependencies>
+        <dependency>
+            <groupId>org.jboss.jbossas</groupId>
+            <artifactId>jboss-as-client</artifactId>
+            <version>5.1.0.GA</version>
+            <type>pom</type>
+        </dependency>
+        <dependency>
+            <groupId>narayana.performance.ejb</groupId>
+            <artifactId>api</artifactId>
+            <version>1.0</version>
+        </dependency>
+    </dependencies>
+</project>

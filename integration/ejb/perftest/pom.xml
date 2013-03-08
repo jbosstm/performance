@@ -12,19 +12,17 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  <groupId>org.jboss.narayana.quickstarts</groupId>
+  <groupId>narayana.performance.ejb</groupId>
   <artifactId>jts-perf-test</artifactId>
-  <version>5.0.0.M2-SNAPSHOT</version>
+  <version>1.0</version>
   <name>perf-parent</name>
   <description>JTS Performance Testing</description>
   <packaging>pom</packaging>
 
   <modules>
-    <module>perf-ear</module>
-    <module>perf-ejb</module>
-    <module>perf-war</module>
-    <module>perf-common</module>
+    <module>perf-api</module>
+    <module>perf-eap5</module>
+    <module>perf-eap6</module>
   </modules>
-
 </project>
 
