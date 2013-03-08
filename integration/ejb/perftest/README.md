@@ -1,3 +1,22 @@
+Latest Updates
+==============
+
+Build it:
+
+	mvn clean install
+
+Copy artifacts to EAP5 and EAP6 server deploy directories:
+
+	cp perf-eap5/harness/ear/target/ear-1.0.ear XXX/eap-5.1.1/jboss-eap-5.1/jboss-as/server/server0/deploy
+	cp perf-eap5/harness/ear2/target/ear2-1.0.ear XXX/eap-5.1.1/jboss-eap-5.1/jboss-as/server/server1/deploy
+
+	cp perf-eap6/application-component-1/target/perf-eap6-app-component-1.war XXX/eap-6.0/server0/standalone/deployments/
+	cp perf-eap6/application-component-2-ear/target/perf-eap6-app-component-2-ear.ear XXX/eap-6.0/server1/standalone/deployments/
+
+Start two servers (EAP5 or EAP6 but not both) and send an HTTP request to lauch a test:
+
+	curl http://localhost:8080/perf/test -d "count=10000&threads=24&html=false"
+
 Unattended Testing
 ==================
 
