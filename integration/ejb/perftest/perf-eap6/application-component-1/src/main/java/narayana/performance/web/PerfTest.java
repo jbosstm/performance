@@ -1,15 +1,10 @@
 package narayana.performance.web;
 
-
 import narayana.performance.beans.HelloWorld;
-import narayana.performance.beans.HelloWorldBean;
 import narayana.performance.beans.PerformanceTester;
-import narayana.performance.util.Lookup;
 import narayana.performance.util.Result;
 
-import javax.ejb.EJB;
-import javax.naming.Context;
-import javax.naming.NamingException;
+import javax.inject.Inject;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -19,7 +14,7 @@ import java.io.IOException;
 public class PerfTest extends HttpServlet {
     private static final String jndiName = "java:app/perf-eap6-app-component-1/HelloWorldBean";
 
-    @EJB(lookup = jndiName)
+    @Inject
     private HelloWorld localBean;
 
     private PerformanceTester tester;
@@ -46,6 +41,7 @@ public class PerfTest extends HttpServlet {
         try {
             tester.measureThroughput(response.getWriter(), localBean, Result.toResult(request.getParameterMap()));
         } catch (Exception e) {
+            e.printStackTrace();
             throw new ServletException(e.getCause());
         }
     }

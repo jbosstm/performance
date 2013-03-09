@@ -13,14 +13,14 @@ public class PerformanceTester {
     private int BATCH_SIZE;
     private int POOL_SIZE;
     private ExecutorService executor;
-    private String objStoreType;
+//    private String objStoreType;
 
     public PerformanceTester(String maxThreads, String batchSize) {
         POOL_SIZE = maxThreads != null ? Integer.parseInt(maxThreads) : 32; // must be >=  jacorb.poa.thread_pool_max
         BATCH_SIZE = batchSize != null ? Integer.parseInt(batchSize) : 100;
 
         executor = Executors.newFixedThreadPool(POOL_SIZE);
-        objStoreType = System.getProperty("com.arjuna.ats.arjuna.objectstore.objectStoreType", "Unknown");
+//        objStoreType = System.getProperty("com.arjuna.ats.arjuna.objectstore.objectStoreType", "Unknown");
     }
 
     public void fini() {
@@ -31,8 +31,8 @@ public class PerformanceTester {
         int threadCount = opts.getThreadCount();
         int callCount = opts.getNumberOfCalls();
 
-        if (threadCount == 1)
-            return localBean.doWork(opts);
+//        if (threadCount == 1)
+//            return localBean.doWork(opts);
 
         if (threadCount > POOL_SIZE) {
             System.err.println("Updating thread count (request size exceeds thread pool size)");
@@ -103,7 +103,7 @@ public class PerformanceTester {
             try {
                 Result outcome = t.get();
 
-                opts.setTotalMillis(opts.getTotalMillis() + outcome.getTotalMillis());
+//                opts.setTotalMillis(opts.getTotalMillis() + outcome.getTotalMillis());
                 opts.setErrorCount(opts.getErrorCount() + outcome.getErrorCount());
             } catch (Exception e) {
                 opts.setErrorCount(opts.getErrorCount() + BATCH_SIZE);
@@ -119,7 +119,6 @@ public class PerformanceTester {
     }
 
     public Result measureThroughput(PrintWriter out, HelloWorld bean, Result opts) {
-        opts.setStoreType(objStoreType);
         opts.setCmt(false);
 
         if (opts.isVerbose())

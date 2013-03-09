@@ -20,7 +20,7 @@ public class HelloWorldTest {
         String hwName = "HelloWorldJNDIName";
         Context ctx = Lookup.getContext("localhost:1099");
         HelloWorld bean = (HelloWorld) ctx.lookup(hwName);
-        Result result = new Result(iiopNS, false, 1, 100, 1, useIIOP, false, true, 0, false, true, true);
+        Result result = new Result(iiopNS, false, 1, 100, 1, useIIOP, false, true, 0, false, true, true, "Unknown");
 
         result = bean.doWork(result);
 

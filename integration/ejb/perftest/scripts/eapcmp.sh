@@ -14,26 +14,29 @@ DR3_DIR=$BASE_DIR/dr3
 
 EAP5_WAIT=60
 EAP6_WAIT=20
-file_store=1
-jacorb_patch=0
+store_type=FileStore
+jacorb_patch=false
 version="-"
 versions="EAP6 EAP5"
 tests=()
 index=0
-
-simulate=0
 
 [ $JBOSS_TERM ] || JBOSS_TERM=gnome 
 
 server0_pid=0
 server1_pid=0
 
+function bail_out {
+  echo "Terminating tests"
+  stop_servers
+  exit 1
+} 
+
 function fatal {
     echo "fatal: $1" | tee -a $RES_FILE
     [ -f "$2" ] && cat $2
 
-    stop_servers
-    exit 1
+    bail_out
 }
 
 function do_copy {
@@ -44,6 +47,13 @@ function do_copy {
   fi
 
   [ $? = 0 ] || fatal "do_copy: $1 $2 failed"
+}
+
+function modify_jacorb_config {
+  sed -i -e 's/3528/3628/g' $1
+  sed -i -e 's/3529/3629/g' $1
+# NB if we every want to recovery performance testing also change jacorb.implname
+#  sed -i -e 's/jacorb.implname=JBoss/jacorb.implname=JBoss1/g' $1
 }
 
 function configure_eap5 {
@@ -71,6 +81,8 @@ function configure_eap5 {
     [ $? = 0 ] || fatal "enable EAP5 jts failed for server0"
     ant jts -Dtarget.server.dir=../../../server/server1
     [ $? = 0 ] || fatal "enable EAP5 jts failed for server1"
+    modify_jacorb_config $EAP5_DIR/jboss-eap-5.1/jboss-as/server/server1/conf/jacorb.properties
+
     do_copy  $EAP5_DIR/jboss-eap-5.1/jboss-as/server/all/lib/jacorb.jar $PROD_DIR/etc/jacorb.jar.eap5
   fi
 
@@ -133,16 +145,16 @@ function update_ear {
   cd $PROD_DIR
   [ $? = 0 ] || fatal "perftest dir doesn't exist"
 
-  if [ ! -f perf-ear/target/perf-ear.ear ]; then
+  if [ ! -f perf-eap5/harness/ear/target/ear-1.0.ear ]; then
     mvn clean install
     [ $? = 0 ] || fatal "perftest clean install failed"
   fi
 
-  do_copy perf-ear/target/perf-ear.ear $EAP5_DIR/jboss-eap-5.1/jboss-as/server/server0/deploy/perf-ear.ear
-  do_copy perf-ear/target/perf-ear.ear $EAP5_DIR/jboss-eap-5.1/jboss-as/server/server1/deploy/perf-ear.ear
+  do_copy perf-eap5/harness/ear/target/ear-1.0.ear $EAP5_DIR/jboss-eap-5.1/jboss-as/server/server0/deploy/
+  do_copy perf-eap5/harness/ear2/target/ear2-1.0.ear $EAP5_DIR/jboss-eap-5.1/jboss-as/server/server1/deploy/
 
-  do_copy perf-ear/target/perf-ear.ear $EAP6_DIR/server0/standalone/deployments/
-  do_copy perf-ear/target/perf-ear.ear $EAP6_DIR/server1/standalone/deployments/
+  do_copy perf-eap6/application-component-1/target/perf-eap6-app-component-1.war $EAP6_DIR/server0/standalone/deployments/
+  do_copy perf-eap6/application-component-2-ear/target/perf-eap6-app-component-2-ear.ear $EAP6_DIR/server1/standalone/deployments/
 }
 
 function start_eap {
@@ -227,12 +239,15 @@ function enable_jts {
 /subsystem=jacorb/:write-attribute(name=transactions,value=on)
 JTS
 #TODO /subsystem=transactions/:write-attribute(name=node-identifier,value=0)
+#/subsystem=jacorb:write-attribute(name="max-threads", value=64)
+#pool-size "The size of the request processors thread-pool"
   else
     $EAP6_DIR/server$2/bin/jboss-cli.sh --connect controller=localhost:10099 --user=admin --password=adm1n << JTS
 /subsystem=transactions/:write-attribute(name=jts,value=true)
 /subsystem=jacorb/:write-attribute(name=transactions,value=on)
 JTS
 #TODO jacorb.properties /subsystem=transactions/:write-attribute(name=node-identifier,value=1)
+#/subsystem=jacorb:write-attribute(name="max-threads", value=64)
   fi
 }
     
@@ -263,13 +278,13 @@ JTS
 function hornetq_os_enable {
   do_copy $PROD_DIR/standalone-full-hq-server0.xml $EAP6_DIR/server0/standalone/configuration/standalone-full.xml
   do_copy $PROD_DIR/standalone-full-hq-server1.xml $EAP6_DIR/server1/standalone/configuration/standalone-full.xml
-  file_store=0
+  store_type=HornetqStore
 }
 
 function hornetq_os_disable {
   do_copy $PROD_DIR/standalone-full-server0.xml $EAP6_DIR/server0/standalone/configuration/standalone-full.xml
   do_copy $PROD_DIR/standalone-full-server1.xml $EAP6_DIR/server1/standalone/configuration/standalone-full.xml
-  file_store=1
+  store_type=FileStore
 }
 
 function update_data_dir {
@@ -300,7 +315,7 @@ function patch_jacorb {
   else
     do_copy  $PROD_DIR/etc/jacorb.jar.patched $EAP6_DIR/server${2}/modules/org/jacorb/main/jacorb-2.3.2-redhat-2.jar
   fi
-  jacorb_patch=1
+  jacorb_patch=true
 }
 
 function unpatch_jacorb {
@@ -309,62 +324,32 @@ function unpatch_jacorb {
   else
     do_copy $PROD_DIR/etc/jacorb.jar.eap6 $EAP6_DIR/server${2}/modules/org/jacorb/main/jacorb-2.3.2-redhat-2.jar
   fi
-  jacorb_patch=0
+  jacorb_patch=false
 }
 
 function onetest {
-    calls=$1
-    threads=$2
-    transactional=$3
-    enlist=$4
-    remote=$5
+  show_header=false
+  [ $1 = 0 ] && show_header=true
+  calls=$2
+  threads=$3
+  transactional=true
+  enlist=1
+  remote=true
+  prepareDelay=0
+  verbose=true
+  html=false
 
-    prepareDelay=0
-    verbose=0
-
-    if [ $simulate = 1 ]; then
-      printf "%9s %11s %9s %9s %9s %9s %11s %9s %9s\n" $version $throughput $calls $jacorb_patch $file_store $threads $transactional $enlist $remote | tee -a $RES_FILE
-      return 0
-    fi
-    qs="count=$calls&verbose=$verbose&prepareDelay=$prepareDelay&enlist=$enlist&remote=$remote&transactional=$transactional"
+    qs="count=$calls&threads=$threads&verbose=$verbose&prepareDelay=$prepareDelay&enlist=$enlist&remote=$remote&transactional=$transactional&version=$version&html=$html&show_header=$show_header&store_type=$store_type&jacorb_patch=$jacorb_patch"
     echo "qs=$qs"
 
-    for (( i=1; i<=$threads; i++ )); do
-        if [ $i = $threads ]; then 
-           curl http://localhost:8080/perf-war/PerfTest -d "$qs" > "res$i" 2>/dev/null
-           proc[$i]=0
-        else
-           curl http://localhost:8080/perf-war/PerfTest -d "$qs" > "res$i" 2>/dev/null &
-           proc[$i]=$!
-        fi
-    done
-
-    tot=0
-    for (( i=1; i<=$threads; i++ )); do
-        pid=${proc[$i]}
-        [ $pid != 0 ] && wait $pid
-
-        cat "res$i" |grep -l html > /dev/null
-        [ $? = 1 ] || fatal "run $i $1 $2" "res$i"; # failed
-
-         v=$(cat res$i)
-         val=$(echo "$v" | cut -f1 -d\ )
-
-         [[ "$val" =~ ^-?[0-9]+$ ]] || echo "ERROR: servlet didn't return a number: value=$val qs=$qs" | tee -a $RES_FILE
-         tot=`expr $tot + $v`
-    done
-
-    throughput=$tot
-    printf "%9s %11s %9s %9s %9s %9s %11s %9s %9s\n" $version $throughput $calls $jacorb_patch $file_store $threads $transactional $enlist $remote | tee -a $RES_FILE
+    curl http://localhost:8080/perf/test -d "$qs" >> $RES_FILE 2>/dev/null
 
     return 0
 }
 
 function test_group {
-  if [ $simulate != 1 ]; then
-    start_eap $1 0 0
-    start_eap $1 1
-  fi
+  start_eap $1 0 0
+  start_eap $1 1
 
   cd $RES_DIR
 
@@ -374,15 +359,13 @@ function test_group {
     sz=${#tests[*]}
     for ((j=0;j<$sz;j++)); do
 #      echo    ${tests[${j}]}
-      onetest ${tests[${j}]}
+      onetest $j ${tests[${j}]}
     done
   else
     echo "WARNING tests called with no test specification"
   fi
 
-  if [ $simulate != 1 ]; then
-    stop_servers
-  fi
+  stop_servers
 }
 
 function patch_eap {
@@ -475,8 +458,6 @@ function process_cmds {
 
   echo "Using command file $1 and writing results to $RES_FILE"
 
-  printf "%9s %11s %9s %9s %9s %9s %9s %9s %9s\n" "Version" "Throughput" "Calls" "Patched" "FileStore" "Threads" "Transaction" "Enlist" "Remote" | tee -a $RES_FILE
-
   while read ln ; do
     set_option $ln
   done < "$1"
@@ -495,6 +476,9 @@ function process_cmds {
     esac
   done
 }
+
+# Allow the caller to abort the tests
+trap 'bail_out' 1 2 3 15
 
 env_setup
 

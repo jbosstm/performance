@@ -4,19 +4,24 @@ versions EAP6 EAP5
 jacorb unpatch 
 hornetq disable 
 #data /mnt
-test 1000 1 1 1 1
-test 100 10 1 1 1
+# syntax test <count> <threads>
+test 10000 10
+test 10000 1
+test 10000 10
 print Testing EAP6 and EAP5, patched and file store
 jacorb patch 
 #data default
-test 1000 1 1 1 1
-test 100 10 1 1 1
+test 10000 10
+test 10000 1
+test 10000 10
 print Testing EAP6 and EAP5, unpatched with hornetq store
 hornetq enable 
 jacorb unpatch 
-test 1000 1 1 1 1
-test 100 10 1 1 1
+test 10000 10
+test 10000 1
+test 10000 10
 print Testing EAP6 and EAP5, patched with hornetq store
 jacorb patch 
-test 1000 1 1 1 1
-test 100 10 1 1 1
+test 10000 10
+test 10000 1
+test 10000 10

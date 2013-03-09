@@ -34,7 +34,8 @@ public class Result implements Serializable {
     private boolean useHtml;
 
     public Result(String namingProvider, boolean local, int threadCount, int numberOfCalls, int enlist, boolean iiop,
-                  boolean cmt, boolean transactional, long prepareDelay, boolean verbose, boolean showHeader, boolean useHtml) {
+                  boolean cmt, boolean transactional, long prepareDelay, boolean verbose, boolean showHeader,
+                  boolean useHtml, String storeType) {
         this.namingProvider = namingProvider;
         this.local = local;
         this.threadCount = threadCount;
@@ -49,11 +50,12 @@ public class Result implements Serializable {
         this.verbose = verbose;
         this.showHeader = showHeader;
         this.useHtml = useHtml;
+        this.storeType = storeType;
     }
 
     public Result(Result result) {
         this(result.namingProvider, result.local, result.threadCount, result.numberOfCalls, result.enlist, result.iiop, result.cmt,
-                result.transactional, result.prepareDelay, result.verbose, true, true);
+                result.transactional, result.prepareDelay, result.verbose, true, true, result.storeType);
 
         this.totalMillis = result.totalMillis;
         this.throughputBMT = result.throughputBMT;
@@ -182,7 +184,7 @@ public class Result implements Serializable {
     }
 
     public static Result getDefaultOpts() {
-        return new Result("localhost:1199", false, 1, 100, 1, true, false, true, 0, false, true, true);
+        return new Result("localhost:1199", false, 1, 100, 1, true, false, true, 0, false, true, true, "Unknown");
     }
 
     public static Result validateOpts(Result opts) {
@@ -286,13 +288,14 @@ public class Result implements Serializable {
                 getIntegerParameter(opts, "prepareDelay", 0),
                 getBooleanParameter(opts, "verbose", true),
                 getBooleanParameter(opts, "show_header", true),
-                getBooleanParameter(opts, "html", true)));
+                getBooleanParameter(opts, "html", true),
+                getStringParameter(opts, "store_type", "Unknown")));
 
         res.setProductVersion(getStringParameter(opts, "version", "Unknown"));
-        if (opts.containsKey("patchedjacorb"))
+        if (!opts.containsKey("jacorb_patch"))
             res.setPatchedJacorb("Unknown");
         else
-            res.setPatchedJacorb(Boolean.toString(getBooleanParameter(opts, "patchedjacorb", false)));
+            res.setPatchedJacorb(Boolean.toString(getBooleanParameter(opts, "jacorb_patch", false)));
 
         return res;
     }

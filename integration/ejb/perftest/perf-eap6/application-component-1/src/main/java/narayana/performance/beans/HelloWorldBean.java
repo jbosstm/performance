@@ -9,8 +9,8 @@ import javax.ejb.*;
 import javax.transaction.TransactionManager;
 import java.rmi.RemoteException;
 
-@Stateless
-@Remote(HelloWorld.class)
+@Stateless(mappedName = "HelloWorld")
+@LocalBean
 public class HelloWorldBean implements HelloWorld {
     @EJB(lookup = "corbaname:iiop:localhost:3628#perf-test/WorkerEJBImpl")
     private WorkerEJBHome workerEJBHome;
