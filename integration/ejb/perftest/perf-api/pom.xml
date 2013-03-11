@@ -42,18 +42,20 @@
             <scope>provided</scope>
         </dependency>
 
-        <!-- the next two dependencies are made up - install them manually into your local repo ../../scripts/inst..-->
+        <!-- make up the next two versions -->
         <dependency>
             <groupId>org.jboss.jbossas</groupId>
             <artifactId>jboss-as-iiop</artifactId>
-            <version>3.2.3</version>
-            <scope>provided</scope>
+            <version>x.y.z</version>
+            <scope>system</scope>
+            <systemPath>${basedir}/lib/jboss-iiop.jar</systemPath>
         </dependency>
         <dependency>
             <groupId>org.jboss.jbossas</groupId>
             <artifactId>jnpserver</artifactId>
-            <version>3.2.3</version>
-            <scope>provided</scope>
+            <version>x.y.z</version>
+            <scope>system</scope>
+            <systemPath>${basedir}/lib/jnpserver.jar</systemPath>
         </dependency>
     </dependencies>
 </project>

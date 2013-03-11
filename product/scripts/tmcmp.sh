@@ -5,10 +5,6 @@ function bail_out {
   exit 1
 }
 
-function user_count {
-    echo There are $(who | wc -l) users logged in \($(date)\)
-}
-
 function is_store_compatible {
   [ "$1" = "EAP5" -a "$2" = "$hqStore" ]
 }
@@ -17,30 +13,37 @@ function run_tests {
   for product in $products; do
     for iteration in $iterations; do
       for thread in $threads; do
-          for jts in $jtsModes; do
-              echo mvn test -P $product -Diterations=$iteration -Dthreads=$thread -Djts=$jts
-              mvn test -P $product -Diterations=$iteration -Dthreads=$thread -Djts=$jts -DobjectStoreDir=$storeDir
+          for store in $stores; do
+              for jts in $jtsModes; do
+                  is_store_compatible $product $store
+                  if [ $? != 0 ]; then
+                    echo mvn test -P $product -Diterations=$iteration -Dthreads=$thread -Djts=$jts
+                    if [ "$store" = "default" ]; then
+                      mvn test -P $product -Diterations=$iteration -Dthreads=$thread -Djts=$jts \
+                        -DobjectStoreDir=$storeDir
+                    else
+                      mvn test -P $product -Diterations=$iteration -Dthreads=$thread -Djts=$jts \
+                        -DobjectStoreType=$store -DobjectStoreDir=$storeDir
+                    fi
+                  fi
+              done
           done
         done
     done
   done
 }
-  
-function set_run_options {
 
-  #products="EAP6 EAP5 EAP6-JDKORB"
-  products="EAP5 EAP6"
-  iterations="1000 10000 100000"
-  threads="1 10 100"
-  jtsModes="true"
-  [ -z $storeDir ] && storeDir="target/TxStoreDir"
+function set_run_options {
+  [ -z "$products" ] && products="EAP5 EAP6"
+  [ -z "$iterations" ] && iterations="1000 10000 100000"
+  [ -z "$threads" ] && threads="1 10 100"
+  [ -z "$jtsModes" ] && jtsModes="true"
+  [ -z "$storeDir" ] && storeDir="target/TxStoreDir"
+  [ -z "$stores" ] && stores="default"
 }
 
 # Allow the caller to abort the tests
 trap 'bail_out' 1 2 3 15
-
-# Install dependencies into the local repo
-[ -d "$M2_REPO/org/jacorb/jacorb/4.6.1.GA" -a -d "$M2_REPO/org/jacorb/jacorb/2.3.1.patched" -a -d "$M2_REPO/logkit/LogKit/1.2" -a -d "$M2_REPO/org/apache/avalon/framework/avalon-framework/4.1.5" ] || ./scripts/install-EAP5-dependencies.sh
 
 echo "sending output to target/results.txt"
 

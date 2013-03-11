@@ -4,21 +4,23 @@ print Testing EAP6 and EAP5 unpatched, file store with default data dir
 hornetq disable 
 jacorb unpatch 
 data default
-test 1000 1
-test 100 10
+test 10000 1
+test 1000 10
+test 10000 1
+test 1000 10
 print Testing patching jacorb
 jacorb patch 
-test 1000 1
-test 100 10
+test 10000 1
+test 1000 10
 print Testing enabling hornetq store and unpatching jacorb
 hornetq enable 
 jacorb unpatch 
-test 1000 1
+test 10000 1
 test 100 10
 print Testing patching jacorb
 jacorb patch 
-test 1000 1
-test 100 10
+test 10000 1
+test 1000 10
 # The following would run multiple test setups 
 #   test 1000 1
 #   test 1000 1
