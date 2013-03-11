@@ -4,10 +4,8 @@ BASE_DIR=`pwd`
 RES_DIR=$BASE_DIR/results/$$
 RES_FILE=$RES_DIR/perf.$$.tab
 PERF_REPO=https://github.com/jbosstm/performance
-EAP5_ZIP="http://download.devel.redhat.com/released/JBEAP-5/5.1.1/zip/jboss-eap-5.1.1.zip"
-EAP6_ZIP="http://download.devel.redhat.com/released/JBEAP-6/6.0.1/zip/jboss-eap-6.0.1.zip"
 DR3_ZIP="http://download.devel.redhat.com/devel/candidates/JBEAP/JBEAP-6.1.0-DR3/jboss-eap-6.1.0.DR3.zip"
-PROD_DIR=$BASE_DIR/performance/integration/ejb/perftest
+PROD_DIR=$BASE_DIR/integration/ejb/perftest
 EAP5_DIR=$BASE_DIR/eap-5.1.1
 EAP6_DIR=$BASE_DIR/eap-6.0
 DR3_DIR=$BASE_DIR/dr3
@@ -21,6 +19,9 @@ versions="EAP6 EAP5"
 tests=()
 index=0
 
+[ $EAP5_ZIP ] || EAP5_ZIP="http://download.devel.redhat.com/released/JBEAP-5/5.1.1/zip/jboss-eap-5.1.1.zip"
+[ $EAP6_ZIP ] || EAP6_ZIP="http://download.devel.redhat.com/released/JBEAP-6/6.0.1/zip/jboss-eap-6.0.1.zip"
+ 
 [ $JBOSS_TERM ] || JBOSS_TERM=gnome 
 
 server0_pid=0
@@ -60,7 +61,6 @@ function configure_eap5 {
   [ -d "$EAP5_DIR" ] || mkdir -p $EAP5_DIR
 
   zipfile=$BASE_DIR/jboss-eap-5.1.1.zip
-  [ ! -f $zipfile ] && zipfile=$EAP5_DIR/jboss-eap-5.1.1.zip
 
   if [ ! -f $zipfile ]; then
     cd $BASE_DIR
@@ -95,7 +95,6 @@ function configure_eap6 {
   [ -d "$EAP6_DIR" ] || mkdir -p $EAP6_DIR
 
   zipfile=$BASE_DIR/jboss-eap-6.0.1.zip
-  [ ! -f $zipfile ] && zipfile=$EAP6_DIR/jboss-eap-6.0.1.zip
 
   if [ ! -f $zipfile ]; then
     cd $BASE_DIR
@@ -134,9 +133,9 @@ function configure_eap6 {
 }
 
 function clone_perf_repo {
-  if [ ! -d $BASE_DIR/performance/.git ]; then
+  if [ ! -d $BASE_DIR/.git ]; then
     cd $BASE_DIR
-    git clone $PERF_REPO
+    git clone $PERF_REPO .
     [ $? = 0 ] || fatal "clone performance repo failed"
   fi
 }
@@ -145,10 +144,12 @@ function update_ear {
   cd $PROD_DIR
   [ $? = 0 ] || fatal "perftest dir doesn't exist"
 
-  if [ ! -f perf-eap5/harness/ear/target/ear-1.0.ear ]; then
-    mvn clean install
+#  if [ ! -f perf-eap5/harness/ear/target/ear-1.0.ear ]; then
+    mvn clean install -f perf-api/pom.xml
+    mvn clean install -f perf-eap6/pom.xml
+#    mvn clean install
     [ $? = 0 ] || fatal "perftest clean install failed"
-  fi
+#  fi
 
   do_copy perf-eap5/harness/ear/target/ear-1.0.ear $EAP5_DIR/jboss-eap-5.1/jboss-as/server/server0/deploy/
   do_copy perf-eap5/harness/ear2/target/ear2-1.0.ear $EAP5_DIR/jboss-eap-5.1/jboss-as/server/server1/deploy/
