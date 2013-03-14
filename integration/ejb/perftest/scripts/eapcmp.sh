@@ -151,11 +151,11 @@ function update_ear {
     [ $? = 0 ] || fatal "perftest clean install failed"
 #  fi
 
-  do_copy perf-eap5/harness/ear/target/ear-1.0.ear $EAP5_DIR/jboss-eap-5.1/jboss-as/server/server0/deploy/
   do_copy perf-eap5/harness/ear2/target/ear2-1.0.ear $EAP5_DIR/jboss-eap-5.1/jboss-as/server/server1/deploy/
+  do_copy perf-eap5/harness/ear/target/ear-1.0.ear $EAP5_DIR/jboss-eap-5.1/jboss-as/server/server0/deploy/
 
-  do_copy perf-eap6/application-component-1/target/perf-eap6-app-component-1.war $EAP6_DIR/server0/standalone/deployments/
   do_copy perf-eap6/application-component-2-ear/target/perf-eap6-app-component-2-ear.ear $EAP6_DIR/server1/standalone/deployments/
+  do_copy perf-eap6/application-component-1/target/perf-eap6-app-component-1.war $EAP6_DIR/server0/standalone/deployments/
 }
 
 function start_eap {
@@ -349,8 +349,9 @@ function onetest {
 }
 
 function test_group {
-  start_eap $1 0 0
-  start_eap $1 1
+  # The ejb deployed to server 0 dependends on an ejb deployed to server 1 so makes sure 1 starts before 0
+  start_eap $1 1 0
+  start_eap $1 0
 
   cd $RES_DIR
 
