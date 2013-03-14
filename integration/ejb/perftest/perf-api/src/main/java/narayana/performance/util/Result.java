@@ -1,6 +1,9 @@
 package narayana.performance.util;
 
 import java.io.Serializable;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+import java.util.Calendar;
 import java.util.Map;
 
 /**
@@ -32,6 +35,8 @@ public class Result implements Serializable {
     private boolean verbose;
     private boolean showHeader;
     private boolean useHtml;
+    private Calendar calendar = Calendar.getInstance();
+    private String hostName;
 
     public Result(String namingProvider, boolean local, int threadCount, int numberOfCalls, int enlist, boolean iiop,
                   boolean cmt, boolean transactional, long prepareDelay, boolean verbose, boolean showHeader,
@@ -51,6 +56,11 @@ public class Result implements Serializable {
         this.showHeader = showHeader;
         this.useHtml = useHtml;
         this.storeType = storeType;
+        try {
+            hostName = InetAddress.getLocalHost().getHostName();
+        } catch (UnknownHostException e) {
+            hostName = "Unknown";
+        }
     }
 
     public Result(Result result) {
@@ -61,7 +71,7 @@ public class Result implements Serializable {
         this.throughputBMT = result.throughputBMT;
         this.throughputCMT = result.throughputCMT;
         this.errorCount = 0;
-
+        this.hostName = hostName;
     }
 
     public void setProductVersion(String productVersion) {
@@ -200,14 +210,14 @@ public class Result implements Serializable {
         if (useHtml)
             return toHtml();
         else
-            return String.format("%16s %11d %6d %9d %9s %11d %13b %6d %6b %12s%n",
-                productVersion, getThroughputBMT(), getNumberOfCalls(), getErrorCount(), patchedJacorb,
-                threadCount, transactional, enlist, !isLocal(), storeType);
+            return String.format("%12s %12tT %16s %11d %6d %9d %9s %11d %13b %6d %6b %12s%n",
+                hostName, calendar, productVersion, getThroughputBMT(), getNumberOfCalls(), getErrorCount(),
+                    patchedJacorb, threadCount, transactional, enlist, !isLocal(), storeType);
     }
 
     public static StringBuilder getHeaderAsText(StringBuilder sb) {
-        return sb.append(String.format("%16s %11s %6s %9s %9s %11s %13s %6s %6s %12s%n",
-                "Version", "Throughput", "Calls", "Errors", "Patched",
+        return sb.append(String.format("%12s %12s %16s %11s %6s %9s %9s %11s %13s %6s %6s %12s%n",
+                "Hostname","Time of Day", "Version", "Throughput", "Calls", "Errors", "Patched",
                 "Threads", "Transaction", "Enlist", "Remote", "StoreType"));
     }
 

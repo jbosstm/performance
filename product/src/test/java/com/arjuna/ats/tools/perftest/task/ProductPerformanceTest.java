@@ -26,6 +26,8 @@ import org.junit.Test;
 
 import java.io.*;
 import java.lang.reflect.Constructor;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.*;
 import java.util.concurrent.CyclicBarrier;
 import java.util.concurrent.ExecutorService;
@@ -54,6 +56,7 @@ public class ProductPerformanceTest
     private Calendar calendar = Calendar.getInstance();
     private String skipTestReason = null;
     private PrintWriter output;
+    private String hostName;
 
     private void hackEAPVersion() {
         String profile = System.getProperty("profile");
@@ -130,9 +133,15 @@ public class ProductPerformanceTest
 
         output = new PrintWriter(writer);
 
+        try {
+            hostName = InetAddress.getLocalHost().getHostName();
+        } catch (UnknownHostException e) {
+            hostName = "Unknown";
+        }
+
         if (!exists)
-            output.printf("%12s %24s %10s %10s %7s %6s %5s %26s%n",
-                    "Time of Day", "Product", "Throughput", "Iterations", "Threads", "Aborts",  "JTS", "Store");
+            output.printf("%12s %12s %24s %10s %10s %7s %6s %5s %26s%n",
+                    "Hostname", "Time of Day", "Product", "Throughput", "Iterations", "Threads", "Aborts",  "JTS", "Store");
     }
 
     @After
@@ -167,7 +176,8 @@ public class ProductPerformanceTest
         for (Map.Entry<WorkerTask, TaskResult> entry: tasks.entrySet()) {
             WorkerTask task = entry.getKey();
             TaskResult result = entry.getValue();
-            String res = String.format("%12tT %24s %10d %10d %7d %6d %5s %26s%n", calendar, task.getName(),
+            String res = String.format("%12s %12tT %24s %10d %10d %7d %6d %5s %26s%n",
+                    hostName, calendar, task.getName(),
                     (int) result.getThroughput(), result.iterations, result.threads, task.getNumberOfFailures(),
                     jts, store);
             output.print(res);
