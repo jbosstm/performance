@@ -466,15 +466,24 @@ function process_cmds {
 
   run_tests
 
+  FINAL_DIR=$BASE_DIR/results/latest
+  rm -rf $FINAL_DIR
+  mkdir -p $FINAL_DIR
+  cp -r $RES_DIR/* $FINAL_DIR
+
   # save the server logs
   for ver in $versions; do
     case $ver in
     "EAP5")
-      mkdir $RES_DIR/EAP5;
-      cp $EAP5_DIR/jboss-eap-5.1/jboss-as/server/server0/log/* $RES_DIR/EAP5;;
+      mkdir -p $FINAL_DIR/EAP5/server0;
+      mkdir -p $FINAL_DIR/EAP5/server1;
+      cp $EAP5_DIR/jboss-eap-5.1/jboss-as/server/server0/log/* $FINAL_DIR/EAP5/server0/;
+      cp $EAP5_DIR/jboss-eap-5.1/jboss-as/server/server1/log/* $FINAL_DIR/EAP5/server1/;;
     "EAP6")
-      mkdir $RES_DIR/EAP6;
-      cp $EAP6_DIR/server0/standalone/log/* $RES_DIR/EAP6;;
+      mkdir -p $FINAL_DIR/EAP6/server0;
+      mkdir -p $FINAL_DIR/EAP6/server1;
+      cp $EAP6_DIR/server0/standalone/log/* $FINAL_DIR/EAP6/server0/;
+      cp $EAP6_DIR/server1/standalone/log/* $FINAL_DIR/EAP6/server1/;;
     esac
   done
 }
