@@ -38,6 +38,7 @@ public class ProductPerformanceTest
 {
     private static String[] configKeys = {
             "iterations",
+            "warmUpIterations",
             "threads",
             "objectStoreDir",
             "objectStoreType",
@@ -50,6 +51,7 @@ public class ProductPerformanceTest
     private String products[];
     private Map<WorkerTask, TaskResult> tasks;
     private int iterations = 200000;
+    private int warmUpIterations = 0;
     private int threads = 100; // 1000 gets an OOM error
     private String productOpt = "com.arjuna.ats.tools.perftest.task.RHWorkerTask";
     private Properties options = new Properties();
@@ -81,17 +83,36 @@ public class ProductPerformanceTest
         }
     }
 
+    private int initTxnCount(int value, boolean verbose) {
+        if (value <= 0) {
+            if (verbose)
+                System.err.printf("Using a sane value for the number of iterations. Changing from %d to %d%n",
+                    iterations, BATCH_SIZE);
+            value = BATCH_SIZE;
+        }
+
+        int txnCount = Math.round(iterations/BATCH_SIZE) * BATCH_SIZE;
+
+        if (txnCount != iterations) {
+            if (verbose)
+                System.err.printf("Number of iterations must be a multiple of %d - changing it from %d to %d%n",
+                    BATCH_SIZE, iterations, txnCount + BATCH_SIZE);
+            value = txnCount + BATCH_SIZE;
+        }
+
+        return value;
+    }
+
     @Before
     public void setUp() throws Exception {
         String configResource = "test1.properties";
         InputStream bis = Thread.currentThread().getContextClassLoader().getResourceAsStream(configResource);
-        int txnCount;
 
         skipTestReason = null;
 
         options.load(bis);
 
-        // allow optiosn set via system proeprties to override ones set in the config file
+        // allow options set via system properties to override ones set in the config file
         for (String key : configKeys) {
             String val = System.getProperty(key);
 
@@ -100,32 +121,20 @@ public class ProductPerformanceTest
         }
 
         products = options.getProperty("products", productOpt).split(",");
-        iterations = Integer.valueOf(options.getProperty("iterations", String .valueOf(iterations)));
-        threads = Integer.valueOf(options.getProperty("threads", String .valueOf(threads)));
+        iterations = Integer.valueOf(options.getProperty("iterations", String.valueOf(iterations)));
+        iterations = initTxnCount(iterations, true);
+        warmUpIterations = Integer.valueOf(options.getProperty("warmUpIterations", String.valueOf(warmUpIterations)));
+        if (warmUpIterations > 0)
+            warmUpIterations = initTxnCount(warmUpIterations, true);
+        threads = Integer.valueOf(options.getProperty("threads", String.valueOf(threads)));
         tasks = new HashMap<WorkerTask, TaskResult>();
-
-        if (iterations <= 0) {
-            System.err.printf("Using a sane value for the number of iterations. Changing from %d to %d%n",
-                    iterations, BATCH_SIZE);
-            iterations = BATCH_SIZE;
-        }
-
-        txnCount = Math.round(iterations/BATCH_SIZE) * BATCH_SIZE;
-
-        if (txnCount != iterations) {
-            System.err.printf("Number of iterations must be a multiple of %d - changing it from %d to %d%n",
-                    BATCH_SIZE, iterations, txnCount + BATCH_SIZE);
-            iterations = txnCount + BATCH_SIZE;
-        }
 
         if (threads < 1)
             threads = 1;
 
-        hackEAPVersion();
-
-        System.setProperty("iterations", String.valueOf(iterations));
-
         System.out.printf("iterations=%d threads=%d%n", iterations, threads);
+
+        hackEAPVersion();
 
         File file = new File(options.getProperty("resultsFile", "target/results.txt"));
         boolean exists = file.exists();
@@ -140,8 +149,9 @@ public class ProductPerformanceTest
         }
 
         if (!exists)
-            output.printf("%12s %12s %24s %10s %10s %7s %6s %5s %26s%n",
-                    "Hostname", "Time of Day", "Product", "Throughput", "Iterations", "Threads", "Aborts",  "JTS", "Store");
+            output.printf("%12s %12s %24s %10s %10s %10s %7s %6s %5s %26s %5s %8s %8s %8s%n",
+                    "Hostname", "Time", "Product", "Throughput", "Iterations", "WarmUp", "Threads", "Aborts",  "JTS",
+                    "Store", "AIO", "HQBuffSz", "SyncDel", "SyncRate");
     }
 
     @After
@@ -158,8 +168,11 @@ public class ProductPerformanceTest
             System.out.print(res);
             output.print(res);
         } else {
-            for (int i = 0; i < products.length; i++)
+            for (int i = 0; i < products.length; i++) {
+                if (warmUpIterations > 0)
+                    testLoop(products[i], warmUpIterations, 1);
                 results[i] = testLoop(products[i], iterations, threads);
+            }
 
             printResults();
         }
@@ -170,16 +183,21 @@ public class ProductPerformanceTest
         String store = options.getProperty("objectStoreType", "default");
         int i = store.lastIndexOf('.');
 
+        boolean aio = (System.getProperty("aio", "false")).equals("true");
+        int bufferFlushesPerSecond = Integer.getInteger("com.arjuna.ats.arjuna.hornetqjournal.bufferFlushesPerSecond", -1);
+        int bufferSize = Integer.getInteger("com.arjuna.ats.arjuna.hornetqjournal.bufferSize", -1);
+        String syncDeletes = System.getProperty("com.arjuna.ats.arjuna.hornetqjournal.syncDeletes", "default");
+
         if (i != -1)
             store = store.substring(i + 1);
 
         for (Map.Entry<WorkerTask, TaskResult> entry: tasks.entrySet()) {
             WorkerTask task = entry.getKey();
             TaskResult result = entry.getValue();
-            String res = String.format("%12s %12tT %24s %10d %10d %7d %6d %5s %26s%n",
+            String res = String.format("%12s %12tT %24s %10d %10d %10d %7d %6d %5s %26s %5s %8d %8s %8d%n",
                     hostName, calendar, task.getName(),
-                    (int) result.getThroughput(), result.iterations, result.threads, task.getNumberOfFailures(),
-                    jts, store);
+                    (int) result.getThroughput(), result.iterations, warmUpIterations, result.threads, task.getNumberOfFailures(),
+                    jts, store, aio, bufferSize, syncDeletes, bufferFlushesPerSecond);
             output.print(res);
             System.out.print(res);
             task.reportErrors(output);

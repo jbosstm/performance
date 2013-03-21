@@ -3,17 +3,20 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.jboss.narayana.performance</groupId>
     <artifactId>product-perf-test-harness</artifactId>
-    <version>5.0.0.M2-SNAPSHOT</version>
+    <version>5.0.0.M3-SNAPSHOT</version>
     <name>product-perf-test-harness</name>
     <description>Performance Comparison Test Harness</description>
     <packaging>jar</packaging>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-
+        <aio.lib.path>${basedir}/lib</aio.lib.path>
+        <jvm.args>-Xms1024m -Xmx1024m -Djava.library.path=${aio.lib.path}</jvm.args>
+        <version.hornetq>2.2.14.Final</version.hornetq>
+        <!--version.hornetq>2.2.13.Final</version.hornetq-->
         <version.EAP5>4.6.1.GA_CP12</version.EAP5>
         <version.EAP6>4.16.4.Final </version.EAP6>
-        <version.EAP7-IDLJ>5.0.0.M2-SNAPSHOT</version.EAP7-IDLJ>
+        <version.EAP7-IDLJ>5.0.0.M3-SNAPSHOT</version.EAP7-IDLJ>
 
         <version.jacorb.patched>2.3.1.patched</version.jacorb.patched>
         <version.jacorb.EAP5>4.6.1.GA</version.jacorb.EAP5>
@@ -55,7 +58,7 @@
                 <dependency>
                     <groupId>org.hornetq</groupId>
                     <artifactId>hornetq-core</artifactId>
-                    <version>2.2.13.Final</version>
+                    <version>${version.hornetq}</version>
                 </dependency>
                 <dependency>
                     <groupId>org.jboss.netty</groupId>
@@ -87,6 +90,8 @@
                         <artifactId>maven-surefire-plugin</artifactId>
                         <version>2.7.2</version>
                         <configuration>
+                            <argLine>${jvm.args}</argLine>
+                            <redirectTestOutputToFile>true</redirectTestOutputToFile>
                             <systemPropertyVariables>
                                 <profile>EAP6</profile>
                                 <product.name>${version.EAP6} JBossTS</product.name>
@@ -124,7 +129,7 @@
                 <dependency>
                     <groupId>org.hornetq</groupId>
                     <artifactId>hornetq-core</artifactId>
-                    <version>2.2.13.Final</version>
+                    <version>${version.hornetq}</version>
                 </dependency>
                 <dependency>
                     <groupId>org.jboss.netty</groupId>
