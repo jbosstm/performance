@@ -161,6 +161,8 @@
                         <artifactId>maven-surefire-plugin</artifactId>
                         <version>2.7.2</version>
                         <configuration>
+                            <argLine>${jvm.args}</argLine>
+                            <redirectTestOutputToFile>true</redirectTestOutputToFile>
                             <systemPropertyVariables>
                                 <profile>EAP6-JDKORB</profile>
                                 <product.name>${version.EAP7-IDLJ} Narayana</product.name>

@@ -56,7 +56,7 @@ function run_fstests {
 
 # test the hornetq object store
 function hqtest {
-  product=EAP6
+  product=$8
   xopts="$xargs -Djts=$6"
   [ -z "$simulate" ] || xstore=Hornetq
 
@@ -82,14 +82,17 @@ function hqtest {
 
 # test various configurations of the hornetq object store
 function run_hqtests {
-  for aio in $aioModes; do
-    for jts in $jtsModes; do
-      for syncDelete in $syncDeletes; do
-        for iteration in $iterations; do
-          for thread in $threads; do
-            for bufferSize in $bufferSizes; do
-              for flushRate in $flushRates; do
-                hqtest $iteration $thread $flushRate $bufferSize $syncDelete $jts $aio
+  for product in $products; do
+    [ $product = "EAP5" ] && continue
+    for aio in $aioModes; do
+      for jts in $jtsModes; do
+        for syncDelete in $syncDeletes; do
+          for iteration in $iterations; do
+            for thread in $threads; do
+              for bufferSize in $bufferSizes; do
+                for flushRate in $flushRates; do
+                  hqtest $iteration $thread $flushRate $bufferSize $syncDelete $jts $aio $product
+                done
               done
             done
           done
