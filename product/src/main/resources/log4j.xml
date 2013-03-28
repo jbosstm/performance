@@ -15,7 +15,7 @@
     <appender name="file" class="org.apache.log4j.FileAppender">
         <param name="File" value="logs/test.log"/>
         <param name="Append" value="false"/>
-        <param name="Threshold" value="WARN"/>
+        <param name="Threshold" value="INFO"/>
 
         <layout class="org.apache.log4j.PatternLayout">
             <param name="ConversionPattern" value="%d [%t] %p - %m%n"/>
@@ -23,24 +23,24 @@
     </appender>
 
     <category name="com.arjuna">
-        <level value="ERROR"/>
+        <level value="WARN"/>
         <appender-ref ref="console"/>
         <appender-ref ref="file"/>
     </category>
     <category name="org.objectweb">
-        <level value="ERROR"/>
+        <level value="WARN"/>
         <appender-ref ref="console"/>
     </category>
     <category name="bitronix">
-        <level value="ERROR"/>
+        <level value="WARN"/>
         <appender-ref ref="console"/>
     </category>
     <category name="org.simplejta">
-        <level value="ERROR"/>
+        <level value="WARN"/>
         <appender-ref ref="console"/>
     </category>
     <category name="org.enhydra.jdbc">
-        <level value="ERROR"/>
+        <level value="WARN"/>
         <appender-ref ref="console"/>
     </category>
 </log4j:configuration>
