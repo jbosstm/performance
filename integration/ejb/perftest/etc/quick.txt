@@ -1,21 +1,40 @@
 # syntax see eapcmp.sh function cmd_syntax
-versions EAP6 EAP5
-print Testing EAP6 and EAP5 unpatched, file store with default data dir
-hornetq disable 
-jacorb unpatch 
-data default
-test 1000 1
-test 1000 10
-#print Testing patching jacorb
+#
+#versions EAP6
+#print TEST 1: 28104 Passes EAP6 and EAP5 unpatched, file store with default data dir
+#hornetq enable
 #jacorb patch 
-#test 1000 1
-#test 1000 10
-#print Testing enabling hornetq store and unpatching jacorb
+#data /mnt
+#test 100000 24
+#versions EAP6
+#print TEST 2: 2250 FAILS on benchcli Testing EAP6 and EAP5 unpatched, file store with default data dir
 #hornetq enable 
 #jacorb unpatch 
-#test 1000 1
-#test 1000 10
-#print Testing patching jacorb
-#jacorb patch 
-#test 1000 1
-#test 1000 10
+#data /mnt
+#test 100000 24
+#
+versions EAP5
+print TEST 3: fails with jdk7 on laptop Passes Testing EAP6 and EAP5 unpatched, file store with default data dir
+hornetq disable
+jacorb unpatch 
+data /mnt
+test 100000 24
+versions EAP6
+print TEST 4: Passes Testing EAP6 and EAP5 unpatched, file store with default data dir
+hornetq disable
+jacorb unpatch 
+data /mnt
+test 100000 24
+versions EAP5
+print TEST 5: Passes Testing EAP6 and EAP5 unpatched, file store with default data dir
+hornetq disable 
+jacorb patch 
+data /mnt
+test 100000 24
+#versions EAP6
+#print TEST 6: FAILS on laptop and bencli Testing EAP6 and EAP5 unpatched, file store with default data dir
+#hornetq disable
+#jacorb patch
+#data /mnt
+#test 100000 24
+

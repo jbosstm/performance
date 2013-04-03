@@ -51,10 +51,15 @@ function do_copy {
 }
 
 function modify_jacorb_config {
-  sed -i -e 's/3528/3628/g' $1
-  sed -i -e 's/3529/3629/g' $1
-# NB if we every want to recovery performance testing also change jacorb.implname
+  if [ $# = 3 ]; then
+    sed -i -e 's/3528/3628/g' $1
+    sed -i -e 's/3529/3629/g' $1
+# NB if we ever want to do recovery performance testing also change jacorb.implname
 #  sed -i -e 's/jacorb.implname=JBoss/jacorb.implname=JBoss1/g' $1
+  fi
+#OAIAddr=127.0.0.1
+
+  sed -i -e 's/#jacorb.connection.max_threads=/jacorb.connection.max_threads=128/g' $1
 }
 
 function configure_eap5 {
@@ -81,7 +86,7 @@ function configure_eap5 {
     [ $? = 0 ] || fatal "enable EAP5 jts failed for server0"
     ant jts -Dtarget.server.dir=../../../server/server1
     [ $? = 0 ] || fatal "enable EAP5 jts failed for server1"
-    modify_jacorb_config $EAP5_DIR/jboss-eap-5.1/jboss-as/server/server1/conf/jacorb.properties
+    modify_jacorb_config $EAP5_DIR/jboss-eap-5.1/jboss-as/server/server1/conf/jacorb.properties yes
 
     do_copy  $EAP5_DIR/jboss-eap-5.1/jboss-as/server/all/lib/jacorb.jar $PROD_DIR/etc/jacorb.jar.eap5
   fi
@@ -238,17 +243,17 @@ function enable_jts {
     $EAP6_DIR/server$2/bin/jboss-cli.sh --connect controller=localhost:9999 --user=admin --password=adm1n << JTS
 /subsystem=transactions/:write-attribute(name=jts,value=true)
 /subsystem=jacorb/:write-attribute(name=transactions,value=on)
+/subsystem=jacorb:write-attribute(name="max-threads", value=128)
 JTS
 #TODO /subsystem=transactions/:write-attribute(name=node-identifier,value=0)
-#/subsystem=jacorb:write-attribute(name="max-threads", value=64)
 #pool-size "The size of the request processors thread-pool"
   else
     $EAP6_DIR/server$2/bin/jboss-cli.sh --connect controller=localhost:10099 --user=admin --password=adm1n << JTS
 /subsystem=transactions/:write-attribute(name=jts,value=true)
 /subsystem=jacorb/:write-attribute(name=transactions,value=on)
+/subsystem=jacorb:write-attribute(name="max-threads", value=128)
 JTS
 #TODO jacorb.properties /subsystem=transactions/:write-attribute(name=node-identifier,value=1)
-#/subsystem=jacorb:write-attribute(name="max-threads", value=64)
   fi
 }
     
