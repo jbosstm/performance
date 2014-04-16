@@ -1,0 +1,216 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.jboss.narayana.performance</groupId>
+        <artifactId>comparison-parent</artifactId>
+        <version>1.0-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>rest-at</artifactId>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.jboss.narayana.performance</groupId>
+            <artifactId>common</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.narayana.rts</groupId>
+            <artifactId>restat-util</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.narayana</groupId>
+            <artifactId>test-utils</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.resteasy</groupId>
+            <artifactId>jaxrs-api</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.spec.javax.ejb</groupId>
+            <artifactId>jboss-ejb-api_3.2_spec</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.spec.javax.transaction</groupId>
+            <artifactId>jboss-transaction-api_1.2_spec</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.arquillian.junit</groupId>
+            <artifactId>arquillian-junit-container</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.arquillian.protocol</groupId>
+            <artifactId>arquillian-protocol-servlet</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.resteasy</groupId>
+            <artifactId>resteasy-client</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.resteasy</groupId>
+            <artifactId>resteasy-jaxb-provider</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <profiles>
+        <profile>
+            <id>arq</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+
+            <dependencies>
+                <dependency>
+                    <groupId>org.wildfly</groupId>
+                    <artifactId>wildfly-arquillian-container-managed</artifactId>
+                    <scope>test</scope>
+                </dependency>
+            </dependencies>
+
+            <build>
+                <plugins>
+                    <plugin>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <configuration>
+                            <skip>false</skip>
+                            <systemPropertyVariables combine.children="append">
+                                <arquillian.launch>wildfly-cluster</arquillian.launch>
+                                <server1.jvm.args>${jvm.args.other}
+                                    ${jvm.args.memory}</server1.jvm.args>
+                                <server2.jvm.args>${jvm.args.other}
+                                    ${jvm.args.memory}</server2.jvm.args>
+                                <server3.jvm.args>${jvm.args.other}
+                                    ${jvm.args.memory}</server3.jvm.args>
+                            </systemPropertyVariables>
+                        </configuration>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-antrun-plugin</artifactId>
+                        <version>1.7</version>
+                        <executions>
+                            <execution>
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
+                                <phase>test-compile</phase>
+                                <configuration>
+                                    <target>
+                                        <!-- Make three copies for the application server -->
+                                        <copy todir="${basedir}/target/server1">
+                                            <fileset dir="${env.JBOSS_HOME}" />
+                                        </copy>
+                                        <copy todir="${basedir}/target/server2">
+                                            <fileset dir="${env.JBOSS_HOME}" />
+                                        </copy>
+                                        <copy todir="${basedir}/target/server3">
+                                            <fileset dir="${env.JBOSS_HOME}" />
+                                        </copy>
+
+                                        <!-- Copy standalone-rts.xml to the configuration directory -->
+                                        <copy file="${env.JBOSS_HOME}/docs/examples/configs/standalone-rts.xml"
+                                            tofile="${basedir}/target/server1/standalone/configuration/standalone-rts.xml" />
+                                        <copy file="${env.JBOSS_HOME}/docs/examples/configs/standalone-rts.xml"
+                                            tofile="${basedir}/target/server2/standalone/configuration/standalone-rts.xml" />
+                                        <copy file="${env.JBOSS_HOME}/docs/examples/configs/standalone-rts.xml"
+                                            tofile="${basedir}/target/server3/standalone/configuration/standalone-rts.xml" />
+
+                                        <!-- Clear object stores and logs -->
+                                        <delete dir="${basedir}/target/server1/standalone/data/tx-object-store" />
+                                        <delete dir="${basedir}/target/server2/standalone/data/tx-object-store" />
+                                        <delete dir="${basedir}/target/server3/standalone/data/tx-object-store" />
+                                        <delete dir="${basedir}/target/server1/standalone/log" />
+                                        <delete dir="${basedir}/target/server2/standalone/log" />
+                                        <delete dir="${basedir}/target/server3/standalone/log" />
+                                    </target>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>debug-server1</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+
+            <build>
+                <plugins>
+                    <plugin>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <configuration>
+                            <systemPropertyVariables combine.children="append">
+                                <server1.jvm.args>
+                                    ${jvm.args.other}
+                                    ${jvm.args.memory} ${jvm.args.debug}
+                                </server1.jvm.args>
+                            </systemPropertyVariables>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>debug-server2</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+
+            <build>
+                <plugins>
+                    <plugin>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <configuration>
+                            <systemPropertyVariables combine.children="append">
+                                <server2.jvm.args>
+                                    ${jvm.args.other}
+                                    ${jvm.args.memory} ${jvm.args.debug}
+                                </server2.jvm.args>
+                            </systemPropertyVariables>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>debug-server3</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+
+            <build>
+                <plugins>
+                    <plugin>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <configuration>
+                            <systemPropertyVariables combine.children="append">
+                                <server3.jvm.args>
+                                    ${jvm.args.other}
+                                    ${jvm.args.memory} ${jvm.args.debug}
+                                </server3.jvm.args>
+                            </systemPropertyVariables>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+</project>
