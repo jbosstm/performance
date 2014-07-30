@@ -60,11 +60,9 @@ public abstract class AbstractTestCase {
 
     protected static final String SECOND_SERVICE_CONTROLLER = "127.0.0.1:10190";
 
-    protected final String threadCount;
+    protected final String numberOfThreads;
 
     protected final String numberOfCalls;
-
-    protected final String maxThreads;
 
     protected final String batchSize;
 
@@ -75,9 +73,8 @@ public abstract class AbstractTestCase {
     protected Deployer deployer;
 
     public AbstractTestCase() {
-        threadCount = System.getProperty("threadCount", "1");
+        numberOfThreads = System.getProperty("numberOfThreads", "1");
         numberOfCalls = System.getProperty("numberOfCalls", "50");
-        maxThreads = System.getProperty("maxThreads", "1");
         batchSize = System.getProperty("batchSize", "1");
     }
 

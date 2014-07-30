@@ -1,6 +1,6 @@
 package org.jboss.narayana.performance.common.test;
 
-import io.narayana.perf.Result;
+import io.narayana.perf.Measurement;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -11,7 +11,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement(name = "result")
 public class TestResult {
 
-    private int throughput;
+    private double throughput;
 
     private long averageTime;
 
@@ -38,17 +38,17 @@ public class TestResult {
         this.numberOfThreads = numberOfThreads;
     }
 
-    public TestResult(final Result<String> result) {
-        throughput = result.getThroughput();
-        averageTime = result.getOne();
-        totalTime = result.getTotalMillis();
-        numberOfErrors = result.getErrorCount();
-        numberOfCalls = result.getNumberOfCalls();
-        numberOfThreads = result.getThreadCount();
+    public TestResult(final Measurement<String> measurement) {
+        throughput = measurement.getThroughput();
+        averageTime = measurement.getOne();
+        totalTime = measurement.getTotalMillis();
+        numberOfErrors = measurement.getNumberOfErrors();
+        numberOfCalls = measurement.getNumberOfCalls();
+        numberOfThreads = measurement.getNumberOfThreads();
     }
 
     @XmlElement
-    public int getThroughput() {
+    public double getThroughput() {
         return throughput;
     }
 

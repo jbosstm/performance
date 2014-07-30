@@ -1,9 +1,5 @@
 package org.jboss.narayana.performance.xts;
 
-import io.narayana.perf.PerformanceTester;
-import io.narayana.perf.Result;
-import io.narayana.perf.Worker;
-
 import java.io.File;
 
 import javax.ws.rs.client.Client;
@@ -47,9 +43,9 @@ public class TestCase extends AbstractTestCase {
     public static Archive<?> getClientDeployment() {
         final WebArchive archive = ShrinkWrap
                 .create(WebArchive.class, CLIENT_DEPLOYMENT_NAME + ".war")
-                .addClasses(TestExecutor.class, TestWorkerImpl.class, TestResult.class, Worker.class, Result.class,
-                        PerformanceTester.class, FirstService.class, SecondService.class,
-                        FirstServiceClientFactory.class, SecondServiceClientFactory.class)
+                .addPackage("io.narayana.perf")
+                .addClasses(TestExecutor.class, TestWorkerImpl.class, TestResult.class, FirstService.class,
+                        SecondService.class, FirstServiceClientFactory.class, SecondServiceClientFactory.class)
                 .addAsWebInfResource(new File("src/test/resources/web.xml"), "web.xml")
                 .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
 
@@ -112,11 +108,10 @@ public class TestCase extends AbstractTestCase {
      */
     @Test
     public void test() {
-
         final Client client = ClientBuilder.newClient();
-        final TestResult result = client.target(EXECUTOR_URL).queryParam("threadCount", threadCount)
-                .queryParam("numberOfCalls", numberOfCalls).queryParam("maxThreads", maxThreads)
-                .queryParam("batchSize", batchSize).request().get(TestResult.class);
+        final TestResult result = client.target(EXECUTOR_URL).queryParam("numberOfThreads", numberOfThreads)
+                .queryParam("numberOfCalls", numberOfCalls).queryParam("batchSize", batchSize).request()
+                .get(TestResult.class);
 
         Assert.assertNotNull(result);
         exportTestResults(result);

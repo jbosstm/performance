@@ -1,6 +1,6 @@
 package org.jboss.narayana.performance.rts.client;
 
-import io.narayana.perf.Result;
+import io.narayana.perf.Measurement;
 import io.narayana.perf.Worker;
 
 import javax.ws.rs.client.Client;
@@ -31,18 +31,21 @@ public class TestWorkerImpl implements Worker<String> {
         this.coordinatorUrl = coordinatorUrl;
     }
 
-    public String doWork(String context, int iterationsCount, Result<String> options) {
-        for (int i = 0; i < iterationsCount; i++) {
+    @Override
+    public String doWork(final String context, final int batchSize, final Measurement<String> measurement) {
+        for (int i = 0; i < batchSize; i++) {
             executeIteration();
         }
 
         return null;
     }
 
+    @Override
     public void init() {
 
     }
 
+    @Override
     public void fini() {
 
     }

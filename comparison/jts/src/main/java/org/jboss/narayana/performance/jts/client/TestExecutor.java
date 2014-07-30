@@ -1,7 +1,6 @@
 package org.jboss.narayana.performance.jts.client;
 
-import io.narayana.perf.PerformanceTester;
-import io.narayana.perf.Result;
+import io.narayana.perf.Measurement;
 import io.narayana.perf.Worker;
 
 import javax.ejb.EJB;
@@ -40,22 +39,19 @@ public class TestExecutor {
     @GET
     @Produces(MediaType.APPLICATION_XML)
     @TransactionAttribute(TransactionAttributeType.NEVER)
-    public TestResult execute(@QueryParam("threadCount") int threadCount,
-            @QueryParam("numberOfCalls") int numberOfCalls, @QueryParam("maxThreads") int maxThreads,
-            @QueryParam("batchSize") int batchSize) throws NamingException {
+    public TestResult execute(@QueryParam("numberOfThreads") int numberOfThreads,
+            @QueryParam("numberOfCalls") int numberOfCalls, @QueryParam("batchSize") int batchSize) throws NamingException {
 
-        LOG.infov("Received test executor request. threadCount={0}, numberOfCalls={1}, maxThreads={2}, batchSize={3}.",
-                threadCount, numberOfCalls, maxThreads, batchSize);
+        LOG.infov("Received test executor request. numberOfThreads={0}, numberOfCalls={1}, batchSize={2}.",
+                numberOfThreads, numberOfCalls, batchSize);
 
-        final PerformanceTester<String> tester = new PerformanceTester<String>(maxThreads, batchSize);
+        final Measurement<String> measurement = new Measurement<String>(numberOfThreads, numberOfCalls, batchSize);
         final Worker<String> worker = new TestWorkerImpl(firstEJBHome, secondEJBHome);
-
-        final Result<String> options = new Result<String>(threadCount, numberOfCalls);
 
         LOG.infov("Starting test execution.");
 
-        final Result<String> result = tester.measureThroughput(worker, options);
-        final TestResult testResult = new TestResult(result);
+        measurement.measure(worker, worker);
+        final TestResult testResult = new TestResult(measurement);
 
         LOG.infov("Completed test execution: {0}", testResult);
 

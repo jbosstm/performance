@@ -1,10 +1,8 @@
 package org.jboss.narayana.performance.xts.client;
 
-import io.narayana.perf.PerformanceTester;
-import io.narayana.perf.Result;
+import io.narayana.perf.Measurement;
 import io.narayana.perf.Worker;
 
-import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
@@ -26,23 +24,19 @@ public class TestExecutor {
 
     @GET
     @Produces(MediaType.APPLICATION_XML)
-    public TestResult execute(@DefaultValue("1") @QueryParam("threadCount") int threadCount,
-            @DefaultValue("10") @QueryParam("numberOfCalls") int numberOfCalls,
-            @DefaultValue("10") @QueryParam("maxThreads") int maxThreads,
-            @DefaultValue("10") @QueryParam("batchSize") int batchSize) {
+    public TestResult execute(@QueryParam("numberOfThreads") int numberOfThreads,
+            @QueryParam("numberOfCalls") int numberOfCalls, @QueryParam("batchSize") int batchSize) {
 
-        LOG.infov("Received test executor request. threadCount={0}, numberOfCalls={1}, maxThreads={2}, batchSize={3}.",
-                threadCount, numberOfCalls, maxThreads, batchSize);
+        LOG.infov("Received test executor request. numberOfThreads={0}, numberOfCalls={1}, batchSize={2}.",
+                numberOfThreads, numberOfCalls, batchSize);
 
-        final PerformanceTester<String> tester = new PerformanceTester<String>(maxThreads, batchSize);
+        final Measurement<String> measurement = new Measurement<String>(numberOfThreads, numberOfCalls, batchSize);
         final Worker<String> worker = new TestWorkerImpl();
-
-        final Result<String> options = new Result<String>(threadCount, numberOfCalls);
 
         LOG.infov("Starting test execution.");
 
-        final Result<String> result = tester.measureThroughput(worker, options);
-        final TestResult testResult = new TestResult(result);
+        measurement.measure(worker, worker);
+        final TestResult testResult = new TestResult(measurement);
 
         LOG.infov("Completed test execution: {0}", testResult);
 
