@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/ArjunaCore/arjuna/arjuna-perf.iml" filepath="$PROJECT_DIR$/ArjunaCore/arjuna/arjuna-perf.iml" />
+      <module fileurl="file://$PROJECT_DIR$/ArjunaJTA/jta/jta-perf.iml" filepath="$PROJECT_DIR$/ArjunaJTA/jta/jta-perf.iml" />
+      <module fileurl="file://$PROJECT_DIR$/narayana-perf.iml" filepath="$PROJECT_DIR$/narayana-perf.iml" />
+    </modules>
+  </component>
+</project>
+
