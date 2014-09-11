@@ -15,7 +15,7 @@
     <parent>
         <groupId>org.jboss.narayana</groupId>
         <artifactId>narayana-perf</artifactId>
-        <version>5.0.3.Final-SNAPSHOT</version>
+        <version>5.0.4.Final-SNAPSHOT</version>
         <relativePath>../../pom.xml</relativePath>
     </parent>
 
@@ -31,6 +31,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <jmh.version>0.9.3</jmh.version>
+        <version.naryana>5.0.4.Final-SNAPSHOT</version.naryana>
         <version.org.jboss.logging.jboss-logging>3.1.3.GA</version.org.jboss.logging.jboss-logging>
         <version.org.jboss.logging.jboss-logging-processor>1.1.0.Final</version.org.jboss.logging.jboss-logging-processor>
         <version.org.jboss.spec.javax.transaction>1.0.0.Final</version.org.jboss.spec.javax.transaction>
@@ -116,7 +117,7 @@
         <dependency>
             <groupId>org.jboss.narayana.jta</groupId>
             <artifactId>narayana-jta</artifactId>
-            <version>5.0.2.Final-SNAPSHOT</version>
+            <version>${project.version}</version>
             <exclusions>
                 <exclusion>
                     <groupId>sun.jdk</groupId>
