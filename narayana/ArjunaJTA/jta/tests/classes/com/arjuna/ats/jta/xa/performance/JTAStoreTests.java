@@ -16,7 +16,6 @@
  */
 package com.arjuna.ats.jta.xa.performance;
 
-import com.arjuna.ats.arjuna.common.CoordinatorEnvironmentBean;
 import com.arjuna.ats.arjuna.common.CoreEnvironmentBean;
 import com.arjuna.ats.arjuna.common.CoreEnvironmentBeanException;
 import com.arjuna.ats.arjuna.common.ObjectStoreEnvironmentBean;
@@ -63,7 +62,6 @@ public class JTAStoreTests {
 
     @Benchmark
     public void jtaTest(BenchmarkState state) {
-        System.out.println("YYYYYYYYYYYYYYYYYYYYYY iter >");
         try {
             state.tm.begin();
 
@@ -72,6 +70,7 @@ public class JTAStoreTests {
 
             state.tm.commit();
         } catch(Exception e) {
+            System.err.printf("JTAStoreTests#jtaTest: %s%n", e.getMessage());
         }
     }
 }
