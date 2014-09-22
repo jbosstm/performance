@@ -21,9 +21,12 @@ import com.arjuna.ats.arjuna.common.Uid;
 import com.arjuna.ats.arjuna.coordinator.SynchronizationRecord;
 import com.arjuna.ats.arjuna.utils.ThreadUtil;
 import com.arjuna.ats.internal.arjuna.thread.ThreadActionData;
+import com.hp.mwtests.ts.arjuna.JMHConfigCore;
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.Scope;
 import org.openjdk.jmh.annotations.State;
+import org.openjdk.jmh.runner.RunnerException;
+import org.openjdk.jmh.runner.options.*;
 
 @State(Scope.Benchmark)
 public class CheckedActionTest {
@@ -74,7 +77,7 @@ public class CheckedActionTest {
     }
 
     @Benchmark
-    public void testCheckedAction (BenchmarkState state)
+    public boolean testCheckedAction (BenchmarkState state)
     {
         int actionCount = 10;
         AtomicAction[] actions = state.newActions(actionCount);
@@ -98,10 +101,12 @@ public class CheckedActionTest {
 
             actions[i].commit();
         }
+
+        return true;
     }
 
     @Benchmark
-    public void testThreadActionData (BenchmarkState state) {
+    public boolean testThreadActionData (BenchmarkState state) {
 
         AtomicAction A = new AtomicAction();
         AtomicAction B = new AtomicAction();
@@ -123,5 +128,11 @@ public class CheckedActionTest {
 
         B.commit();
         A.commit();
+
+        return true;
+    }
+
+    public static void main(String[] args) throws RunnerException, CommandLineOptionException {
+        JMHConfigCore.runJTABenchmark(CheckedActionTest.class.getSimpleName(), args);
     }
 }

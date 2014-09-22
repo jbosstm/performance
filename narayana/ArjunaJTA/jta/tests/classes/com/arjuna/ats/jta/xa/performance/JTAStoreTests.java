@@ -21,20 +21,25 @@ import com.arjuna.ats.arjuna.common.CoreEnvironmentBeanException;
 import com.arjuna.ats.arjuna.common.ObjectStoreEnvironmentBean;
 import com.arjuna.ats.internal.arjuna.objectstore.VolatileStore;
 import com.arjuna.common.internal.util.propertyservice.BeanPopulator;
-import org.openjdk.jmh.annotations.Benchmark;
+import org.openjdk.jmh.annotations.*;
 
-import org.openjdk.jmh.annotations.Setup;
-import org.openjdk.jmh.annotations.State;
-import org.openjdk.jmh.annotations.TearDown;
-import org.openjdk.jmh.annotations.Scope;
-import org.openjdk.jmh.annotations.Level;
-
+import org.openjdk.jmh.runner.RunnerException;
+import org.openjdk.jmh.runner.options.*;
 
 import javax.transaction.TransactionManager;
 
+/*
+ config priority order is:
+ 1) Runner options
+ 2) method level annotations
+ 3) class level annotations
+ */
+@Warmup(iterations = JMHConfigJTA.WI, time = JMHConfigJTA.WT)//, timeUnit = JMHConfigJTA.WTU)
+@Measurement(iterations = JMHConfigJTA.MI, time = JMHConfigJTA.MT)//, timeUnit = JMHConfigJTA.MTU)
+@Fork(JMHConfigJTA.BF)
+@Threads(JMHConfigJTA.BT)
 @State(Scope.Benchmark)
 public class JTAStoreTests {
-
     @State(Scope.Benchmark)
 	public static class BenchmarkState {
         TransactionManager tm;
@@ -61,7 +66,7 @@ public class JTAStoreTests {
     }
 
     @Benchmark
-    public void jtaTest(BenchmarkState state) {
+    public boolean jtaTest(BenchmarkState state) {
         try {
             state.tm.begin();
 
@@ -72,5 +77,12 @@ public class JTAStoreTests {
         } catch(Exception e) {
             System.err.printf("JTAStoreTests#jtaTest: %s%n", e.getMessage());
         }
+
+        return true;
     }
+
+    public static void main(String[] args) throws RunnerException, CommandLineOptionException {
+        JMHConfigJTA.runJTABenchmark(JTAStoreTests.class.getSimpleName(), args);
+    }
+
 }

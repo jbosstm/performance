@@ -33,15 +33,28 @@ package com.hp.mwtests.ts.arjuna.performance;
 
 import com.arjuna.ats.arjuna.AtomicAction;
 
-import org.openjdk.jmh.annotations.Benchmark;
+import com.hp.mwtests.ts.arjuna.JMHConfigCore;
+import org.openjdk.jmh.annotations.*;
+import org.openjdk.jmh.runner.RunnerException;
+import org.openjdk.jmh.runner.options.CommandLineOptionException;
 
+@Warmup(iterations = JMHConfigCore.WI, time = JMHConfigCore.WT)//, timeUnit = JMHConfigCore.WTU)
+@Measurement(iterations = JMHConfigCore.MI, time = JMHConfigCore.MT)//, timeUnit = JMHConfigCore.MTU)
+@Fork(JMHConfigCore.BF)
+@Threads(JMHConfigCore.BT)
 public class Performance1 {
 
     @Benchmark
-    public void testMethod() {
+    public boolean testMethod() {
         AtomicAction A = new AtomicAction();
 
         A.begin();
         A.abort();
+
+        return true;
+    }
+
+    public static void main(String[] args) throws RunnerException, CommandLineOptionException {
+        JMHConfigCore.runJTABenchmark(Performance1.class.getSimpleName(), args);
     }
 }
