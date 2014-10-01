@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.jboss.narayana.performance</groupId>
     <artifactId>product-perf-test-harness</artifactId>
-    <version>5.0.0.M3-SNAPSHOT</version>
+    <version>5.0.0.Final</version>
     <name>product-perf-test-harness</name>
     <description>Performance Comparison Test Harness</description>
     <packaging>jar</packaging>
@@ -16,8 +16,8 @@
         <!--version.hornetq>2.2.13.Final</version.hornetq-->
         <version.EAP5>4.6.1.GA_CP12</version.EAP5>
         <version.EAP6>4.16.4.Final </version.EAP6>
-        <version.EAP6.latest>5.0.0.M2-SNAPSHOT</version.EAP6.latest>
-        <version.EAP7-IDLJ>5.0.0.M3-SNAPSHOT</version.EAP7-IDLJ>
+        <version.EAP6.latest>5.0.4.Final-SNAPSHOT</version.EAP6.latest>
+        <version.EAP7-IDLJ>5.0.3.Final</version.EAP7-IDLJ>
 
         <version.jacorb.patched>2.3.1.patched</version.jacorb.patched>
         <version.jacorb.EAP5>4.6.1.GA</version.jacorb.EAP5>
