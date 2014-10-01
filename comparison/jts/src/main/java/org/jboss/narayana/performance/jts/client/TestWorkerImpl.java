@@ -47,6 +47,10 @@ public class TestWorkerImpl implements Worker<String> {
     }
 
     @Override
+    public void finishWork(Measurement<String> measurement) {
+    }
+
+    @Override
     public void init() {
         try {
             firstEJB = firstEJBHome.create();

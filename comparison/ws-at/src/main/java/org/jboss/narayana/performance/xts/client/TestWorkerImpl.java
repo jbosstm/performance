@@ -38,6 +38,10 @@ public class TestWorkerImpl implements Worker<String> {
     }
 
     @Override
+    public void finishWork(Measurement<String> measurement) {
+    }
+
+    @Override
     public void init() {
         if (LOG.isDebugEnabled()) {
             LOG.debug("Starting initialization of the worker.");
