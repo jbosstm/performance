@@ -18,9 +18,10 @@
         <jvm.args.other>-server</jvm.args.other>
 
         <!-- Dependency versions -->
-        <version.org.wildfly>9.0.0.Alpha1-SNAPSHOT</version.org.wildfly>
-        <version.org.wildfly.arquillian>1.0.0.Alpha1</version.org.wildfly.arquillian>
-        <version.org.jboss.narayana>5.0.3.Final-SNAPSHOT</version.org.jboss.narayana>
+        <version.org.wildfly>9.0.0.Alpha2-SNAPSHOT</version.org.wildfly>
+        <version.org.wildfly.core>1.0.0.Alpha8</version.org.wildfly.core>
+        <version.org.wildfly.arquillian>1.0.0.Alpha2</version.org.wildfly.arquillian>
+        <version.org.jboss.narayana>5.0.4.Final-SNAPSHOT</version.org.jboss.narayana>
         <version.org.jboss.arquillian>1.1.3.Final</version.org.jboss.arquillian>
         <version.org.jboss.spec.javax.ejb>1.0.0.Final</version.org.jboss.spec.javax.ejb>
         <version.org.jboss.spec.javax.transaction>1.0.0.Final</version.org.jboss.spec.javax.transaction>
@@ -111,10 +112,10 @@
                 <version>${version.org.wildfly.arquillian}</version>
             </dependency>
             <dependency>
-                <groupId>org.wildfly</groupId>
+                <groupId>org.wildfly.core</groupId>
                 <artifactId>wildfly-cli</artifactId>
                 <classifier>client</classifier>
-                <version>${version.org.wildfly}</version>
+                <version>${version.org.wildfly.core}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

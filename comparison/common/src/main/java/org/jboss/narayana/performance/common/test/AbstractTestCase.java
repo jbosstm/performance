@@ -25,6 +25,8 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.Map;
 
 import org.jboss.arquillian.container.test.api.Config;
@@ -54,11 +56,11 @@ public abstract class AbstractTestCase {
 
     protected static final String SECOND_SERVICE_DEPLOYMENT_NAME = "second-service-deployment";
 
-    protected static final String CLIENT_CONTROLLER = "127.0.0.1:9990";
+    protected static final String CLIENT_CONTROLLER = "http-remoting://localhost:9990";
 
-    protected static final String FIRST_SERVICE_CONTROLLER = "127.0.0.1:10090";
+    protected static final String FIRST_SERVICE_CONTROLLER = "http-remoting://localhost:10090";
 
-    protected static final String SECOND_SERVICE_CONTROLLER = "127.0.0.1:10190";
+    protected static final String SECOND_SERVICE_CONTROLLER = "http-remoting://localhost:10190";
 
     protected final String numberOfThreads;
 
@@ -122,55 +124,48 @@ public abstract class AbstractTestCase {
         deployer.undeploy(SECOND_SERVICE_DEPLOYMENT_NAME);
     }
 
-    protected void enableJTS(final String controller) {
+    protected void executeCommands(String controllerUri, String errMsg, String ... cmds) {
         try {
             final CommandContext context = CommandContextFactory.getInstance().newCommandContext();
-            context.connectController(controller);
-            context.handle("connect " + controller);
-            context.handle("/subsystem=jacorb:write-attribute(name=transactions,value=on)");
-            context.handle("/subsystem=transactions:write-attribute(name=jts,value=true)");
-            context.handle("exit");
+
+            context.connectController(controllerUri);
+
+            for (String cmd : cmds)
+                context.handle(cmd);
         } catch (final CommandLineException e) {
-            throw new RuntimeException("Failed to enable JTS on controller: " + controller, e);
+            throw new RuntimeException(e.getMessage() + ": " + errMsg + " on controller: " + controllerUri, e);
         }
     }
 
-    protected void setNodeIdentifier(final String controller, final String nodeIdentifier) {
-        try {
-            final CommandContext context = CommandContextFactory.getInstance().newCommandContext();
-            context.connectController(controller);
-            context.handle("connect " + controller);
-            context.handle("/subsystem=transactions:write-attribute(name=node-identifier,value=" + nodeIdentifier + ")");
-            context.handle("exit");
-        } catch (final CommandLineException e) {
-            throw new RuntimeException("Failed to set node identifier on controller: " + controller, e);
-        }
+    protected void enableJTS(final String controller) {
+        executeCommands(controller,
+                "Failed to enable JTS",
+                "/subsystem=jacorb:write-attribute(name=transactions,value=on)",
+                "/subsystem=transactions:write-attribute(name=jts,value=true)",
+                "exit");
+    }
+
+    protected void setNodeIdentifier( String controller, final String nodeIdentifier) {
+        executeCommands(controller,
+                "Failed to set node identifier",
+                "/subsystem=transactions:write-attribute(name=node-identifier,value=" + nodeIdentifier + ")",
+                "exit");
     }
 
     protected void enableOnlyWarningLogs(final String controller) {
-        try {
-            final CommandContext context = CommandContextFactory.getInstance().newCommandContext();
-            context.connectController(controller);
-            context.handle("connect " + controller);
-            context.handle("/subsystem=logging/console-handler=CONSOLE:write-attribute(name=level,value=WARN)");
-            context.handle("exit");
-        } catch (final CommandLineException e) {
-            throw new RuntimeException("Failed to set console log handler's level on controller: " + controller, e);
-        }
+        executeCommands(controller,
+                "Failed to set console log handler's level",
+                "/subsystem=logging/console-handler=CONSOLE:write-attribute(name=level,value=WARN)",
+                "exit");
     }
 
     protected void enableTraceLogs(final String controller) {
-        try {
-            final CommandContext context = CommandContextFactory.getInstance().newCommandContext();
-            context.connectController(controller);
-            context.handle("connect " + controller);
-            context.handle("/subsystem=logging/console-handler=CONSOLE:write-attribute(name=level,value=TRACE)");
-            context.handle("/subsystem=logging/logger=com.arjuna:change-log-level");
-            context.handle("/subsystem=logging/logger=org.jboss.narayana:add(level=TRACE)");
-            context.handle("exit");
-        } catch (final CommandLineException e) {
-            throw new RuntimeException("Failed to set console log handler's level on controller: " + controller, e);
-        }
+        executeCommands(controller,
+                "Failed to set console log handler's level",
+                "/subsystem=logging/console-handler=CONSOLE:write-attribute(name=level,value=TRACE)",
+                "/subsystem=logging/logger=com.arjuna:change-log-level",
+                "/subsystem=logging/logger=org.jboss.narayana:add(level=TRACE)",
+                "exit");
     }
 
     protected void exportTestResults(final TestResult testResult) {
