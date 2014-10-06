@@ -135,9 +135,9 @@
     </build>
 
     <modules>
+        <module>common</module>
         <module>ws-at</module>
         <module>rest-at</module>
-        <module>common</module>
         <module>jts</module>
     </modules>
 </project>
