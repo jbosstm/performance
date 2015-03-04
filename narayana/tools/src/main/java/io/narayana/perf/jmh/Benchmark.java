@@ -6,8 +6,13 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Benchmark implements Comparable<Benchmark> {
-    static final double PERFORMANCE_INCREASE_THRESHOLD = 10;
-    static final double PERFORMANCE_DEGRADATION_THRESHOLD = -10;
+    public static final String PERFORMANCE_INCREASE_THRESHOLD_PROPERTY_NAME = "PERFORMANCE_INCREASE_THRESHOLD";
+    static final String PERFORMANCE_DECREASE_THRESHOLD_PROPERTY_NAME = "PERFORMANCE_DECREASE_THRESHOLD";
+
+    public static final double PERFORMANCE_INCREASE_THRESHOLD =
+            Double.parseDouble(System.getProperty(PERFORMANCE_INCREASE_THRESHOLD_PROPERTY_NAME, "10"));
+    static final double PERFORMANCE_DEGRADATION_THRESHOLD =
+            Double.parseDouble(System.getProperty(PERFORMANCE_DECREASE_THRESHOLD_PROPERTY_NAME, "-10"));
     static DecimalFormat DF = new DecimalFormat("#.##");
 
     String benchmark;

@@ -9,15 +9,21 @@ import java.util.Map;
 public class BMParser {
     BufferedReader reader;
 
-    BMParser(String fname) throws IOException {
+    public BMParser() {
+    }
+
+    public BMParser(String fname) throws IOException {
         reader = new BufferedReader(new FileReader(fname));
         // read the header
         reader.readLine();
     }
 
-    Benchmark nextBenchmark() throws IOException {
+    public Benchmark nextBenchmark() throws IOException {
+        return parseBenchmark(reader.readLine());
+    }
+
+    public Benchmark parseBenchmark(String line) throws IOException {
         Benchmark bm = new Benchmark();
-        String line = reader.readLine();
 
         if (line == null)
             return null;

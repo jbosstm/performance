@@ -45,10 +45,23 @@ import org.openjdk.jmh.runner.options.CommandLineOptionException;
 public class Performance1 {
 
     @Benchmark
-    public boolean testMethod() {
+    public boolean onePhase() {
         AtomicAction A = new AtomicAction();
 
         A.begin();
+        A.add(new BasicRecord());
+        A.abort();
+
+        return true;
+    }
+
+    @Benchmark
+    public boolean twoPhase() {
+        AtomicAction A = new AtomicAction();
+
+        A.begin();
+        A.add(new BasicRecord());
+        A.add(new BasicRecord());
         A.abort();
 
         return true;
