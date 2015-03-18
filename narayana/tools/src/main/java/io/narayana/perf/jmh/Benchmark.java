@@ -1,3 +1,24 @@
+/*
+ * JBoss, Home of Professional Open Source.
+ * Copyright 2015, Red Hat, Inc., and individual contributors
+ * as indicated by the @author tags. See the copyright.txt file in the
+ * distribution for a full listing of individual contributors.
+ *
+ * This is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation; either version 2.1 of
+ * the License, or (at your option) any later version.
+ *
+ * This software is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this software; if not, write to the Free
+ * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+ * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
+ */
 package io.narayana.perf.jmh;
 
 import java.io.IOException;
@@ -49,11 +70,14 @@ public class Benchmark implements Comparable<Benchmark> {
 
     @Override
     public String toString() {
-        if (previous != null)
-            return String.format("%s: %f vrs %f (change: %d)%n",
-                    benchmark, score, previous.score, regression);
-        else
+        if (previous != null) {
+            double pc = ( score / previous.score - 1) * 100.0;
+            String res = regression == -1 ? "regression" : regression == 0 ? "no change" : "improvement";
+            return String.format("%s: %f vrs %f (%f%%: %s)%n",
+                    benchmark, score, previous.score, pc, res);
+        } else {
             return String.format("%s: %f%n", benchmark, score);
+        }
     }
 
     public boolean isRegression() {
@@ -78,6 +102,10 @@ public class Benchmark implements Comparable<Benchmark> {
 
         for (Benchmark bm : nbms.values())
             bm.setPrevious(pbms.get(bm.benchmark));
+ 
+        System.out.printf("Comparison (pull request versus master)%n");
+        System.out.printf("(changes within the %% range [%f, %f] are regarded as insignificant):%n%n",
+            PERFORMANCE_DEGRADATION_THRESHOLD, PERFORMANCE_INCREASE_THRESHOLD);
 
         for (Benchmark bm : nbms.values()) {
             System.out.printf("%s", bm.toString());
