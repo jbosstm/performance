@@ -31,6 +31,11 @@
 
 package com.hp.mwtests.ts.arjuna.performance;
 
+import com.arjuna.ats.arjuna.common.CoreEnvironmentBean;
+import com.arjuna.ats.arjuna.common.CoreEnvironmentBeanException;
+import com.arjuna.ats.arjuna.common.ObjectStoreEnvironmentBean;
+import com.arjuna.ats.internal.arjuna.objectstore.VolatileStore;
+import com.arjuna.common.internal.util.propertyservice.BeanPopulator;
 import com.arjuna.ats.arjuna.AtomicAction;
 
 import com.hp.mwtests.ts.arjuna.JMHConfigCore;
@@ -42,15 +47,26 @@ import org.openjdk.jmh.runner.options.CommandLineOptionException;
 @Measurement(iterations = JMHConfigCore.MI, time = JMHConfigCore.MT)//, timeUnit = JMHConfigCore.MTU)
 @Fork(JMHConfigCore.BF)
 @Threads(JMHConfigCore.BT)
+@State(Scope.Benchmark)
 public class Performance1 {
+    static {
+      try {
+        BeanPopulator.getDefaultInstance(ObjectStoreEnvironmentBean.class).setObjectStoreType(VolatileStore.class.getName());
+      } catch (Exception e) {
+          throw new RuntimeException(e);
+      }
+    }
+
+    private BasicRecord record1 = new BasicRecord();
+    private BasicRecord record2 = new BasicRecord();
 
     @Benchmark
     public boolean onePhase() {
         AtomicAction A = new AtomicAction();
 
         A.begin();
-        A.add(new BasicRecord());
-        A.abort();
+        A.add(record1);
+        A.commit();
 
         return true;
     }
@@ -60,9 +76,9 @@ public class Performance1 {
         AtomicAction A = new AtomicAction();
 
         A.begin();
-        A.add(new BasicRecord());
-        A.add(new BasicRecord());
-        A.abort();
+        A.add(record1);
+        A.add(record2);
+        A.commit();
 
         return true;
     }

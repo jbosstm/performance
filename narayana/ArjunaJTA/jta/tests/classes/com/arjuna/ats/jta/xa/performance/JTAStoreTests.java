@@ -40,40 +40,29 @@ import javax.transaction.TransactionManager;
 @Threads(JMHConfigJTA.BT)
 @State(Scope.Benchmark)
 public class JTAStoreTests {
-    @State(Scope.Benchmark)
-	public static class BenchmarkState {
-        TransactionManager tm;
-
-		public BenchmarkState() {
-          tm = com.arjuna.ats.jta.TransactionManager.transactionManager();
-          try {
-              BeanPopulator.getDefaultInstance(CoreEnvironmentBean.class).setNodeIdentifier("0");
-          } catch (CoreEnvironmentBeanException e) {
-              throw new RuntimeException(e);
-          }
-
-          BeanPopulator.getDefaultInstance(ObjectStoreEnvironmentBean.class).
-              setObjectStoreType(VolatileStore.class.getName());
-		}
+    static {
+      try {
+        BeanPopulator.getDefaultInstance(CoreEnvironmentBean.class).setNodeIdentifier("0");
+        BeanPopulator.getDefaultInstance(ObjectStoreEnvironmentBean.class).setObjectStoreType(VolatileStore.class.getName());
+        tm = com.arjuna.ats.jta.TransactionManager.transactionManager();
+      } catch (Exception e) {
+          throw new RuntimeException(e);
+      }
     }
 
-    @Setup(Level.Trial)
-    public void before() {
-    }
-
-    @TearDown(Level.Trial)
-    public void after() {
-    }
+    private static TransactionManager tm;
+    private XAResourceImpl resource1 = new XAResourceImpl();
+    private XAResourceImpl resource2 = new XAResourceImpl();
 
     @Benchmark
-    public boolean jtaTest(BenchmarkState state) {
+    public boolean jtaTest() {
         try {
-            state.tm.begin();
+            tm.begin();
 
-            state.tm.getTransaction().enlistResource(new XAResourceImpl());
-            state.tm.getTransaction().enlistResource(new XAResourceImpl());
+            tm.getTransaction().enlistResource(resource1);
+            tm.getTransaction().enlistResource(resource2);
 
-            state.tm.commit();
+            tm.commit();
         } catch(Exception e) {
             System.err.printf("JTAStoreTests#jtaTest: %s%n", e.getMessage());
         }
@@ -81,8 +70,7 @@ public class JTAStoreTests {
         return true;
     }
 
-    public static void main(String[] args) throws RunnerException, CommandLineOptionException {
+    public static void main(String[] args) throws RunnerException, CommandLineOptionException, CoreEnvironmentBeanException {
         JMHConfigJTA.runJTABenchmark(JTAStoreTests.class.getSimpleName(), args);
     }
-
 }
