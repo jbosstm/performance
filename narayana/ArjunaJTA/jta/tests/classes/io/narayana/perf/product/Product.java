@@ -23,10 +23,13 @@ package io.narayana.perf.product;
 
 import io.narayana.perf.Measurement;
 import org.junit.Assert;
+import org.openjdk.jmh.annotations.Scope;
+import org.openjdk.jmh.annotations.State;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+@State(Scope.Benchmark)
 public abstract class Product {
     final protected static String METHOD_SEP = "_";
     protected final static Map<String, Measurement> measurements = new ConcurrentHashMap<String, Measurement>();
@@ -35,13 +38,15 @@ public abstract class Product {
         return measurements.get(name);
     }
 
+    private Measurement<Void> config = new Measurement<>(1, 1, 1);
+
     protected static Double getThroughput(String name) {
         Measurement measurement = measurements.get(name);
 
         return measurement == null ? null : measurement.getThroughput();
     }
 
-    protected void runTest(ProductInterface prod) {
+    protected void runNarayanaTest(ProductInterface prod) {
         int threads = 10;
         int batchSize = 100;
         int warmUpCount = 10;
@@ -60,5 +65,15 @@ public abstract class Product {
         Assert.assertFalse(measurement.getInfo(), measurement.shouldFail());
 
         System.out.printf("%s%n", measurement.getInfo());
+    }
+
+    protected void runTest(ProductInterface prod) {
+        ProductWorker<Void> worker = new ProductWorker<Void>(prod);
+
+        worker.doWork(null, 1, config);
+    }
+
+    protected void runTest(ProductWorker<Void> worker) {
+        worker.doWork(null, 1, config);
     }
 }

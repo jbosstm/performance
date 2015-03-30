@@ -1,6 +1,6 @@
 /*
  * JBoss, Home of Professional Open Source.
- * Copyright 2014, Red Hat, Inc., and individual contributors
+ * Copyright 2015, Red Hat, Inc., and individual contributors
  * as indicated by the @author tags. See the copyright.txt file in the
  * distribution for a full listing of individual contributors.
  *
@@ -19,16 +19,38 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package io.narayana.perf.product;
+package io.narayana.perf.product.btm;
 
-import io.narayana.perf.WorkerLifecycle;
+import bitronix.tm.internal.XAResourceHolderState;
+import bitronix.tm.resource.common.ResourceBean;
+import bitronix.tm.resource.common.XAResourceHolder;
 
-import javax.transaction.SystemException;
-import javax.transaction.TransactionManager;
-import javax.transaction.UserTransaction;
+import javax.transaction.xa.XAResource;
 
-interface ProductInterface<T> extends WorkerLifecycle<T> {
-    UserTransaction getUserTransaction() throws SystemException;
-    TransactionManager getTransactionManager();
-    String getNameOfMetric();
+public class BtmXAResourceHolderState extends XAResourceHolderState {
+    @Override
+    public String getUniqueName() {
+        return "bitronix";
+    }
+
+    private XAResource xar;
+    ResourceBean bean;
+
+    public BtmXAResourceHolderState(XAResourceHolder resourceHolder, ResourceBean bean) {
+        super(resourceHolder, bean);
+        this.bean = bean;
+    }
+
+    public void setXar(XAResource xar) {
+        this.xar = xar;
+    }
+
+    @Override
+    public XAResource getXAResource() {
+        return xar;
+    }
+
+    public ResourceBean getBean() {
+        return bean;
+    }
 }

@@ -21,52 +21,17 @@
  */
 package io.narayana.perf.product;
 
-import io.narayana.perf.Measurement;
 import io.narayana.perf.WorkerLifecycle;
-import io.narayana.perf.WorkerWorkload;
 
+import javax.sql.DataSource;
+import javax.transaction.SystemException;
+import javax.transaction.TransactionManager;
 import javax.transaction.UserTransaction;
+import javax.transaction.xa.XAResource;
 
-public class ProductWorker<Void> implements WorkerWorkload<Void>, WorkerLifecycle<Void> {
-
-    ProductInterface prod;
-
-    public ProductWorker(ProductInterface prod) {
-        this.prod = prod;
-    }
-
-    @Override
-    public Void doWork(Void context, int batchSize, Measurement<Void> config) {
-        for (int i = 0; i < batchSize; i++) {
-            try {
-                UserTransaction ut = prod.getUserTransaction();
-
-                ut.begin();
-                ut.commit();
-
-            }
-            catch (Exception e) {
-                if (config.getNumberOfErrors() == 0)
-                    e.printStackTrace();
-
-                config.incrementErrorCount();
-            }
-        }
-
-        return context;
-    }
-
-    @Override
-    public void finishWork(Measurement<Void> measurement) {
-    }
-
-    @Override
-    public void init() {
-        prod.init();
-    }
-
-    @Override
-    public void fini() {
-        prod.fini();
-    }
+interface ProductInterface<T> extends WorkerLifecycle<T> {
+    UserTransaction getUserTransaction() throws SystemException;
+    TransactionManager getTransactionManager();
+    String getName();
+    String getNameOfMetric();
 }

@@ -36,6 +36,7 @@
         <version.org.jboss.spec.javax.transaction>1.0.0.Final</version.org.jboss.spec.javax.transaction>
         <version.org.jboss.jboss-transaction-spi>7.1.0.Final</version.org.jboss.jboss-transaction-spi>
         <version.junit>4.11</version.junit>
+        <version.com.h2database>1.4.182</version.com.h2database>
     </properties>
 
     <repositories>
@@ -50,6 +51,19 @@
                 <enabled>true</enabled>
             </snapshots>
         </repository>
+
+        <!-- connector for jotm -->
+        <repository>
+          <id>download-java-net</id>
+          <name>download-java-net</name>
+          <url>http://download.java.net/maven/2/</url>
+          <releases>
+            <enabled>true</enabled>
+          </releases>
+          <snapshots>
+            <enabled>true</enabled>
+          </snapshots>
+        </repository>
     </repositories>
 
     <build>
@@ -59,6 +73,7 @@
                 <directory>etc</directory>
             </resource>
         </resources>
+        <testSourceDirectory>tests/classes</testSourceDirectory>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -81,6 +96,11 @@
                     </execution>
                 </executions>
             </plugin>
+          <plugin>
+              <groupId>org.apache.maven.plugins</groupId>
+              <artifactId>maven-surefire-plugin</artifactId>
+          </plugin>
+
         </plugins>
     </build>
 
@@ -144,6 +164,81 @@
             <groupId>org.jboss.narayana</groupId>
             <artifactId>test-utils</artifactId>
             <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+          <groupId>junit</groupId>
+          <artifactId>junit</artifactId>
+          <version>${version.junit}</version>
+        </dependency>
+
+        <dependency>
+          <groupId>com.h2database</groupId>
+          <artifactId>h2</artifactId>
+          <version>${version.com.h2database}</version>
+        </dependency>
+
+        <!-- other products -->
+        <dependency>
+            <groupId>org.codehaus.btm</groupId>
+            <artifactId>btm</artifactId>
+            <version>2.1.3</version>
+            <!--<scope>test</scope>-->
+        </dependency>
+        <!-- jotm depends on connector -->
+        <dependency>
+            <groupId>javax.resource</groupId>
+            <artifactId>connector</artifactId>
+            <version>1.0</version>
+            <!--<scope>test</scope>-->
+        </dependency>
+
+        <dependency>
+            <groupId>jotm</groupId>
+            <artifactId>jotm</artifactId>
+            <version>2.0.10</version>
+            <!--<scope>test</scope>-->
+        </dependency>
+        <dependency>
+            <groupId>com.atomikos</groupId>
+            <artifactId>transactions-jta</artifactId>
+            <version>3.8.0</version>
+            <!--<scope>test</scope>-->
+        </dependency>
+        <dependency>
+            <groupId>com.atomikos</groupId>
+            <artifactId>transactions-jdbc</artifactId>
+            <version>3.8.0</version>
+            <!--<scope>test</scope>-->
+        </dependency>
+        <!-- TODO why don't other modules need this explicit dependency -->
+        <dependency>
+            <groupId>log4j</groupId>
+            <artifactId>log4j</artifactId>
+            <version>1.2.17</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>com.sun.jmx</groupId>
+                    <artifactId>jmxri</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>com.sun.jdmk</groupId>
+                    <artifactId>jmxtools</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>javax.jms</groupId>
+                    <artifactId>jms</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>javax.mail</groupId>
+                    <artifactId>mail</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.narayana</groupId>
+            <artifactId>test-utils</artifactId>
+            <version>5.0.4.Final-SNAPSHOT</version>
         </dependency>
     </dependencies>
 
