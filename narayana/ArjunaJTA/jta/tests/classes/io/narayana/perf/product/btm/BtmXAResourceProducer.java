@@ -30,14 +30,18 @@ import javax.naming.Reference;
 import javax.transaction.xa.XAResource;
 
 public class BtmXAResourceProducer implements XAResourceProducer {
-    private XAResource xar;
+    private XAResource[] xars;
     private BtmXAResourceHolderState btmRecovery;
-    XAResourceHolder xarHolder;
+    XAResourceHolder[] xarHolders;
 
-    public BtmXAResourceProducer(XAResource xar, BtmXAResourceHolderState btmRecovery) {
-        this.xar = xar;
+    public BtmXAResourceProducer(BtmXAResourceHolderState btmRecovery, XAResource ... xars) {
+        this.xars = xars;
         this.btmRecovery = btmRecovery;
-        this.xarHolder = new BtmXAResourceHolder(xar, btmRecovery.getBean());
+        this.xarHolders = new XAResourceHolder[xars.length];
+
+        for (int i = 0; i < xars.length; i++) {
+            xarHolders[i] = new BtmXAResourceHolder(xars[i], btmRecovery.getBean());
+        }
     }
 
     @Override
@@ -62,10 +66,11 @@ public class BtmXAResourceProducer implements XAResourceProducer {
 
     @Override
     public XAResourceHolder findXAResourceHolder(XAResource xaResource) {
-        if (!xaResource.equals(xar))
-            return null;
+        for (XAResourceHolder holder : xarHolders)
+            if (xaResource.equals(holder.getXAResource()))
+                return holder;
 
-        return xarHolder;
+        return null;
     }
 
     @Override

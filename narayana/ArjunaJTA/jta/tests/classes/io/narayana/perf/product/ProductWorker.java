@@ -52,6 +52,7 @@ public class ProductWorker<Void> implements WorkerWorkload<Void>, WorkerLifecycl
 
                 ut.begin();
                 ut.getTransaction().enlistResource(getXAResource());
+                ut.getTransaction().enlistResource(getXAResource());
                 ut.commit();
 
             }

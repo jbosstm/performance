@@ -34,6 +34,7 @@ import io.narayana.perf.product.btm.BtmXAResourceProducer;
 import javax.transaction.TransactionManager;
 import javax.transaction.xa.XAResource;
 import java.util.Properties;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class BitronixWorker<Void> extends ProductWorker<Void> {
 
@@ -96,7 +97,7 @@ public class BitronixWorker<Void> extends ProductWorker<Void> {
 
     @Override
     public XAResource getXAResource() {
-        return xar;
+        return xars[xarCounter.getAndIncrement() % xars.length];
     }
 
 /*    @Override
@@ -114,7 +115,7 @@ public class BitronixWorker<Void> extends ProductWorker<Void> {
     public void init() {
         super.init();
 
-         PoolingDataSource pds = new PoolingDataSource();
+        PoolingDataSource pds = new PoolingDataSource();
 
         pds.setClassName(LrcXADataSource.class.getName());
         pds.setUniqueName("lrc-pds");
@@ -126,8 +127,8 @@ public class BitronixWorker<Void> extends ProductWorker<Void> {
 
         btmRecovery = new BtmXAResourceHolderState(null, new BtmResourceBean());
 
-        btmRecovery.setXar(xar);
-        xaResourceProducer = new BtmXAResourceProducer(xar, btmRecovery);
+        btmRecovery.setXar(xars[0]);
+        xaResourceProducer = new BtmXAResourceProducer(btmRecovery, xars);
 
         try {
             ResourceRegistrar.register(xaResourceProducer);
@@ -142,7 +143,8 @@ public class BitronixWorker<Void> extends ProductWorker<Void> {
         super.fini();
     }
 
-    final XAResource xar = new XAResourceImpl();
+    private AtomicInteger xarCounter = new AtomicInteger(0);
+    final XAResource[] xars = {new XAResourceImpl(), new XAResourceImpl()};
 
     BtmXAResourceHolderState btmRecovery;
 
