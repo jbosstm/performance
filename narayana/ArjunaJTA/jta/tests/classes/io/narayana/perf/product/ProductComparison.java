@@ -44,16 +44,15 @@ import bitronix.tm.utils.DefaultExceptionAnalyzer;
 import com.arjuna.ats.arjuna.common.CoreEnvironmentBean;
 import com.arjuna.ats.arjuna.common.CoreEnvironmentBeanException;
 import com.arjuna.ats.arjuna.common.ObjectStoreEnvironmentBean;
-import com.arjuna.ats.internal.arjuna.objectstore.VolatileStore;
+import com.arjuna.ats.internal.arjuna.objectstore.hornetq.HornetqJournalEnvironmentBean;
 import com.arjuna.ats.jta.xa.performance.JMHConfigJTA;
 import com.arjuna.common.internal.util.propertyservice.BeanPopulator;
 import com.atomikos.icatch.jta.UserTransactionManager;
 
-
 @State(Scope.Benchmark)
 public class ProductComparison {
     final protected static String METHOD_SEP = "_";
-    final private static String outerClassName =  ProductComparison.class.getName();
+    final private static String outerClassName = ProductComparison.class.getName();
     final static private String narayanaMetricName = outerClassName + METHOD_SEP + "Narayana";
 
     public static void main(String[] args) throws RunnerException, CommandLineOptionException, CoreEnvironmentBeanException {
@@ -119,7 +118,12 @@ public class ProductComparison {
             } catch (CoreEnvironmentBeanException e) {
                 e.printStackTrace();
             }
-            BeanPopulator.getDefaultInstance(ObjectStoreEnvironmentBean.class).setObjectStoreType(VolatileStore.class.getName());
+            HornetqJournalEnvironmentBean hornetqJournalEnvironmentBean = BeanPopulator.getDefaultInstance(
+                com.arjuna.ats.internal.arjuna.objectstore.hornetq.HornetqJournalEnvironmentBean.class
+                );
+            hornetqJournalEnvironmentBean.setAsyncIO(true);
+            hornetqJournalEnvironmentBean.setStoreDir("HornetqObjectStore");
+            BeanPopulator.getDefaultInstance(ObjectStoreEnvironmentBean.class).setObjectStoreType("com.arjuna.ats.internal.arjuna.objectstore.hornetq.HornetqObjectStoreAdaptor");
             ut = com.arjuna.ats.jta.UserTransaction.userTransaction();
             tm = com.arjuna.ats.jta.TransactionManager.transactionManager();
         }
@@ -215,7 +219,7 @@ public class ProductComparison {
 
         @Override
         public TransactionManager getTransactionManager() {
-              return utm;
+            return utm;
         }
 
         @Override
