@@ -21,15 +21,15 @@
  */
 package io.narayana.perf.product;
 
-import io.narayana.perf.WorkerLifecycle;
-
 import javax.sql.DataSource;
 import javax.transaction.SystemException;
 import javax.transaction.TransactionManager;
 import javax.transaction.UserTransaction;
 import javax.transaction.xa.XAResource;
 
-interface ProductInterface<T> extends WorkerLifecycle<T> {
+interface ProductInterface<T> {
+    void init();
+    void fini();
     UserTransaction getUserTransaction() throws SystemException;
     TransactionManager getTransactionManager();
     String getName();

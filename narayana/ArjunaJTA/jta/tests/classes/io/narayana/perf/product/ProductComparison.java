@@ -38,13 +38,12 @@ import org.openjdk.jmh.runner.RunnerException;
 import org.openjdk.jmh.runner.options.CommandLineOptionException;
 
 import javax.sql.DataSource;
-import javax.transaction.SystemException;
-import javax.transaction.TransactionManager;
-import javax.transaction.UserTransaction;
+import javax.transaction.*;
 
 
 @State(Scope.Benchmark)
-public class ProductComparison extends Product {
+public class ProductComparison {
+    final protected static String METHOD_SEP = "_";
     final private static String outerClassName =  ProductComparison.class.getName();
     final static private String narayanaMetricName = outerClassName + METHOD_SEP + "Narayana";
 
@@ -52,28 +51,32 @@ public class ProductComparison extends Product {
         JMHConfigJTA.runJTABenchmark(ProductComparison.class.getSimpleName(), args);
     }
 
-    @Test
-    @Benchmark
-    public void testNarayana() throws SystemException {
-        runTest(narayanaWorker);
+    protected void runTest(ProductWorker worker) throws Exception {
+        worker.doWork();
     }
 
     @Test
     @Benchmark
-    public void testJotm() {
-        runTest(jotmWorker);
+    public void testNarayana() throws Exception {
+        narayanaWorker.doWork();
     }
 
     @Test
     @Benchmark
-    public void testBitronix() {
-        runTest(bitronixWorker);
+    public void testJotm() throws Exception {
+        jotmWorker.doWork();
     }
 
     @Test
     @Benchmark
-    public void testAtomikos() {
-        runTest(atomikosWorker);
+    public void testBitronix() throws Exception {
+        bitronixWorker.doWork();
+    }
+
+    @Test
+    @Benchmark
+    public void testAtomikos() throws Exception {
+        atomikosWorker.doWork();
     }
 
     ProductInterface narayana = new ProductInterface() {

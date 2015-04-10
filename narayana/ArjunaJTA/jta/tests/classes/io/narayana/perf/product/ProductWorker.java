@@ -22,17 +22,14 @@
 package io.narayana.perf.product;
 
 import com.arjuna.ats.jta.xa.performance.XAResourceImpl;
-import io.narayana.perf.Measurement;
-import io.narayana.perf.WorkerLifecycle;
-import io.narayana.perf.WorkerWorkload;
 
-import javax.transaction.TransactionManager;
+import javax.transaction.*;
 import javax.transaction.xa.XAResource;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-public class ProductWorker<Void> implements WorkerWorkload<Void>, WorkerLifecycle<Void> {
+public class ProductWorker<Void> {
 
     ProductInterface prod;
 
@@ -44,29 +41,13 @@ public class ProductWorker<Void> implements WorkerWorkload<Void>, WorkerLifecycl
         return new XAResourceImpl();
     }
 
-    @Override
-    public Void doWork(Void context, int batchSize, Measurement<Void> config) {
-        for (int i = 0; i < batchSize; i++) {
-            try {
-                TransactionManager ut = prod.getTransactionManager();
+    public void doWork() throws SystemException, NotSupportedException, RollbackException, HeuristicRollbackException, HeuristicMixedException {
+        TransactionManager ut = prod.getTransactionManager();
 
-                ut.begin();
-                ut.getTransaction().enlistResource(getXAResource());
-                ut.getTransaction().enlistResource(getXAResource());
-                ut.commit();
-
-            }
-            catch (Exception e) {
-                if (config != null) {
-                    if (config.getNumberOfErrors() == 0)
-                        e.printStackTrace();
-
-                    config.incrementErrorCount();
-                }
-            }
-        }
-
-        return context;
+        ut.begin();
+        ut.getTransaction().enlistResource(getXAResource());
+        ut.getTransaction().enlistResource(getXAResource());
+        ut.commit();
     }
 
     protected void executeSql(Connection c, String sql, boolean ignoreErrors) throws SQLException {
@@ -82,11 +63,6 @@ public class ProductWorker<Void> implements WorkerWorkload<Void>, WorkerLifecycl
         }
     }
 
-    @Override
-    public void finishWork(Measurement<Void> measurement) {
-    }
-
-    @Override
     public void init() {
         prod.init();
 /*        DataSource ds = prod.getDataSource();
@@ -103,7 +79,6 @@ public class ProductWorker<Void> implements WorkerWorkload<Void>, WorkerLifecycl
         }*/
     }
 
-    @Override
     public void fini() {
         prod.fini();
     }
