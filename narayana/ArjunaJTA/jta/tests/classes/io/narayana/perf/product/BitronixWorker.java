@@ -21,114 +21,29 @@
  */
 package io.narayana.perf.product;
 
+import io.narayana.perf.product.btm.BtmResourceBean;
+import io.narayana.perf.product.btm.BtmXAResourceHolderState;
+import io.narayana.perf.product.btm.BtmXAResourceProducer;
 import bitronix.tm.recovery.RecoveryException;
 import bitronix.tm.resource.ResourceRegistrar;
-import bitronix.tm.resource.common.*;
-import bitronix.tm.resource.jdbc.PoolingDataSource;
-import bitronix.tm.resource.jdbc.lrc.LrcXADataSource;
-import com.arjuna.ats.jta.xa.performance.XAResourceImpl;
-import io.narayana.perf.product.btm.BtmXAResourceHolderState;
-import io.narayana.perf.product.btm.BtmResourceBean;
-import io.narayana.perf.product.btm.BtmXAResourceProducer;
-
-import javax.transaction.TransactionManager;
-import javax.transaction.xa.XAResource;
-import java.util.Properties;
-import java.util.concurrent.atomic.AtomicInteger;
+import bitronix.tm.resource.common.XAResourceProducer;
 
 public class BitronixWorker<Void> extends ProductWorker<Void> {
+
+    private XAResourceProducer xaResourceProducer;
 
     public BitronixWorker(ProductInterface prod) {
         super(prod);
     }
-
-    private TransactionManager getTM() {
-        return prod.getTransactionManager();
-    }
-
-    private void initProps(PoolingDataSource pds, Properties properties) {
-        properties.put("user", "sa");
-        properties.put("password", "sa");
-        properties.put("url", "jdbc:h2:tcp://localhost/~/jbpm-db;MVCC=TRUE");
-        properties.put("driverClassName", "org.h2.Driver");
-    }
-
-    private void xinitProps(PoolingDataSource pds, Properties properties) {
-        pds.getDriverProperties().put("user",properties.getProperty("persistence.datasource.user","sa"));
-        pds.getDriverProperties().put("password",properties.getProperty("persistence.datasource.password","sa"));
-        pds.getDriverProperties().put("url",properties.getProperty("persistence.datasource.url","jdbc:h2:tcp://localhost/~/jbpm-db;MVCC=TRUE"));
-        pds.getDriverProperties().put("driverClassName",properties.getProperty("persistence.datasource.driverClassName","org.h2.Driver"));
-    }
-
-/*    public void testRecycleAfterSuspend() throws Exception {
-        PoolingDataSource pds = new PoolingDataSource();
-
-        pds.setClassName(LrcXADataSource.class.getName());
-        pds.setUniqueName("lrc-pds");
-        pds.setMaxPoolSize(2);
-        initProps(pds, pds.getDriverProperties());
-//        pds.getDriverProperties().setProperty("driverClassName", org.h2.jdbcx.JdbcDataSource.class.getName());
-        pds.init();
-
-        getTM().begin();
-
-        Connection c1 = pds.getConnection();
-        c1.createStatement();
-        c1.close();
-
-        Transaction tx = getTM().suspend();
-
-        getTM().begin();
-
-        Connection c11 = pds.getConnection();
-        c11.createStatement();
-        c11.close();
-
-        getTM().commit();
-
-
-        getTM().resume(tx);
-
-        Connection c2 = pds.getConnection();
-        c2.createStatement();
-        c2.close();
-
-    }*/
-
-    @Override
-    public XAResource getXAResource() {
-        return xars[xarCounter.getAndIncrement() % xars.length];
-    }
-
-/*    @Override
-    public Void doWork(Void context, int batchSize, Measurement<Void> config) {
-        try {super.doWork(context, batchSize, config);
-            testRecycleAfterSuspend();
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-
-        return context;
-    }*/
-
+    
     @Override
     public void init() {
         super.init();
 
-        PoolingDataSource pds = new PoolingDataSource();
+        BtmXAResourceHolderState btmRecovery = new BtmXAResourceHolderState(null, new BtmResourceBean());
+        btmRecovery.setXar(xaResource1);
 
-        pds.setClassName(LrcXADataSource.class.getName());
-        pds.setUniqueName("lrc-pds");
-        pds.setMaxPoolSize(2);
-        initProps(pds, pds.getDriverProperties());
-//        pds.getDriverProperties().setProperty("driverClassName", org.h2.jdbcx.JdbcDataSource.class.getName());
-//        pds.init();
-
-
-        btmRecovery = new BtmXAResourceHolderState(null, new BtmResourceBean());
-
-        btmRecovery.setXar(xars[0]);
-        xaResourceProducer = new BtmXAResourceProducer(btmRecovery, xars);
+        xaResourceProducer = new BtmXAResourceProducer(btmRecovery, xaResource1, xaResource2);
 
         try {
             ResourceRegistrar.register(xaResourceProducer);
@@ -142,13 +57,4 @@ public class BitronixWorker<Void> extends ProductWorker<Void> {
         ResourceRegistrar.unregister(xaResourceProducer);
         super.fini();
     }
-
-    private AtomicInteger xarCounter = new AtomicInteger(0);
-    final XAResource[] xars = {new XAResourceImpl(), new XAResourceImpl()};
-
-    BtmXAResourceHolderState btmRecovery;
-
-    XAResourceProducer xaResourceProducer;
-
-
 }

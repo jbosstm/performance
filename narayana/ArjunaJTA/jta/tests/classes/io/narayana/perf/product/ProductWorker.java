@@ -21,71 +21,43 @@
  */
 package io.narayana.perf.product;
 
-import com.arjuna.ats.jta.xa.performance.XAResourceImpl;
-
-import javax.transaction.*;
+import javax.transaction.HeuristicMixedException;
+import javax.transaction.HeuristicRollbackException;
+import javax.transaction.NotSupportedException;
+import javax.transaction.RollbackException;
+import javax.transaction.SystemException;
+import javax.transaction.TransactionManager;
 import javax.transaction.xa.XAResource;
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.sql.Statement;
+
+import com.arjuna.ats.jta.xa.performance.XAResourceImpl;
 
 public class ProductWorker<Void> {
 
     ProductInterface prod;
+    
+    protected XAResource xaResource1 = new XAResourceImpl();
+    protected XAResource xaResource2 = new XAResourceImpl();
+
+    private TransactionManager ut;
 
     public ProductWorker(ProductInterface prod) {
         this.prod = prod;
     }
 
-    public XAResource getXAResource() {
-        return new XAResourceImpl();
-    }
-
     public void doWork() throws SystemException, NotSupportedException, RollbackException, HeuristicRollbackException, HeuristicMixedException {
-        TransactionManager ut = prod.getTransactionManager();
-
         ut.begin();
-        ut.getTransaction().enlistResource(getXAResource());
-        ut.getTransaction().enlistResource(getXAResource());
+        ut.getTransaction().enlistResource(xaResource1);
+        ut.getTransaction().enlistResource(xaResource2);
         ut.commit();
-    }
-
-    protected void executeSql(Connection c, String sql, boolean ignoreErrors) throws SQLException {
-        Statement s = c.createStatement();
-
-//        statements.add(s);
-
-        try {
-            s.execute(sql);
-        } catch (SQLException e) {
-            if (!ignoreErrors)
-                throw e;
-        }
     }
 
     public void init() {
         prod.init();
-/*        DataSource ds = prod.getDataSource();
-
-        if (ds != null) {
-            try {
-                Connection c = ds.getConnection();
-
-                executeSql(c, "CREATE SCHEMA " + prod.getName(), true);
-                executeSql(c, SQLT1.replace("$DB", prod.getName()), true);
-                executeSql(c, SQLT2.replace("$DB", prod.getName()), true);
-            } catch (SQLException e) {
-            }
-        }*/
+        ut = prod.getTransactionManager();
     }
 
     public void fini() {
         prod.fini();
     }
-
-    private static String SQLT1 = "create table $DB.TEST(id int, value varchar(40))";
-    private static String SQLT1_I = "insert into $DB.TEST values (?, ?)";
-    private static String SQLT2 = "create table $DB.RESULT(product varchar(64), dbvendor varchar(32), pass int, fail int, maxt int, mint int, avgt int, count int)";
-    private static String SQLT2_I = "insert into $DB.RESULT values (?, ?, ?, ?, ?, ?, ?, ?)";
 
 }

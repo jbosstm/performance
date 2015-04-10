@@ -21,10 +21,26 @@
  */
 package io.narayana.perf.product;
 
+import javax.sql.DataSource;
+import javax.transaction.SystemException;
+import javax.transaction.TransactionManager;
+import javax.transaction.UserTransaction;
+
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import org.openjdk.jmh.annotations.Benchmark;
+import org.openjdk.jmh.annotations.Scope;
+import org.openjdk.jmh.annotations.Setup;
+import org.openjdk.jmh.annotations.State;
+import org.openjdk.jmh.annotations.TearDown;
+import org.openjdk.jmh.runner.RunnerException;
+import org.openjdk.jmh.runner.options.CommandLineOptionException;
+
 import bitronix.tm.BitronixTransactionManager;
 import bitronix.tm.TransactionManagerServices;
-
 import bitronix.tm.utils.DefaultExceptionAnalyzer;
+
 import com.arjuna.ats.arjuna.common.CoreEnvironmentBean;
 import com.arjuna.ats.arjuna.common.CoreEnvironmentBeanException;
 import com.arjuna.ats.arjuna.common.ObjectStoreEnvironmentBean;
@@ -32,13 +48,6 @@ import com.arjuna.ats.internal.arjuna.objectstore.VolatileStore;
 import com.arjuna.ats.jta.xa.performance.JMHConfigJTA;
 import com.arjuna.common.internal.util.propertyservice.BeanPopulator;
 import com.atomikos.icatch.jta.UserTransactionManager;
-import org.junit.*;
-import org.openjdk.jmh.annotations.*;
-import org.openjdk.jmh.runner.RunnerException;
-import org.openjdk.jmh.runner.options.CommandLineOptionException;
-
-import javax.sql.DataSource;
-import javax.transaction.*;
 
 
 @State(Scope.Benchmark)
@@ -126,11 +135,6 @@ public class ProductComparison {
         @Override
         public UserTransaction getUserTransaction() throws SystemException {
             return jotm.getUserTransaction();
-/*                try {
-                    return (UserTransaction) new InitialContext().lookup("UserTransaction");
-                } catch (NamingException e) {
-                    throw new SystemException(e.getMessage());
-                }*/
         }
 
         @Override
@@ -187,22 +191,6 @@ public class ProductComparison {
         public String getNameOfMetric() {
             return outerClassName + "_Bitronix";
         }
-/*
-        private DataSource initDataSource(){
-            PoolingDataSource pds = new PoolingDataSource();
-            //   org.h2.jdbcx.JdbcDataSource
-            pds.setUniqueName("jdbc/jmh-ds");
-            pds.setClassName("bitronix.tm.resource.jdbc.lrc.LrcXADataSource");
-            pds.setMaxPoolSize(5);
-            pds.setAllowLocalTransactions(false);
-            pds.getDriverProperties().put("user","sa");
-            pds.getDriverProperties().put("password","sa");
-            pds.getDriverProperties().put("url","jdbc:h2:tcp://localhost/~/jmhdb.h2.db");
-            pds.getDriverProperties().put("driverClassName","org.h2.Driver");
-            pds.init();
-
-            return pds;
-        }*/
 
         @Override
         public void init() {
@@ -228,7 +216,6 @@ public class ProductComparison {
         @Override
         public TransactionManager getTransactionManager() {
               return utm;
-//            return com.atomikos.icatch.jta.TransactionManagerImp.getTransactionManager();
         }
 
         @Override

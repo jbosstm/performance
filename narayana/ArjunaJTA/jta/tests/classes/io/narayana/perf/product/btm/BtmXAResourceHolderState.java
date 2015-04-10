@@ -28,13 +28,13 @@ import bitronix.tm.resource.common.XAResourceHolder;
 import javax.transaction.xa.XAResource;
 
 public class BtmXAResourceHolderState extends XAResourceHolderState {
+    private XAResource xar;
+    private ResourceBean bean;
+    
     @Override
     public String getUniqueName() {
         return "bitronix";
     }
-
-    private XAResource xar;
-    ResourceBean bean;
 
     public BtmXAResourceHolderState(XAResourceHolder resourceHolder, ResourceBean bean) {
         super(resourceHolder, bean);

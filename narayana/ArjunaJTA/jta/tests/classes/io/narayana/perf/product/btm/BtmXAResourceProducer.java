@@ -30,12 +30,10 @@ import javax.naming.Reference;
 import javax.transaction.xa.XAResource;
 
 public class BtmXAResourceProducer implements XAResourceProducer {
-    private XAResource[] xars;
     private BtmXAResourceHolderState btmRecovery;
-    XAResourceHolder[] xarHolders;
+    private XAResourceHolder[] xarHolders;
 
     public BtmXAResourceProducer(BtmXAResourceHolderState btmRecovery, XAResource ... xars) {
-        this.xars = xars;
         this.btmRecovery = btmRecovery;
         this.xarHolders = new XAResourceHolder[xars.length];
 
