@@ -43,7 +43,7 @@ function run_bm {
 function build_benchmark {
   cd $BMDIR
 
-  mvn clean test # build the benchmarks
+  mvn clean package test # build the benchmarks
 }
 
 BM1="com.hp.mwtests.ts.arjuna.performance.Performance1.*"
