@@ -134,16 +134,16 @@ public class ProductComparison {
     };
 
     ProductInterface jotm = new ProductInterface() {
-        org.objectweb.jotm.Jotm jotm;
+        org.objectweb.jotm.Jotm tm;
 
         @Override
         public UserTransaction getUserTransaction() throws SystemException {
-            return jotm.getUserTransaction();
+            return tm.getUserTransaction();
         }
 
         @Override
         public TransactionManager getTransactionManager() {
-            return jotm.getTransactionManager();
+            return tm.getTransactionManager();
         }
 
         @Override
@@ -159,7 +159,7 @@ public class ProductComparison {
         @Override
         public void init() {
             try {
-                jotm = new org.objectweb.jotm.Jotm(true, false);
+                tm = new org.objectweb.jotm.Jotm(true, false);
             } catch (javax.naming.NamingException e) {
                 throw new RuntimeException(e);
             }
@@ -168,7 +168,7 @@ public class ProductComparison {
         @Override
         public void fini() {
             org.objectweb.jotm.TimerManager.stop();
-            jotm.stop();
+            tm.stop();
         }
     };
 
