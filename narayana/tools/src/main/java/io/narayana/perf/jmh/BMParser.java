@@ -53,8 +53,8 @@ public class BMParser {
 
         bm.benchmark = stripQuotes(values[0]);
         bm.mode = stripQuotes(values[1]);
-        bm.threads = Integer.valueOf(stripQuotes(values[2]));
-        bm.samples = Integer.valueOf(stripQuotes(values[3]));
+        bm.threads = Double.valueOf(stripQuotes(values[2])).intValue();
+        bm.samples = Double.valueOf(stripQuotes(values[3])).intValue();
         bm.score = Double.valueOf(stripQuotes(values[4]));
         if (!values[5].equals( "NaN" ) )
             bm.scoreError = Double.valueOf(values[5]);
