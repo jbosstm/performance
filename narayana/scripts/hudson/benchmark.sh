@@ -68,11 +68,12 @@ BM2="ArjunaCore/arjuna com.hp.mwtests.ts.arjuna.atomicaction.CheckedActionTest.*
 BM3="ArjunaJTA/jta com.arjuna.ats.jta.xa.performance.JTAStoreTests.*"
 BM4="ArjunaJTA/jta io.narayana.perf.product.ProductComparison.*"
 BM5="ArjunaJTA/jta com.arjuna.ats.jta.xa.performance.*StoreBenchmark.*"
+BM6="ArjunaJTA/jta org.jboss.narayana.rts.*TxnTest.*"
 
 cd $BMDIR
 case $# in
 0) #mvn clean package test; # build the benchmarks
-   for  i in "$BM1" "$BM2" "$BM3" "$BM4" "$BM5"; do
+   for  i in "$BM1" "$BM2" "$BM3" "$BM4" "$BM5" "$BM6"; do
      IFS=' ' read -a bms <<< "$i"
      run_benchmarks "${bms[0]}" "${bms[1]}"
    done;;

@@ -25,7 +25,7 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.jboss.narayana</groupId>
     <artifactId>narayana-perf</artifactId>
-    <version>5.0.5.Final-SNAPSHOT</version>
+    <version>5.1.2.Final-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>Narayana: performance testing</name>
     <description>performance testing</description>
@@ -34,7 +34,7 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
     <properties>
         <jmh.version>1.8</jmh.version>
         <version.org.jboss.spec.javax.transaction>1.0.0.Final</version.org.jboss.spec.javax.transaction>
-        <version.org.jboss.jboss-transaction-spi>7.1.0.Final</version.org.jboss.jboss-transaction-spi>
+        <version.org.jboss.jboss-transaction-spi>7.1.1.Final</version.org.jboss.jboss-transaction-spi>
         <version.junit>4.11</version.junit>
     </properties>
 

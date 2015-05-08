@@ -15,7 +15,7 @@
     <parent>
         <groupId>org.jboss.narayana</groupId>
         <artifactId>narayana-perf</artifactId>
-        <version>5.0.5.Final-SNAPSHOT</version>
+        <version>5.1.2.Final-SNAPSHOT</version>
         <relativePath>../../pom.xml</relativePath>
     </parent>
 
@@ -37,6 +37,13 @@
         <version.org.jboss.jboss-transaction-spi>7.1.0.Final</version.org.jboss.jboss-transaction-spi>
         <version.junit>4.11</version.junit>
         <version.com.h2database>1.4.182</version.com.h2database>
+
+        <!-- RTS -->
+        <resteasy.version>3.0.9.Final</resteasy.version>
+        <undertow.version>3.0.9.Final</undertow.version>
+        <undertow.io.version>1.2.0.Beta4</undertow.io.version>
+
+
     </properties>
 
     <repositories>
@@ -54,15 +61,15 @@
 
         <!-- connector for jotm -->
         <repository>
-          <id>download-java-net</id>
-          <name>download-java-net</name>
-          <url>http://download.java.net/maven/2/</url>
-          <releases>
-            <enabled>true</enabled>
-          </releases>
-          <snapshots>
-            <enabled>true</enabled>
-          </snapshots>
+            <id>download-java-net</id>
+            <name>download-java-net</name>
+            <url>http://download.java.net/maven/2/</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
         </repository>
     </repositories>
 
@@ -96,20 +103,20 @@
                     </execution>
                 </executions>
             </plugin>
-          <plugin>
-              <groupId>org.apache.maven.plugins</groupId>
-              <artifactId>maven-surefire-plugin</artifactId>
-          </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+            </plugin>
 
         </plugins>
     </build>
 
     <dependencies>
-      <dependency>
-         <groupId>org.jboss.netty</groupId>
-         <artifactId>netty</artifactId>
-         <version>3.2.5.Final</version>
-      </dependency>
+        <dependency>
+            <groupId>org.jboss.netty</groupId>
+            <artifactId>netty</artifactId>
+            <version>3.2.5.Final</version>
+        </dependency>
         <!-- JTA (local: ArjunaJTA/jta and remote: ArjunaJTS/jtax) need JTA and
                 JCA (for tx inflow) apis. -->
         <dependency>
@@ -166,15 +173,15 @@
             <version>${version.org.jboss.logging.jboss-logging-processor}</version>
         </dependency>
         <dependency>
-          <groupId>junit</groupId>
-          <artifactId>junit</artifactId>
-          <version>${version.junit}</version>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>${version.junit}</version>
         </dependency>
 
         <dependency>
-          <groupId>com.h2database</groupId>
-          <artifactId>h2</artifactId>
-          <version>${version.com.h2database}</version>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <version>${version.com.h2database}</version>
         </dependency>
 
         <!-- other products -->
@@ -233,6 +240,72 @@
                 </exclusion>
             </exclusions>
         </dependency>
+
+        <!-- rts -->
+        <!-- REST-AT helper -->
+        <dependency>
+            <groupId>org.jboss.narayana.rts</groupId>
+            <artifactId>restat-util</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.narayana.rts</groupId>
+            <artifactId>restat-api</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+
+        <dependency>
+            <groupId>org.jboss.resteasy</groupId>
+            <artifactId>resteasy-jaxrs</artifactId>
+            <version>${resteasy.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.resteasy</groupId>
+            <artifactId>resteasy-client</artifactId>
+            <version>${resteasy.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.resteasy</groupId>
+            <artifactId>async-http-servlet-3.0</artifactId>
+            <version>${resteasy.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.resteasy</groupId>
+            <artifactId>resteasy-undertow</artifactId>
+            <version>${resteasy.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>io.undertow</groupId>
+            <artifactId>undertow-servlet</artifactId>
+            <version>${undertow.io.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.undertow</groupId>
+            <artifactId>undertow-core</artifactId>
+            <version>${undertow.io.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>io.undertow</groupId>
+            <artifactId>undertow-websockets-jsr</artifactId>
+            <version>${undertow.io.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
+            <version>4.4-beta2-SNAPSHOT</version>
+        </dependency>
+
+        <!-- hornetq store -->
+        <dependency>
+	    <groupId>org.hornetq</groupId>
+	    <artifactId>hornetq-core</artifactId>
+	    <version>2.2.21.Final</version>
+        </dependency>
+
+
     </dependencies>
 
 </project>
