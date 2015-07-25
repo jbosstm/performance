@@ -44,8 +44,8 @@ public class EmptyTxnTest extends TestBase {
         TestBase.tearDown();
     }
 
-    @Test
-    @Benchmark
+    //@Test
+    //@Benchmark
     public void testEmptyTxn() throws IOException {
         Set<Link> links = TxnHelper.beginTxn(txnClient, TXN_URL);
         // make two service calls for comparison with RTSTests#testTxn
