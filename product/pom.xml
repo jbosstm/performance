@@ -12,8 +12,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <aio.lib.path>${basedir}/lib</aio.lib.path>
         <jvm.args>-Xms1024m -Xmx1024m -Djava.library.path=${aio.lib.path}</jvm.args>
-        <version.hornetq>2.2.14.Final</version.hornetq>
-        <!--version.hornetq>2.2.13.Final</version.hornetq-->
+        <version.org.apache.activemq>1.0.0</version.org.apache.activemq>
         <version.EAP5>4.6.1.GA_CP12</version.EAP5>
         <version.EAP6>4.16.4.Final </version.EAP6>
         <version.EAP6.latest>5.0.4.Final-SNAPSHOT</version.EAP6.latest>
@@ -172,9 +171,9 @@
                 </dependency>
                 <!-- hornetq store -->
                 <dependency>
-                    <groupId>org.hornetq</groupId>
-                    <artifactId>hornetq-core</artifactId>
-                    <version>${version.hornetq}</version>
+                    <groupId>org.apache.activemq</groupId>
+                    <artifactId>artemis-journal</artifactId>
+                    <version>${version.org.apache.activemq}</version>
                 </dependency>
                 <dependency>
                     <groupId>org.jboss.netty</groupId>
