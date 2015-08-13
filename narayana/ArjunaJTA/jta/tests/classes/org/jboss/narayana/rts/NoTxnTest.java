@@ -48,8 +48,8 @@ public class NoTxnTest {
         server.stop();
     }
 
-    //@Test
-    //@Benchmark
+    @Test
+    @Benchmark
     public void testNoTxn() throws IOException {
         // make four calls for comparison with RTSTests#testTxn which makes 2 REST calls for starting and stopping
         // the txn plus two service calls (assuming that they are not cached)

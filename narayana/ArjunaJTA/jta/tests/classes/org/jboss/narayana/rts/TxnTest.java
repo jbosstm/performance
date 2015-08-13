@@ -53,8 +53,8 @@ public class TxnTest extends TestBase {
         TestBase.tearDown();
     }
 
-    //@Test
-    //@Benchmark
+    @Test
+    @Benchmark
     public void testTxn() throws IOException {
         Set<Link> links = TxnHelper.beginTxn(txnClient, TXN_URL);
         Link enlistmentLink = TxnHelper.getLink(links, TxLinkNames.PARTICIPANT);
@@ -93,7 +93,7 @@ public class TxnTest extends TestBase {
         }
     }
 
-    //@Test
+    @Test
     public void test() throws InterruptedException, ExecutionException {
         final Collection<Future<Integer>> futures = new ArrayList<>();
 
