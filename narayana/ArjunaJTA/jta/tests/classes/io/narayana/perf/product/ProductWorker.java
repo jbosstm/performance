@@ -60,4 +60,7 @@ public class ProductWorker<Void> {
         prod.fini();
     }
 
+    public String getName() {
+        return prod.getName();
+    }
 }
