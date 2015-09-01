@@ -80,7 +80,6 @@ public class TestCase extends AbstractTestCase {
     @Before
     public void before() {
         startContainers();
-        deploy();
         setNodeIdentifier(CLIENT_CONTROLLER, "101");
         setNodeIdentifier(FIRST_SERVICE_CONTROLLER, "102");
         setNodeIdentifier(SECOND_SERVICE_CONTROLLER, "103");
@@ -99,6 +98,7 @@ public class TestCase extends AbstractTestCase {
         }
 
         restartContainers();
+        deploy();
     }
 
     @After

@@ -25,8 +25,6 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.Map;
 
 import org.jboss.arquillian.container.test.api.Config;
@@ -140,7 +138,7 @@ public abstract class AbstractTestCase {
     protected void enableJTS(final String controller) {
         executeCommands(controller,
                 "Failed to enable JTS",
-                "/subsystem=jacorb:write-attribute(name=transactions,value=on)",
+                "/subsystem=iiop-openjdk:write-attribute(name=transactions,value=full)",
                 "/subsystem=transactions:write-attribute(name=jts,value=true)",
                 "exit");
     }
