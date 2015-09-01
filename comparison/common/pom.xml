@@ -34,34 +34,4 @@
             <classifier>client</classifier>
         </dependency>
     </dependencies>
-
-    <profiles>
-        <profile>
-            <id>get-wf</id>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.wildfly.plugins</groupId>
-                        <artifactId>wildfly-maven-plugin</artifactId>
-                        <version>1.0.2.Final</version>
-                        <executions>
-                            <execution>
-                                <goals>
-                                    <goal>start</goal>
-                                </goals>
-                                <phase>initialize</phase>
-                                <configuration>
-                                    <artifact>org.wildfly:wildfly-dist:9.0.0.Alpha1</artifact>
-                                </configuration>
-                            </execution>
-                        </executions>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-    </profiles>
-
 </project>
