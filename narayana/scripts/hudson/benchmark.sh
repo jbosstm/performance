@@ -16,6 +16,7 @@ BMDIR=$WORKSPACE/narayana
 # NB if you want to profile with JFR on the oracle jvm use -XX:+UnlockCommercialFeatures and -prof jfr if supported
 
 [ -z "${JMHARGS}" ] && JMHARGS="-foe -i 1 -wi 10 -f 1 -t 1 -r 100 -prof stack"
+CJVM_ARGS="$JVM_ARGS"
 
 RESFILE=$WORKSPACE/benchmark-output.txt
 
@@ -35,6 +36,8 @@ function run_bm {
   CSV_DIR="$1/target/jmh"
   [ -d $CSV_DIR ] || mkdir -p $CSV_DIR
   CSVF="$CSV_DIR/$f.csv"
+
+  JVM_ARGS="$CJVM_ARGS"
 
   if [[ $2 == *"ProductComparison"* ]]; then
     jotm_init $1
@@ -58,7 +61,13 @@ function run_bm {
   echo "Run arguments: $JMHARGS" >> $RESFILE
   echo "Run output:" >> $RESFILE
   cat $CSVF >> $RESFILE
-  rm $CSVF
+
+  # there should be $3 results in the csv file
+  let tc=$(wc -l < $CSVF)
+  let tc=tc-1 # subtract 1 to account for the header
+  [ $tc = $3 ] || fatal "Some benchmark tests did not finish. Expected: $3 Actual: $tc ($1 and $2)"
+  
+  #rm $CSVF
 }
 
 # run a benchmark against the local maven repo
@@ -66,25 +75,40 @@ function run_benchmarks {
   [ -d $1 ] || fatal "module directory $1 not found"
   bmjar="$1/target/benchmarks.jar"
   [ -f $bmjar ] || fatal "benchmark jar $bmjar not found"
-  run_bm "$1" "$2"
+  run_bm "$1" "$2" "$3"
 }
 
-BM1="ArjunaCore/arjuna com.hp.mwtests.ts.arjuna.performance.Performance1.*"
-BM2="ArjunaCore/arjuna com.hp.mwtests.ts.arjuna.atomicaction.CheckedActionTest.*"
-BM3="ArjunaJTA/jta com.arjuna.ats.jta.xa.performance.JTAStoreTests.*"
-BM4="ArjunaJTA/jta io.narayana.perf.product.ProductComparison.*"
-BM5="ArjunaJTA/jta com.arjuna.ats.jta.xa.performance.*StoreBenchmark.*"
-BM6="ArjunaJTA/jta org.jboss.narayana.rts.*TxnTest.*"
+# define which benchmarks to run. The syntax is:
+# <maven module directory> <jmh test pattern> <the expected number of benchmarks>
+# the need for the third field is because JMH does not return error codes for benchmark failures
+BM1="ArjunaCore/arjuna com.hp.mwtests.ts.arjuna.performance.Performance1.* 2"
+#ArjunaCore/arjuna/tests/classes/com/hp/mwtests/ts/arjuna/performance/Performance1.java
+BM2="ArjunaCore/arjuna com.hp.mwtests.ts.arjuna.atomicaction.CheckedActionTest.* 2"
+#ArjunaCore/arjuna/tests/classes/com/hp/mwtests/ts/arjuna/atomicaction/CheckedActionTest.java
+BM3="ArjunaJTA/jta com.arjuna.ats.jta.xa.performance.JTAStoreTests.* 1"
+#ArjunaJTA/jta/tests/classes/com/arjuna/ats/jta/xa/performance/JTAStoreTests.java
+BM4="ArjunaJTA/jta io.narayana.perf.product.ProductComparison.* 5"
+#ArjunaJTA/jta/tests/classes/io/narayana/perf/product/ProductComparison.java
+BM5="ArjunaJTA/jta com.arjuna.ats.jta.xa.performance.*StoreBenchmark.* 4"
+#ArjunaJTA/jta/tests/classes/com/arjuna/ats/jta/xa/performance/HQStoreBenchmark.java
+#ArjunaJTA/jta/tests/classes/com/arjuna/ats/jta/xa/performance/VolatileStoreBenchmark.java
+#ArjunaJTA/jta/tests/classes/com/arjuna/ats/jta/xa/performance/ShadowNoFileLockStoreBenchmark.java
+#ArjunaJTA/jta/tests/classes/com/arjuna/ats/jta/xa/performance/JDBCStoreBenchmark.java
+BM6="ArjunaJTA/jta org.jboss.narayana.rts.*TxnTest.* 3"
+#ArjunaJTA/jta/tests/classes/org/jboss/narayana/rts/TxnTest.java
+#ArjunaJTA/jta/tests/classes/org/jboss/narayana/rts/NoTxnTest.java
+#ArjunaJTA/jta/tests/classes/org/jboss/narayana/rts/EmptyTxnTest.java
 
 cd $BMDIR
 case $# in
-0) #mvn clean package test; # build the benchmarks
+0)
    for  i in "$BM1" "$BM2" "$BM3" "$BM4" "$BM5" "$BM6"; do
      IFS=' ' read -a bms <<< "$i"
-     run_benchmarks "${bms[0]}" "${bms[1]}"
+     mvn -f "${bms[0]}/pom.xml" clean install -DskipTests # build the benchmarks
+     run_benchmarks "${bms[0]}" "${bms[1]}" "${bms[2]}"
    done;;
 1) fatal "syntax: module-dir benchmark-pattern";;
-*) run_benchmarks "$1" "$2";;
+*) run_benchmarks "$1" "$2" "$3";;
 esac
 
 rv=$?
