@@ -1,6 +1,6 @@
 /*
  * JBoss, Home of Professional Open Source.
- * Copyright 2014, Red Hat, Inc., and individual contributors
+ * Copyright 2015, Red Hat, Inc., and individual contributors
  * as indicated by the @author tags. See the copyright.txt file in the
  * distribution for a full listing of individual contributors.
  *
@@ -21,20 +21,7 @@
  */
 package io.narayana.perf.product;
 
-import javax.sql.DataSource;
-import javax.transaction.SystemException;
-import javax.transaction.TransactionManager;
-import javax.transaction.UserTransaction;
-import javax.transaction.xa.XAResource;
+import com.arjuna.ats.jta.xa.performance.XAResourceImpl;
 
-interface ProductInterface<T> {
-    void init();
-    void fini();
-    UserTransaction getUserTransaction() throws SystemException;
-    TransactionManager getTransactionManager();
-    String getName();
-    @Deprecated // not used since migration to using JMH for perf testing
-    String getNameOfMetric();
-
-    XAResource getXAResource();
+public class GeronimoXAResource extends XAResourceImpl implements org.apache.geronimo.transaction.manager.NamedXAResource {
 }

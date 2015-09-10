@@ -40,7 +40,7 @@ public class XAResourceImpl implements XAResource {
 
     @Override
     public boolean isSameRM(XAResource xaResource) throws XAException {
-        return false;
+        return xaResource.equals(this);
     }
 
     @Override
@@ -64,5 +64,9 @@ public class XAResourceImpl implements XAResource {
 
     @Override
     public void start(Xid xid, int i) throws XAException {
+    }
+
+    public String getName() {
+        return String.valueOf(hashCode());
     }
 }
