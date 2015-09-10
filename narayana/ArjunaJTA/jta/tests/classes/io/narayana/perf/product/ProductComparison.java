@@ -21,6 +21,8 @@
  */
 package io.narayana.perf.product;
 
+import com.arjuna.ats.jta.xa.performance.XAResourceImpl;
+import com.atomikos.icatch.config.UserTransactionServiceImp;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -30,6 +32,7 @@ import org.openjdk.jmh.annotations.Scope;
 import org.openjdk.jmh.annotations.Setup;
 import org.openjdk.jmh.annotations.State;
 import org.openjdk.jmh.annotations.TearDown;
+import org.openjdk.jmh.runner.BenchmarkException;
 import org.openjdk.jmh.runner.RunnerException;
 import org.openjdk.jmh.runner.options.CommandLineOptionException;
 import com.arjuna.ats.jta.xa.performance.JMHConfigJTA;
@@ -37,6 +40,7 @@ import com.arjuna.ats.jta.xa.performance.JMHConfigJTA;
 import javax.transaction.SystemException;
 import javax.transaction.TransactionManager;
 import javax.transaction.UserTransaction;
+import javax.transaction.xa.XAResource;
 
 import bitronix.tm.BitronixTransactionManager;
 import bitronix.tm.TransactionManagerServices;
@@ -112,7 +116,6 @@ public class ProductComparison {
         addWorker(new ProductWorker<Void>(jotm));
         addWorker(new ProductWorker<Void>(narayana));
         addWorker(new ProductWorker<Void>(geronimo));
-
         addWorker(new BitronixWorker<Void>(bitronix));
     }
 
@@ -137,7 +140,12 @@ public class ProductComparison {
     private void doWork(ProductInterface product) throws Exception {
         assertTrue(workers.containsKey(product.getName()));
 
-        workers.get(product.getName()).doWork();
+        try {
+            workers.get(product.getName()).doWork();
+        } catch (Exception e) {
+//            System.err.printf("%s: %s%n", product.getName(), e.getMessage());
+            throw new BenchmarkException(e);
+        }
     }
 
     private ProductInterface narayana = new ProductInterface() {
@@ -165,7 +173,17 @@ public class ProductComparison {
         }
 
         @Override
+        public XAResource getXAResource() {
+            return new XAResourceImpl();
+        }
+
+        @Override
         public void init() {
+            String storeDir = BeanPopulator.getDefaultInstance(ObjectStoreEnvironmentBean.class).getObjectStoreDir();
+
+            BeanPopulator.getDefaultInstance(HornetqJournalEnvironmentBean.class).setStoreDir(storeDir);
+            BeanPopulator.getNamedInstance(ObjectStoreEnvironmentBean.class, "communicationStore").setObjectStoreDir(storeDir);
+
             try {
                 BeanPopulator.getDefaultInstance(CoreEnvironmentBean.class).setNodeIdentifier("0");
             } catch (CoreEnvironmentBeanException e) {
@@ -175,7 +193,7 @@ public class ProductComparison {
                 com.arjuna.ats.internal.arjuna.objectstore.hornetq.HornetqJournalEnvironmentBean.class
                 );
             hornetqJournalEnvironmentBean.setAsyncIO(true);
-            hornetqJournalEnvironmentBean.setStoreDir("HornetqObjectStore");
+            hornetqJournalEnvironmentBean.setStoreDir(storeDir);//"HornetqObjectStore");
             BeanPopulator.getDefaultInstance(ObjectStoreEnvironmentBean.class).setObjectStoreType("com.arjuna.ats.internal.arjuna.objectstore.hornetq.HornetqObjectStoreAdaptor");
             ut = com.arjuna.ats.jta.UserTransaction.userTransaction();
             tm = com.arjuna.ats.jta.TransactionManager.transactionManager();
@@ -210,6 +228,11 @@ public class ProductComparison {
         }
 
         @Override
+        public XAResource getXAResource() {
+            return new XAResourceImpl();
+        }
+
+        @Override
         public void init() {
             try {
                 tm = new org.objectweb.jotm.Jotm(true, false);
@@ -220,8 +243,11 @@ public class ProductComparison {
 
         @Override
         public void fini() {
-            org.objectweb.jotm.TimerManager.stop();
-            tm.stop();
+            if (tm != null) {
+                org.objectweb.jotm.TimerManager.stop();
+                tm.stop();
+                tm = null;
+            }
         }
     };
 
@@ -249,6 +275,11 @@ public class ProductComparison {
         }
 
         @Override
+        public XAResource getXAResource() {
+            return new XAResourceImpl();
+        }
+
+        @Override
         public void init() {
             TransactionManagerServices.getConfiguration().setGracefulShutdownInterval(1);
             TransactionManagerServices.getConfiguration().setExceptionAnalyzer(DefaultExceptionAnalyzer.class.getName());
@@ -257,12 +288,15 @@ public class ProductComparison {
 
         @Override
         public void fini() {
-            btm.shutdown();
+            if (btm != null) {
+                btm.shutdown();
+                btm = null;
+            }
         }
     };
 
     private ProductInterface atomikos = new ProductInterface() {
-        UserTransactionManager utm;
+        private UserTransactionManager utm;
 
         @Override
         public UserTransaction getUserTransaction() throws SystemException {
@@ -285,15 +319,21 @@ public class ProductComparison {
         }
 
         @Override
+        public XAResource getXAResource() {
+            return new AomikosXAResource();
+        }
+
+        @Override
         public void init() {
+            System.setProperty(UserTransactionServiceImp.HIDE_INIT_FILE_PATH_PROPERTY_NAME, "no thanks");
+
             utm = new UserTransactionManager();
 
             try {
                 utm.init();
             } catch (SystemException e) {
                 e.printStackTrace();
-                utm.close();
-                utm = null;
+                fini();
             }
         }
 
@@ -307,12 +347,8 @@ public class ProductComparison {
     };
 
     private ProductInterface geronimo = new ProductInterface() {
-        private final File basedir = new File(System.getProperty("basedir", System.getProperty("user.dir")));
         private final String LOG_FILE_NAME = "geronimo_howl_test_";
-        private final String logFileDir = "txlog";
-        private final String targetDir = new File(basedir, "target").getAbsolutePath();
         private HOWLLog howlLog;
-
         private UserTransaction ut;
         private TransactionManager tm;
 
@@ -337,11 +373,20 @@ public class ProductComparison {
         }
 
         @Override
+        public XAResource getXAResource() {
+            return new GeronimoXAResource();
+        }
+
+        @Override
         public void init() {
             try {
                 tm = createTransactionManager();
                 ut = new GeronimoUserTransaction(tm);
             } catch (Exception e ) {
+                try {
+                    fini();
+                } catch (RuntimeException re) {
+                }
                 throw new RuntimeException(e);
             }
         }
@@ -351,6 +396,7 @@ public class ProductComparison {
             if (howlLog != null) {
                 try {
                     howlLog.doStop();
+                    howlLog = null;
                 } catch (Exception e) {
                     // don't know how to handle it
                     throw new RuntimeException(e);
@@ -359,14 +405,18 @@ public class ProductComparison {
         }
 
         protected TransactionManagerImpl createTransactionManager() throws Exception {
+            String buildDir = System.getProperty("BUILD_DIR", "target");
             XidFactory xidFactory = new XidFactoryImpl("hi".getBytes());
+
+            buildDir = buildDir + "/geronimo";
+
             howlLog = new HOWLLog(
                     "org.objectweb.howl.log.BlockLogBuffer", //                "bufferClassName",
                     4, //                "bufferSizeKBytes",
                     true, //                "checksumEnabled",
                     true, //                "adler32Checksum",
                     20, //                "flushSleepTime",
-                    logFileDir, //                "logFileDir",
+                    buildDir, //                "logFileDir",
                     "log", //                "logFileExt",
                     LOG_FILE_NAME, //                "logFileName",
                     200, //                "maxBlocksPerFile",
@@ -375,7 +425,7 @@ public class ProductComparison {
                     2, //                "minBuffers"
                     10,//                "threadsWaitingForceThreshold"});
                     xidFactory,
-                    new File(targetDir)
+                    new File(buildDir)
             );
 
             howlLog.doStart();

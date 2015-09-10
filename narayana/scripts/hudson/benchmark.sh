@@ -15,7 +15,7 @@ BMDIR=$WORKSPACE/narayana
 # profilers: gc,stack,comp
 # NB if you want to profile with JFR on the oracle jvm use -XX:+UnlockCommercialFeatures and -prof jfr if supported
 
-[ -z "${JMHARGS}" ] && JMHARGS="-i 1 -wi 10 -f 1 -t 1 -r 100 -prof stack"
+[ -z "${JMHARGS}" ] && JMHARGS="-foe -i 1 -wi 10 -f 1 -t 1 -r 100 -prof stack"
 
 RESFILE=$WORKSPACE/benchmark-output.txt
 
@@ -38,11 +38,16 @@ function run_bm {
 
   if [[ $2 == *"ProductComparison"* ]]; then
     jotm_init $1
-    JVM_ARGS="$JVM_ARGS -Djotm.base=$1/target/jotm"
+    mkdir -p $1/target/bitronix
+    mkdir -p $1/target/narayana
+    mkdir -p $1/target/geronimo
+    mkdir -p $1/target/atomikos
+# -Dcom.atomikos.icatch.log_base_dir=$1/target/atomikos
+    JVM_ARGS="$JVM_ARGS -DBUILD_DIR=$1/target -Dcom.atomikos.icatch.file=$1/target/classes/atomikos.properties -Dcom.atomikos.icatch.log_base_dir=$1/target/atomikos -DObjectStoreEnvironmentBean.objectStoreDir=$1/target/narayana -Dbitronix.tm.journal.disk.logPart1Filename=$1/target/bitronix/btm1.tlog -Dbitronix.tm.journal.disk.logPart2Filename=$1/target/bitronix/btm2.tlog -Djotm.base=$1/target/jotm -Dhowl.log.FileDirectory=$1/target/jotm"
   fi
 
   echo "run_bm with $1 and $2 and jvm args $JVM_ARGS"
-  java $JVM_ARGS -jar $1/target/benchmarks.jar "$2" $JMHARGS -rf csv -rff $CSVF
+  java -classpath $1/target/classes $JVM_ARGS -jar $1/target/benchmarks.jar "$2" $JMHARGS -rf csv -rff $CSVF
 
   [ $? = 0 ] || fatal "benchmark failure"
 
