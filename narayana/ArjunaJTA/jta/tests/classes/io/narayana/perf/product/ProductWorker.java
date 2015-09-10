@@ -35,13 +35,15 @@ public class ProductWorker<Void> {
 
     ProductInterface prod;
     
-    protected XAResource xaResource1 = new XAResourceImpl();
-    protected XAResource xaResource2 = new XAResourceImpl();
+    protected XAResource xaResource1;
+    protected XAResource xaResource2;
 
     private TransactionManager ut;
 
     public ProductWorker(ProductInterface prod) {
         this.prod = prod;
+        xaResource1 = prod.getXAResource();
+        xaResource2 = prod.getXAResource();
     }
 
     public void doWork() throws SystemException, NotSupportedException, RollbackException, HeuristicRollbackException, HeuristicMixedException {
