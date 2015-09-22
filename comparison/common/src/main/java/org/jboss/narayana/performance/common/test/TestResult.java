@@ -27,7 +27,7 @@ public class TestResult {
 
     }
 
-    public TestResult(final int throughput, final long averageTime, final long totalTime, final int numberOfErrors,
+    public TestResult(final double throughput, final long averageTime, final long totalTime, final int numberOfErrors,
             final int numberOfCalls, final int numberOfThreads) {
 
         this.throughput = throughput;
@@ -52,7 +52,7 @@ public class TestResult {
         return throughput;
     }
 
-    public void setThroughput(final int throughput) {
+    public void setThroughput(final double throughput) {
         this.throughput = throughput;
     }
 
