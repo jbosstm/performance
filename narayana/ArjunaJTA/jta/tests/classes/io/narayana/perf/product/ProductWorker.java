@@ -65,4 +65,8 @@ public class ProductWorker<Void> {
     public String getName() {
         return prod.getName();
     }
+
+    public ProductInterface getProduct() {
+        return prod;
+    }
 }

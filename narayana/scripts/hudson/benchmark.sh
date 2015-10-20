@@ -87,7 +87,7 @@ BM2="ArjunaCore/arjuna com.hp.mwtests.ts.arjuna.atomicaction.CheckedActionTest.*
 #ArjunaCore/arjuna/tests/classes/com/hp/mwtests/ts/arjuna/atomicaction/CheckedActionTest.java
 BM3="ArjunaJTA/jta com.arjuna.ats.jta.xa.performance.JTAStoreTests.* 1"
 #ArjunaJTA/jta/tests/classes/com/arjuna/ats/jta/xa/performance/JTAStoreTests.java
-BM4="ArjunaJTA/jta io.narayana.perf.product.ProductComparison.* 5"
+BM4="ArjunaJTA/jta io.narayana.perf.product.*Comparison.* 5"
 #ArjunaJTA/jta/tests/classes/io/narayana/perf/product/ProductComparison.java
 BM5="ArjunaJTA/jta com.arjuna.ats.jta.xa.performance.*StoreBenchmark.* 4"
 #ArjunaJTA/jta/tests/classes/com/arjuna/ats/jta/xa/performance/HQStoreBenchmark.java
