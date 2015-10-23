@@ -30,7 +30,6 @@ import com.atomikos.icatch.RecoveryService;
 public class AomikosXAResource extends XAResourceImpl implements com.atomikos.datasource.RecoverableResource {
     @Override
     public void setRecoveryService(RecoveryService recoveryService) throws ResourceException {
-
     }
 
     @Override
@@ -40,7 +39,6 @@ public class AomikosXAResource extends XAResourceImpl implements com.atomikos.da
 
     @Override
     public void endRecovery() throws ResourceException {
-
     }
 
     @Override

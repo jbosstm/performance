@@ -39,14 +39,14 @@ function run_bm {
 
   JVM_ARGS="$CJVM_ARGS"
 
-  if [[ $2 == *"ProductComparison"* ]]; then
+  if [[ $2 == *"Comparison"* ]]; then
     jotm_init $1
     mkdir -p $1/target/bitronix
     mkdir -p $1/target/narayana
     mkdir -p $1/target/geronimo
     mkdir -p $1/target/atomikos
-# -Dcom.atomikos.icatch.log_base_dir=$1/target/atomikos
-    JVM_ARGS="$JVM_ARGS -DBUILD_DIR=$1/target -Dcom.atomikos.icatch.file=$1/target/classes/atomikos.properties -Dcom.atomikos.icatch.log_base_dir=$1/target/atomikos -DObjectStoreEnvironmentBean.objectStoreDir=$1/target/narayana -Dbitronix.tm.journal.disk.logPart1Filename=$1/target/bitronix/btm1.tlog -Dbitronix.tm.journal.disk.logPart2Filename=$1/target/bitronix/btm2.tlog -Djotm.base=$1/target/jotm -Dhowl.log.FileDirectory=$1/target/jotm"
+
+    JVM_ARGS="$JVM_ARGS -DBUILD_DIR=$1/target -Dcom.atomikos.icatch.file=$1/target/classes/atomikos.properties -DObjectStoreEnvironmentBean.objectStoreDir=$1/target/narayana -Dbitronix.tm.journal.disk.logPart1Filename=$1/target/bitronix/btm1.tlog -Dbitronix.tm.journal.disk.logPart2Filename=$1/target/bitronix/btm2.tlog -Djotm.base=$1/target/jotm -Dhowl.log.FileDirectory=$1/target/jotm"
   fi
 
   echo "run_bm with $1 and $2 and jvm args $JVM_ARGS"

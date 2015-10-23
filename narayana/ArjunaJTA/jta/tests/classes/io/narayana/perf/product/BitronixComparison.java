@@ -71,11 +71,6 @@ public class BitronixComparison extends ProductComparison {
         }
 
         @Override
-        public String getNameOfMetric() {
-            return outerClassName + "_Bitronix";
-        }
-
-        @Override
         public XAResource getXAResource() {
             return new XAResourceImpl();
         }

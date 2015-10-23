@@ -38,7 +38,10 @@ import com.arjuna.ats.jta.xa.performance.JMHConfigJTA;
 import com.arjuna.ats.arjuna.common.CoreEnvironmentBeanException;
 
 import java.util.concurrent.atomic.AtomicInteger;
-
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CyclicBarrier;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 @State(Scope.Benchmark)
 abstract public class ProductComparison {
@@ -46,6 +49,7 @@ abstract public class ProductComparison {
     final static private int MAX_ERRORS = Integer.getInteger("MAX_ERRORS", 0);
 
     private AtomicInteger errorCount = new AtomicInteger(0);
+    private AtomicInteger completionCount = new AtomicInteger(0);
 
     private ProductWorker<Void> worker;
 
@@ -77,6 +81,46 @@ abstract public class ProductComparison {
     @Benchmark
     public void test() throws Exception {
         doWork(worker.getProduct());
+    }
+
+    @Test
+    public void test2() throws Exception {
+        final int TASK_COUNT = 1000;
+        final int THREAD_COUNT = 500;
+        final CyclicBarrier gate = new CyclicBarrier(THREAD_COUNT + 1);
+        CompletableFuture<Integer>[] futures = new CompletableFuture[TASK_COUNT];
+        ExecutorService executor = Executors.newFixedThreadPool(THREAD_COUNT);
+
+        System.out.printf("Launching %d futures%n", TASK_COUNT);
+
+        for (int i = 0; i < TASK_COUNT; i++)
+            futures[i] = doAsync(gate, i < THREAD_COUNT, i, executor);
+
+        gate.await();
+
+        for (int i = 0; i < TASK_COUNT; i++) {
+            if (futures[i].get() != 0)
+                System.out.printf("workload %d failed%n", i);
+        }
+
+        System.out.printf("Completed %d out of %d workloads%n", completionCount.get(), TASK_COUNT);
+    }
+
+    private CompletableFuture<Integer> doAsync(CyclicBarrier gate, boolean wait, int i, ExecutorService executor) {
+        return CompletableFuture.supplyAsync(() -> {
+            try {
+                if (wait)
+                    gate.await();
+
+                doWork(worker.getProduct());
+                completionCount.incrementAndGet();
+
+                return 0;
+            } catch (Exception e) {
+                e.printStackTrace();
+                return 1;
+            }
+        }, executor);
     }
 
     protected void doWork(ProductInterface product) throws Exception {

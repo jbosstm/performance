@@ -72,11 +72,6 @@ public class NarayanaComparison extends ProductComparison {
         }
 
         @Override
-        public String getNameOfMetric() {
-            return outerClassName + "_Narayana";
-        }
-
-        @Override
         public XAResource getXAResource() {
             return new XAResourceImpl();
         }

@@ -79,11 +79,6 @@ public class GeronimoComparison extends ProductComparison {
         }
 
         @Override
-        public String getNameOfMetric() {
-            return outerClassName + "_Geronimo";
-        }
-
-        @Override
         public XAResource getXAResource() {
             return new GeronimoXAResource();
         }

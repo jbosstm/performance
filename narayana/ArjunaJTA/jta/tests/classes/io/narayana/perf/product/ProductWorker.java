@@ -56,6 +56,11 @@ public class ProductWorker<Void> {
     public void init() {
         prod.init();
         ut = prod.getTransactionManager();
+        try {
+            ut.setTransactionTimeout(300);
+        } catch (SystemException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public void fini() {

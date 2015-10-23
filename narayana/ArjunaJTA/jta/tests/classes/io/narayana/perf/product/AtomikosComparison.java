@@ -70,18 +70,13 @@ public class AtomikosComparison extends ProductComparison {
         }
 
         @Override
-        public String getNameOfMetric() {
-            return outerClassName + "_Atomkos";
-        }
-
-        @Override
         public XAResource getXAResource() {
             return new AomikosXAResource();
         }
 
         @Override
         public void init() {
-            System.setProperty(UserTransactionServiceImp.HIDE_INIT_FILE_PATH_PROPERTY_NAME, "no thanks");
+//            System.setProperty(UserTransactionServiceImp.HIDE_INIT_FILE_PATH_PROPERTY_NAME, "no thanks");
 
             utm = new UserTransactionManager();
 

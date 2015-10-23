@@ -33,8 +33,5 @@ interface ProductInterface<T> {
     UserTransaction getUserTransaction() throws SystemException;
     TransactionManager getTransactionManager();
     String getName();
-    @Deprecated // not used since migration to using JMH for perf testing
-    String getNameOfMetric();
-
     XAResource getXAResource();
 }

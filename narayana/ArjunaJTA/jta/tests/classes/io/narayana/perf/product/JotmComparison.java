@@ -70,11 +70,6 @@ public class JotmComparison extends ProductComparison {
         }
 
         @Override
-        public String getNameOfMetric() {
-            return outerClassName + "_Jotm";
-        }
-
-        @Override
         public XAResource getXAResource() {
             return new XAResourceImpl();
         }
