@@ -87,7 +87,11 @@ BM2="ArjunaCore/arjuna com.hp.mwtests.ts.arjuna.atomicaction.CheckedActionTest.*
 #ArjunaCore/arjuna/tests/classes/com/hp/mwtests/ts/arjuna/atomicaction/CheckedActionTest.java
 BM3="ArjunaJTA/jta com.arjuna.ats.jta.xa.performance.JTAStoreTests.* 1"
 #ArjunaJTA/jta/tests/classes/com/arjuna/ats/jta/xa/performance/JTAStoreTests.java
-BM4="ArjunaJTA/jta io.narayana.perf.product.*Comparison.* 5"
+BM4a="ArjunaJTA/jta io.narayana.perf.product.BitronixComparison.* 1"
+BM4b="ArjunaJTA/jta io.narayana.perf.product.GeronimoComparison.* 1"
+BM4c="ArjunaJTA/jta io.narayana.perf.product.NarayanaComparison.* 1"
+BM4d="ArjunaJTA/jta io.narayana.perf.product.AtomikosComparison.* 1"
+BM4e="ArjunaJTA/jta io.narayana.perf.product.JotmComparison.* 1"
 #ArjunaJTA/jta/tests/classes/io/narayana/perf/product/ProductComparison.java
 BM5="ArjunaJTA/jta com.arjuna.ats.jta.xa.performance.*StoreBenchmark.* 4"
 #ArjunaJTA/jta/tests/classes/com/arjuna/ats/jta/xa/performance/HQStoreBenchmark.java
@@ -102,7 +106,7 @@ BM6="ArjunaJTA/jta org.jboss.narayana.rts.*TxnTest.* 3"
 cd $BMDIR
 case $# in
 0)
-   for  i in "$BM1" "$BM2" "$BM3" "$BM4" "$BM5"; do
+   for  i in "$BM4a" "$BM4b" "$BM4c" "$BM4d" "$BM4e" "$BM1" "$BM2" "$BM3" "$BM5"; do
      IFS=' ' read -a bms <<< "$i"
      mvn -f "${bms[0]}/pom.xml" clean install -DskipTests # build the benchmarks
      run_benchmarks "${bms[0]}" "${bms[1]}" "${bms[2]}"
