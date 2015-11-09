@@ -106,7 +106,7 @@ BM6="ArjunaJTA/jta org.jboss.narayana.rts.*TxnTest.* 3"
 cd $BMDIR
 case $# in
 0)
-   for  i in "$BM4a" "$BM4b" "$BM4c" "$BM4d" "$BM4e" "$BM1" "$BM2" "$BM3" "$BM5"; do
+   for  i in "$BM4a" "$BM4b" "$BM4c" "$BM4d" "$BM1" "$BM2" "$BM3" "$BM5"; do
      IFS=' ' read -a bms <<< "$i"
      mvn -f "${bms[0]}/pom.xml" clean install -DskipTests # build the benchmarks
      run_benchmarks "${bms[0]}" "${bms[1]}" "${bms[2]}"
