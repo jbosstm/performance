@@ -79,6 +79,17 @@
                 <enabled>true</enabled>
             </snapshots>
         </repository>
+        <repository>
+            <id>jboss-developer-repository-group</id>
+            <name>JBoss Developer Maven Repository Group</name>
+            <url>https://repository.jboss.org/nexus/content/groups/developer/</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
 
         <!-- connector for jotm -->
         <repository>
