@@ -60,7 +60,6 @@
 
         <version.log4j.log4j>1.2.17</version.log4j.log4j>
         <version.org.jboss.netty.netty>3.2.5.Final</version.org.jboss.netty.netty>
-        <version.javax.resource.connector>1.0</version.javax.resource.connector>
         <version.org.ow2.jotm.ow2-jotm-dist>2.2.1</version.org.ow2.jotm.ow2-jotm-dist>
         <version.com.atomikos.transactions-jta>3.8.0</version.com.atomikos.transactions-jta>
         <version.com.atomikos.transactions-jdbc>3.8.0</version.com.atomikos.transactions-jdbc>
@@ -72,30 +71,6 @@
             <id>jboss-public-repository-group</id>
             <name>JBoss Public Maven Repository Group</name>
             <url>https://repository.jboss.org/nexus/content/groups/public/</url>
-            <releases>
-                <enabled>true</enabled>
-            </releases>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
-        </repository>
-        <repository>
-            <id>jboss-developer-repository-group</id>
-            <name>JBoss Developer Maven Repository Group</name>
-            <url>https://repository.jboss.org/nexus/content/groups/developer/</url>
-            <releases>
-                <enabled>true</enabled>
-            </releases>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-        </repository>
-
-        <!-- connector for jotm -->
-        <repository>
-            <id>download-java-net</id>
-            <name>download-java-net</name>
-            <url>http://download.java.net/maven/2/</url>
             <releases>
                 <enabled>true</enabled>
             </releases>
@@ -245,12 +220,6 @@
             <groupId>org.codehaus.btm</groupId>
             <artifactId>btm</artifactId>
             <version>${version.org.codehaus.btm.btm}</version>
-        </dependency>
-        <!-- jotm depends on connector -->
-        <dependency>
-            <groupId>javax.resource</groupId>
-            <artifactId>connector</artifactId>
-            <version>${version.javax.resource.connector}</version>
         </dependency>
         <dependency>
             <groupId>org.ow2.jotm</groupId>
