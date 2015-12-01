@@ -29,12 +29,10 @@ import javax.transaction.SystemException;
 import javax.transaction.TransactionManager;
 import javax.transaction.xa.XAResource;
 
-import com.arjuna.ats.jta.xa.performance.XAResourceImpl;
-
 public class ProductWorker<Void> {
 
     ProductInterface prod;
-    
+
     protected XAResource xaResource1;
     protected XAResource xaResource2;
 
@@ -57,7 +55,7 @@ public class ProductWorker<Void> {
         prod.init();
         ut = prod.getTransactionManager();
         try {
-            ut.setTransactionTimeout(300);
+            ut.setTransactionTimeout(0);
         } catch (SystemException e) {
             throw new RuntimeException(e);
         }

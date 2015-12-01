@@ -23,34 +23,39 @@ RESFILE=$WORKSPACE/benchmark-output.txt
 echo "JMH Benchmarks Results" > $RESFILE
 
 function jotm_init {
-  if [ -f "$1/target/classes/jotm.properties" ]; then
-    mkdir -p $1/target/jotm/conf
-    cp $1/target/classes/jotm.properties $1/target/jotm/conf
+  if [ -f "target/classes/jotm.properties" ]; then
+    mkdir -p target/jotm/conf
+    cp target/classes/jotm.properties target/jotm/conf
   fi
+}
+
+function mk_output_dirs {
+  for d in jotm bitronix narayana geronimo atomikos; do
+    mkdir -p target/$d
+    rm -rf target/$d/*
+  done
 }
 
 # run a set of benchmarks and copy the generated jmh csv files to $WORKSPACE
 function run_bm {
   suffix=".\*"
   f=${2%$suffix}
-  CSV_DIR="$1/target/jmh"
+  cd $1
+  CSV_DIR="target/jmh"
   [ -d $CSV_DIR ] || mkdir -p $CSV_DIR
   CSVF="$CSV_DIR/$f.csv"
 
   JVM_ARGS="$CJVM_ARGS"
 
   if [[ $2 == *"Comparison"* ]]; then
-    jotm_init $1
-    mkdir -p $1/target/bitronix
-    mkdir -p $1/target/narayana
-    mkdir -p $1/target/geronimo
-    mkdir -p $1/target/atomikos
+    mk_output_dirs
+    jotm_init
 
-    JVM_ARGS="$JVM_ARGS -DBUILD_DIR=$1/target -Dcom.atomikos.icatch.file=$1/target/classes/atomikos.properties -DObjectStoreEnvironmentBean.objectStoreDir=$1/target/narayana -Dbitronix.tm.journal.disk.logPart1Filename=$1/target/bitronix/btm1.tlog -Dbitronix.tm.journal.disk.logPart2Filename=$1/target/bitronix/btm2.tlog -Djotm.base=$1/target/jotm -Dhowl.log.FileDirectory=$1/target/jotm"
+    JVM_ARGS="$JVM_ARGS -DBUILD_DIR=target -Dcom.atomikos.icatch.file=target/classes/atomikos.properties -Dcom.atomikos.icatch.log_base_dir=target/atomikos -DObjectStoreEnvironmentBean.objectStoreDir=target/narayana -Dbitronix.tm.journal.disk.logPart1Filename=target/bitronix/btm1.tlog -Dbitronix.tm.journal.disk.logPart2Filename=target/bitronix/btm2.tlog -Djotm.base=target/jotm -Dhowl.log.FileDirectory=target/jotm"
   fi
 
-  echo "run_bm with $1 and $2 and jvm args $JVM_ARGS"
-  java -classpath $1/target/classes $JVM_ARGS -jar $1/target/benchmarks.jar "$2" $JMHARGS -rf csv -rff $CSVF
+  echo "java -classpath target/classes $JVM_ARGS -jar target/benchmarks.jar $2 $JMHARGS -rf csv -rff $CSVF"
+  java -classpath target/classes $JVM_ARGS -jar target/benchmarks.jar "$2" $JMHARGS -rf csv -rff $CSVF
   res=$?
 
   if [ $res != 0 ]; then
@@ -73,11 +78,10 @@ function run_bm {
   # there should be $3 results in the csv file
   let tc=$(wc -l < $CSVF)
   let tc=tc-1 # subtract 1 to account for the header
-  rm -f $CSVF
   if [ $tc != $3 ]; then
     echo "Some benchmark tests did not finish. Expected: $3 Actual: $tc ($1 and $2)"
     return 1
-  fi  
+  fi
 }
 
 # run a benchmark against the local maven repo
@@ -125,7 +129,7 @@ case $# in
      [ $? = 0 ] || res=1
    done;;
 1) fatal "syntax: module-dir benchmark-pattern";;
-*) run_benchmarks "$1" "$2" "$3";
+*) run_benchmarks "$1" "$2" "$3"
    res=$?;;
 esac
 
