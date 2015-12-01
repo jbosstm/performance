@@ -51,9 +51,17 @@ function run_bm {
 
   echo "run_bm with $1 and $2 and jvm args $JVM_ARGS"
   java -classpath $1/target/classes $JVM_ARGS -jar $1/target/benchmarks.jar "$2" $JMHARGS -rf csv -rff $CSVF
+  res=$?
 
-  [ $? = 0 ] || fatal "benchmark failure"
-  [ -f $CSVF ] || fatal "JMH runner failed (missing csv output)"
+  if [ $res != 0 ]; then
+    echo "benchmark run failed"
+    return $res
+  fi
+
+  if [ ! -f $CSVF ]; then
+    echo "JMH runner failed (missing csv output)"
+    return 1
+  fi
 
   echo "" >> $RESFILE
   echo "Module: $1" >> $RESFILE
@@ -65,9 +73,11 @@ function run_bm {
   # there should be $3 results in the csv file
   let tc=$(wc -l < $CSVF)
   let tc=tc-1 # subtract 1 to account for the header
-  [ $tc = $3 ] || fatal "Some benchmark tests did not finish. Expected: $3 Actual: $tc ($1 and $2)"
-  
-  #rm $CSVF
+  rm -f $CSVF
+  if [ $tc != $3 ]; then
+    echo "Some benchmark tests did not finish. Expected: $3 Actual: $tc ($1 and $2)"
+    return 1
+  fi  
 }
 
 # run a benchmark against the local maven repo
@@ -76,6 +86,7 @@ function run_benchmarks {
   bmjar="$1/target/benchmarks.jar"
   [ -f $bmjar ] || fatal "benchmark jar $bmjar not found"
   run_bm "$1" "$2" "$3"
+  return $?
 }
 
 # define which benchmarks to run. The syntax is:
@@ -104,18 +115,20 @@ BM6="ArjunaJTA/jta org.jboss.narayana.rts.*TxnTest.* 3"
 #ArjunaJTA/jta/tests/classes/org/jboss/narayana/rts/EmptyTxnTest.java
 
 cd $BMDIR
+res=0
 case $# in
 0)
    for  i in "$BM4a" "$BM4b" "$BM4c" "$BM4d" "$BM4e" "$BM1" "$BM2" "$BM3" "$BM5"; do
      IFS=' ' read -a bms <<< "$i"
      mvn -f "${bms[0]}/pom.xml" clean install -DskipTests # build the benchmarks
      run_benchmarks "${bms[0]}" "${bms[1]}" "${bms[2]}"
+     [ $? = 0 ] || res=1
    done;;
 1) fatal "syntax: module-dir benchmark-pattern";;
-*) run_benchmarks "$1" "$2" "$3";;
+*) run_benchmarks "$1" "$2" "$3";
+   res=$?;;
 esac
 
-rv=$?
 cd $WORKSPACE
 
-exit $rv
+exit $res
