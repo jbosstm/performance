@@ -36,6 +36,8 @@ import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
 public class GenerateReport {
+    private static final String BM_LINE_PATTERN = "(io.narayana.perf|i.n.p.p)";
+
     private static void fatal(String msg) {
         System.err.printf("%s%n", msg);
 
@@ -48,25 +50,25 @@ public class GenerateReport {
 
         Path path = Paths.get(args[0]);
 
-        Pattern pattern = Pattern.compile("\"io.narayana.perf");
+        Pattern pattern = Pattern.compile(BM_LINE_PATTERN);
         Map<Long, Row> results = new TreeMap<>();
 
         try (Stream<String> lines = Files.lines(path)) {
             Stream<String> data = lines.filter(pattern.asPredicate());
 
             data.forEach(item -> processBenchmark(results, item));
+
+            if (results.size() == 0)
+                fatal("No matching benchmarks");
         } catch (IOException e) {
             e.printStackTrace();
             fatal(e.getMessage());
         }
 
-        if (results.size() == 0)
-            return;
-
         Iterator<Row> rows = results.values().iterator();
         Row row = rows.next(); // must be at least one
 
-        System.out.printf("Threads");
+        System.out.printf("%7s", "Threads");
         for (String prod : row.getValues()) {
             System.out.printf("%12s", prod);
         }
@@ -86,22 +88,21 @@ public class GenerateReport {
         String[] fields = data.split(",");
         if (fields.length == 7) {
             Optional pName = Arrays.stream(fields[0].split("\\.")).filter(name -> name.contains("Comparison")).findFirst();
-            Long tcnt = Long.parseLong(fields[2]);
-            Long tput = (long)Double.parseDouble(fields[4]);
-            Row row = results.get(tcnt);
-            String prod;
 
             if (!pName.isPresent())
                 return;
 
-            prod = (String) pName.get();
+            Long tcnt = Long.parseLong(fields[2]);
+            Long tput = (long)Double.parseDouble(fields[4]);
+            Row row = results.get(tcnt);
+            String prod = (String) pName.get();
 
             if (row == null) {
                 row = new Row(tcnt);
                 results.put(tcnt, row);
             }
 
-            row.addColumn((String) prod.substring(0, prod.length() - "Comparison".length()), tput);
+            row.addColumn(prod.substring(0, prod.length() - "Comparison".length()), tput);
         }
     }
 
