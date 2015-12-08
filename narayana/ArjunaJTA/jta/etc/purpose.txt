@@ -1,0 +1,8 @@
+In this release we compare ourselves against four other leading open source competitor products with a view to checking that the release remains competitive. Results are produced using JMH (a micro benchmark harness created by the OpenJDK project team available from http://openjdk.java.net/projects/code-tools/jmh/). 
+
+We have attempted to configure each product on an equal footing by choosing sensible defaults for each tunable parameter and by ensuring that recovery is enabled, although we do configure narayana with our best transaction log storage mechanism (the journal store). If you have any recommendations for other transaction managers or how to tune the configuration then please let us know so that we can update our test job. 
+
+The benchmark runs a transaction containing two dummy resources.
+
+We will let the figures speak for themselves, suffice to say that when more and more threads are thrown at the workload we scale better showing that we have excellent control over parallelism. The actual figures are: 
+

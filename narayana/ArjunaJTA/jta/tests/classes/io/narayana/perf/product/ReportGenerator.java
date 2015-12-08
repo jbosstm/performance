@@ -23,6 +23,7 @@ package io.narayana.perf.product;
 
 import java.io.IOException;
 import java.io.PrintStream;
+import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -32,11 +33,14 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.TreeMap;
+import java.util.TreeSet;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
-public class GenerateReport {
+public class ReportGenerator {
     private static final String BM_LINE_PATTERN = "(io.narayana.perf|i.n.p.p)";
+
+    private Map<Long, Row> results = new TreeMap<>();
 
     private static void fatal(String msg) {
         System.err.printf("%s%n", msg);
@@ -49,41 +53,72 @@ public class GenerateReport {
             fatal("syntax: GenerateReport <benchmark output file>");
 
         Path path = Paths.get(args[0]);
-
         Pattern pattern = Pattern.compile(BM_LINE_PATTERN);
-        Map<Long, Row> results = new TreeMap<>();
+        ReportGenerator report = new ReportGenerator();
 
         try (Stream<String> lines = Files.lines(path)) {
             Stream<String> data = lines.filter(pattern.asPredicate());
 
-            data.forEach(item -> processBenchmark(results, item));
+            data.forEach(report::processBenchmark);
 
-            if (results.size() == 0)
-                fatal("No matching benchmarks");
-        } catch (IOException e) {
+            report.printOn(System.out);
+        } catch (URISyntaxException | IOException e) {
             e.printStackTrace();
             fatal(e.getMessage());
         }
-
-        Iterator<Row> rows = results.values().iterator();
-        Row row = rows.next(); // must be at least one
-
-        System.out.printf("%7s", "Threads");
-        for (String prod : row.getValues()) {
-            System.out.printf("%12s", prod);
-        }
-
-        System.out.printf("%n");
-
-        while (true) {
-            row.printOn(System.out);
-            if (!rows.hasNext())
-                break;
-            row = rows.next();
-        }
     }
 
-    private static void processBenchmark(Map<Long, Row> results, String data) {
+    public void printOn(PrintStream out) throws IOException, URISyntaxException {
+        printPreamble(out);
+        printTableHeader(out);
+        printData(out);
+    }
+
+    private void printPreamble(PrintStream out) throws URISyntaxException, IOException {
+        out.print(new String(Files.readAllBytes(Paths.get(getClass().getResource("/purpose.txt").toURI()))));
+    }
+
+    public void printTableHeader(PrintStream out) {
+        out.printf("%7s", "Threads");
+        for (String prod : getProducts(true))
+            out.printf("%12s", prod);
+
+        out.printf("%n");
+    }
+
+    public void printData(PrintStream out) {
+        for (Row row : results.values())
+            row.printOn(out);
+
+        out.printf("%n");
+    }
+
+    public TreeSet<String> getProducts(boolean anonymize) {
+        Iterator<Row> rows = results.values().iterator();
+        TreeSet<String> products = new TreeSet<>();
+
+        if (rows.hasNext()) {
+            Row row = rows.next();
+            int i = 0;
+
+            for (String prod : row.getValues()) {
+                if (anonymize && !"Narayana".equals(prod))
+                    prod = getCharForNumber(++i);
+
+                products.add(prod);
+            }
+        } else {
+            products.add("No data");
+        }
+
+        return products;
+    }
+
+    private String getCharForNumber(int i) {
+        return i > 0 && i < 27 ? String.valueOf((char)(i + 'A' - 1)) : null;
+    }
+
+    private void processBenchmark(String data) {
         // pick out fields 0, 2 and 4
         String[] fields = data.split(",");
         if (fields.length == 7) {
@@ -106,7 +141,7 @@ public class GenerateReport {
         }
     }
 
-    static class Row {
+    private static class Row {
         Long threadCnt;
         Map<String, Long> opsPerSecond;
 
