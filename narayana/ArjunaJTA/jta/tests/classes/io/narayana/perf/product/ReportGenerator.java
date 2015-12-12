@@ -28,7 +28,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
@@ -39,6 +38,9 @@ import java.util.stream.Stream;
 
 public class ReportGenerator {
     private static final String BM_LINE_PATTERN = "(io.narayana.perf|i.n.p.p)";
+    private static final String CHART_TITLE = "Parallelism Performance Comparison";
+    private static final String XAXIS_LABEL = "Number of Threads";
+    private static final String YAXIS_LABEL = "Normalised Transactions / sec";
 
     private Map<Long, Row> results = new TreeMap<>();
 
@@ -48,29 +50,32 @@ public class ReportGenerator {
         System.exit(1);
     }
 
-    public static void main(String[] args) {//throws IOException {
+    public static void main(String[] args) {
         if (args.length == 0)
             fatal("syntax: GenerateReport <benchmark output file>");
 
         Path path = Paths.get(args[0]);
         Pattern pattern = Pattern.compile(BM_LINE_PATTERN);
         ReportGenerator report = new ReportGenerator();
+        boolean anonymize = Boolean.valueOf(System.getProperty("anonymize", "true"));
 
         try (Stream<String> lines = Files.lines(path)) {
             Stream<String> data = lines.filter(pattern.asPredicate());
 
             data.forEach(report::processBenchmark);
 
-            report.printOn(System.out);
+            report.printOn(System.out, anonymize);
+            report.normalizeData();
+            report.generateChart(anonymize, "benchmark.png", "png");
         } catch (URISyntaxException | IOException e) {
             e.printStackTrace();
             fatal(e.getMessage());
         }
     }
 
-    public void printOn(PrintStream out) throws IOException, URISyntaxException {
+    public void printOn(PrintStream out, boolean anonymize) throws IOException, URISyntaxException {
         printPreamble(out);
-        printTableHeader(out);
+        printTableHeader(out, anonymize);
         printData(out);
     }
 
@@ -78,9 +83,10 @@ public class ReportGenerator {
         out.print(new String(Files.readAllBytes(Paths.get(getClass().getResource("/purpose.txt").toURI()))));
     }
 
-    public void printTableHeader(PrintStream out) {
+    public void printTableHeader(PrintStream out, boolean anonymize) {
         out.printf("%7s", "Threads");
-        for (String prod : getProducts(true))
+
+        for (String prod : getProducts(anonymize))
             out.printf("%12s", prod);
 
         out.printf("%n");
@@ -94,21 +100,17 @@ public class ReportGenerator {
     }
 
     public TreeSet<String> getProducts(boolean anonymize) {
-        Iterator<Row> rows = results.values().iterator();
         TreeSet<String> products = new TreeSet<>();
 
-        if (rows.hasNext()) {
-            Row row = rows.next();
+        for (Row row : results.values()) {
             int i = 0;
 
-            for (String prod : row.getValues()) {
+            for (String prod : row.getProductNames()) {
                 if (anonymize && !"Narayana".equals(prod))
                     prod = getCharForNumber(++i);
 
                 products.add(prod);
             }
-        } else {
-            products.add("No data");
         }
 
         return products;
@@ -122,47 +124,122 @@ public class ReportGenerator {
         // pick out fields 0, 2 and 4
         String[] fields = data.split(",");
         if (fields.length == 7) {
-            Optional pName = Arrays.stream(fields[0].split("\\.")).filter(name -> name.contains("Comparison")).findFirst();
+            // first field contains the name of the class that performs the comparison
+            Optional productName = Arrays.stream(fields[0].split("\\.")).filter(name -> name.contains("Comparison")).findFirst();
 
-            if (!pName.isPresent())
+            if (!productName.isPresent())
                 return;
 
-            Long tcnt = Long.parseLong(fields[2]);
-            Long tput = (long)Double.parseDouble(fields[4]);
+            Long tcnt = Long.parseLong(fields[2]); // the number of threads used to generate the benchmark
+            Long tput = (long)Double.parseDouble(fields[4]); // the throughput
             Row row = results.get(tcnt);
-            String prod = (String) pName.get();
+            String prod = (String) productName.get();
 
             if (row == null) {
                 row = new Row(tcnt);
                 results.put(tcnt, row);
             }
 
-            row.addColumn(prod.substring(0, prod.length() - "Comparison".length()), tput);
+            // the class names follow the format: <product>Comparison
+            row.addColumn(prod.substring(0, prod.length() - "Comparison".length()), tput.doubleValue());
         }
+    }
+
+    private void generateChart(boolean anonymize, String imageFileLocation, String imageFormat) throws IOException {
+        BarChart chart = new BarChart();
+
+        for (Row row : results.values()) {
+            String threadCnt = String.valueOf(row.getThreadCnt());
+            int i = 0;
+
+            for (Map.Entry<String, Double> datum : row.getOpsPerSecond().entrySet()) {
+                String prod = datum.getKey();
+
+                if (anonymize && !"Narayana".equals(prod))
+                    prod = getCharForNumber(++i);
+
+                chart.addDataPoint(datum.getValue(), prod, threadCnt);
+            }
+        }
+
+        chart.generateImage(imageFileLocation, imageFormat, CHART_TITLE, XAXIS_LABEL, YAXIS_LABEL);
+    }
+
+    private void normalizeData() {
+       for (Row row : results.values()) {
+           row.normalizeData();
+       }
     }
 
     private static class Row {
         Long threadCnt;
-        Map<String, Long> opsPerSecond;
+        Map<String, Double> opsPerSecond;
+        Double maxTput = 0.0;
+        Double minTput = Double.MAX_VALUE;
+        boolean normalized;
 
         Row(Long threadCnt) {
             this.threadCnt = threadCnt;
             opsPerSecond = new TreeMap<>();
         }
 
-        void addColumn(String product, Long tput) {
+        void addColumn(String product, Double tput) {
             opsPerSecond.put(product, tput);
+
+            if (tput > maxTput)
+                maxTput = tput;
+
+            if (tput < minTput)
+                minTput = tput;
         }
 
-        Set<String> getValues() {
+        Long getThreadCnt() {
+            return threadCnt;
+        }
+
+        Map<String, Double> getOpsPerSecond() {
+            return opsPerSecond;
+        }
+
+        Set<String> getProductNames() {
             return opsPerSecond.keySet();
+        }
+
+        void normalizeData() {
+            normalizeData(true);
+        }
+
+        void denormalizeData() {
+            normalizeData(false);
+        }
+
+        private void normalizeData(boolean normalize) {
+            if ((normalize && normalized) || (!normalize && !normalized))
+                return;
+
+            Double range = maxTput - minTput;
+            Map<String, Double> normalOpsPerSecond = new TreeMap<>();
+
+            for (Map.Entry<String, Double> row : opsPerSecond.entrySet()) {
+                Double normalized;
+
+                if (normalize)
+                    normalized = (row.getValue() - minTput) / range;
+                else
+                    normalized = (row.getValue() * range + minTput);
+
+                normalOpsPerSecond.put(row.getKey(), normalized);
+            }
+
+            opsPerSecond = normalOpsPerSecond;
+            normalized = normalize;
         }
 
         void printOn(PrintStream out) {
             out.printf("%7d", threadCnt);
 
-            for (Long tput : opsPerSecond.values())
-                out.printf("%12d", tput);
+            for (Double tput : opsPerSecond.values())
+                out.printf("%12f", tput);
 
             out.printf("%n");
         }
