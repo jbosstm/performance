@@ -124,6 +124,7 @@ case $# in
 0)
    for  i in "$BM4a" "$BM4b" "$BM4c" "$BM4d" "$BM4e" "$BM1" "$BM2" "$BM3" "$BM5"; do
      IFS=' ' read -a bms <<< "$i"
+     cd $BMDIR
      mvn -f "${bms[0]}/pom.xml" clean install -DskipTests # build the benchmarks
      run_benchmarks "${bms[0]}" "${bms[1]}" "${bms[2]}"
      [ $? = 0 ] || res=1
