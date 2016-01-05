@@ -239,7 +239,7 @@ public class ReportGenerator {
             out.printf("%7d", threadCnt);
 
             for (Double tput : opsPerSecond.values())
-                out.printf("%12f", tput);
+                out.printf("%12.0f", tput);
 
             out.printf("%n");
         }
