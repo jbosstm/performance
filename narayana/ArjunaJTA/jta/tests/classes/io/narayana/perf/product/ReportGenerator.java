@@ -40,7 +40,7 @@ public class ReportGenerator {
     private static final String BM_LINE_PATTERN = "(io.narayana.perf|i.n.p.p)";
     private static final String CHART_TITLE = "Parallelism Performance Comparison";
     private static final String XAXIS_LABEL = "Number of Threads";
-    private static final String YAXIS_LABEL = "Normalised Transactions / sec";
+    private static final String YAXIS_LABEL = "Transactions / sec";//"Normalised Transactions / sec";
 
     private Map<Long, Row> results = new TreeMap<>();
 
@@ -65,7 +65,7 @@ public class ReportGenerator {
             data.forEach(report::processBenchmark);
 
             report.printOn(System.out, anonymize);
-            report.normalizeData();
+//            report.normalizeData();
             report.generateChart(anonymize, "benchmark.png", "png");
         } catch (URISyntaxException | IOException e) {
             e.printStackTrace();
