@@ -126,9 +126,9 @@ public class GeronimoComparison extends ProductComparison {
                     "log", //                "logFileExt",
                     LOG_FILE_NAME, //                "logFileName",
                     200, //                "maxBlocksPerFile",
-                    10, //                "maxBuffers",                       log
-                    2, //                "maxLogFiles",
-                    2, //                "minBuffers"
+                    16, //                "maxBuffers",
+                    20, //                "maxLogFiles",
+                    16, //                "minBuffers"
                     10,//                "threadsWaitingForceThreshold"});
                     xidFactory,
                     new File(buildDir)
