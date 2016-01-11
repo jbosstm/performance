@@ -78,22 +78,6 @@ public class NarayanaComparison extends ProductComparison {
 
         @Override
         public void init() {
-            String storeDir = BeanPopulator.getDefaultInstance(ObjectStoreEnvironmentBean.class).getObjectStoreDir();
-
-            BeanPopulator.getDefaultInstance(HornetqJournalEnvironmentBean.class).setStoreDir(storeDir);
-            BeanPopulator.getNamedInstance(ObjectStoreEnvironmentBean.class, "communicationStore").setObjectStoreDir(storeDir);
-
-            try {
-                BeanPopulator.getDefaultInstance(CoreEnvironmentBean.class).setNodeIdentifier("0");
-            } catch (CoreEnvironmentBeanException e) {
-                e.printStackTrace();
-            }
-            HornetqJournalEnvironmentBean hornetqJournalEnvironmentBean = BeanPopulator.getDefaultInstance(
-                HornetqJournalEnvironmentBean.class
-                );
-            hornetqJournalEnvironmentBean.setAsyncIO(true);
-            hornetqJournalEnvironmentBean.setStoreDir(storeDir);//"HornetqObjectStore");
-            BeanPopulator.getDefaultInstance(ObjectStoreEnvironmentBean.class).setObjectStoreType("com.arjuna.ats.internal.arjuna.objectstore.hornetq.HornetqObjectStoreAdaptor");
             ut = com.arjuna.ats.jta.UserTransaction.userTransaction();
             tm = com.arjuna.ats.jta.TransactionManager.transactionManager();
         }

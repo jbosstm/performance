@@ -1,6 +1,12 @@
 <!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
 <properties>
 	<entry key="CoreEnvironmentBean.nodeIdentifier">1</entry>
+		<entry key="ObjectStoreEnvironmentBean.objectStoreType">com.arjuna.ats.internal.arjuna.objectstore.hornetq.HornetqObjectStoreAdaptor</entry>
         <entry key="ObjectStoreEnvironmentBean.objectStoreDir">target/narayana</entry>
         <entry key="ObjectStoreEnvironmentBean.communicationStore">target/narayana</entry>
+        <entry key="CoordinatorEnvironmentBean.transactionStatusManagerEnable">false</entry>
+        <entry key="HornetqJournalEnvironmentBean.asyncIO">true</entry>
+        <entry key="HornetqJournalEnvironmentBean.storeDir">target/narayana</entry>
+        <entry key="HornetqJournalEnvironmentBean.bufferFlushesPerSecond">2000</entry>
+        <entry key="HornetqJournalEnvironmentBean.syncDeletes">false</entry>
 </properties>
