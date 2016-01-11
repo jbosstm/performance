@@ -66,9 +66,11 @@ abstract public class ProductComparison {
 
     @Before
     @Setup
-    public void setup() {
+    public void setup() throws Exception {
+
         worker = getProductWorker();
         worker.init();
+        doWork(worker.getProduct());
         System.out.printf("benchmarking %s%n", worker.getName());
     }
 
