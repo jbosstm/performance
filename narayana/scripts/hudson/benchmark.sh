@@ -44,6 +44,7 @@ function run_bm {
   CSV_DIR="target/jmh"
   [ -d $CSV_DIR ] || mkdir -p $CSV_DIR
   CSVF="$CSV_DIR/$f.csv"
+  touch $CSVF
 
   JVM_ARGS="$CJVM_ARGS"
 
