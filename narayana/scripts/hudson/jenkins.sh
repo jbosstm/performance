@@ -1,3 +1,5 @@
+#!/bin/bash -e
+
 function build_narayana {
   rm -rf tmp
   mkdir tmp
