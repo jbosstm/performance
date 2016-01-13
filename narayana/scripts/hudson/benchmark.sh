@@ -52,7 +52,7 @@ function run_bm {
     mk_output_dirs
     jotm_init
 
-    JVM_ARGS="$JVM_ARGS $4 -DBUILD_DIR=target -Dcom.atomikos.icatch.file=target/classes/atomikos.properties -Dcom.atomikos.icatch.log_base_dir=target/atomikos -Dcom.arjuna.ats.arjuna.common.propertiesFile=jbossts-properties.xml -Dbitronix.tm.journal.disk.logPart1Filename=target/bitronix/btm1.tlog -Dbitronix.tm.journal.disk.logPart2Filename=target/bitronix/btm2.tlog -Djotm.base=target/jotm -Dhowl.log.FileDirectory=target/jotm"
+    JVM_ARGS="$JVM_ARGS -DBUILD_DIR=target -Dcom.atomikos.icatch.file=target/classes/atomikos.properties -Dcom.atomikos.icatch.log_base_dir=target/atomikos -Dcom.arjuna.ats.arjuna.common.propertiesFile=jbossts-properties.xml -Dbitronix.tm.journal.disk.logPart1Filename=target/bitronix/btm1.tlog -Dbitronix.tm.journal.disk.logPart2Filename=target/bitronix/btm2.tlog -Djotm.base=target/jotm -Dhowl.log.FileDirectory=target/jotm"
   fi
 
   echo "java -classpath target/classes $JVM_ARGS -jar target/benchmarks.jar $2 $JMHARGS -rf csv -rff $CSVF"
@@ -90,7 +90,7 @@ function run_benchmarks {
   [ -d $1 ] || fatal "module directory $1 not found"
   bmjar="$1/target/benchmarks.jar"
   [ -f $bmjar ] || fatal "benchmark jar $bmjar not found"
-  run_bm "$1" "$2" "$3" "$4"
+  run_bm "$1" "$2" "$3"
   return $?
 }
 
@@ -131,7 +131,7 @@ case $# in
      [ $? = 0 ] || res=1
    done;;
 1) fatal "syntax: module-dir benchmark-pattern";;
-*) run_benchmarks "$1" "$2" "$3" "$4"
+*) run_benchmarks "$1" "$2" "$3"
    res=$?;;
 esac
 
