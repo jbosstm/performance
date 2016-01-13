@@ -137,7 +137,7 @@ public class GeronimoComparison extends ProductComparison {
             howlLog.doStart();
 
             // NB to test without recovery use new GeronimoTransactionManager()
-            return new TransactionManagerImpl(300, xidFactory, howlLog);
+            return new TransactionManagerImpl(TX_TIMEOUT, xidFactory, howlLog);
         }
     };
 }
