@@ -63,12 +63,12 @@ mvn -f narayana/pom.xml clean package -DskipTests
 
 rm -f bm-output.txt benchmark-output.txt benchmark.png
 
-JMHARGS="-foe -i 1 -wi 4 -f 1 -t 400 -r 60" bm bm-output.txt
-JMHARGS="-foe -i 1 -wi 4 -f 1 -t 300 -r 60" bm bm-output.txt
-JMHARGS="-foe -i 1 -wi 4 -f 1 -t 100 -r 60" bm bm-output.txt
-JMHARGS="-foe -i 1 -wi 4 -f 1 -t  50 -r 60" bm bm-output.txt
-JMHARGS="-foe -i 1 -wi 4 -f 1 -t  10 -r 60" bm bm-output.txt
-JMHARGS="-foe -i 1 -wi 4 -f 1 -t   1 -r 60" bm bm-output.txt
+JMHARGS="-foe -i 1 -wi 4 -f 1 -t 400 -r 100" bm bm-output.txt
+JMHARGS="-foe -i 1 -wi 4 -f 1 -t 300 -r 100" bm bm-output.txt
+JMHARGS="-foe -i 1 -wi 4 -f 1 -t 100 -r 100" bm bm-output.txt
+JMHARGS="-foe -i 1 -wi 4 -f 1 -t  50 -r 100" bm bm-output.txt
+JMHARGS="-foe -i 1 -wi 4 -f 1 -t  10 -r 100" bm bm-output.txt
+JMHARGS="-foe -i 1 -wi 4 -f 1 -t   1 -r 100" bm bm-output.txt
 
 cp bm-output.txt benchmark-output.txt
 preamble benchmark-output.txt

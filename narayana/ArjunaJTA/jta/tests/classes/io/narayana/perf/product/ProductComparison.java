@@ -46,6 +46,7 @@ import java.util.concurrent.Executors;
 
 @State(Scope.Benchmark)
 abstract public class ProductComparison {
+    final public static int TX_TIMEOUT = 50;
     final protected static String outerClassName = ProductComparison.class.getName();
     final static private int MAX_ERRORS = Integer.getInteger("MAX_ERRORS", 0);
 
