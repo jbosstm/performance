@@ -75,7 +75,13 @@ JMHARGS="-foe -i 1 -wi 4 -f 1 -t   1 -r 100" bm bm-output.txt
 cp bm-output.txt benchmark-output.txt
 preamble benchmark-output.txt
 
-java -Danonymize=true -classpath narayana/ArjunaJTA/jta/target/classes:narayana/ArjunaJTA/jta/target/benchmarks.jar io.narayana.perf.product.ReportGenerator bm-output.txt >> benchmark-output.txt
+if [[ $(uname) == CYGWIN* ]]
+then
+  separator=";"
+else
+  separator=":"
+fi
+java -Danonymize=true -classpath "narayana/ArjunaJTA/jta/target/classes"$separator"narayana/ArjunaJTA/jta/target/benchmarks.jar" io.narayana.perf.product.ReportGenerator bm-output.txt >> benchmark-output.txt
 cat benchmark-output.txt
 publish_bm benchmark-output.txt benchmark.png
 
