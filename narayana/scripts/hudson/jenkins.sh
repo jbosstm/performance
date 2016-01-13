@@ -13,10 +13,12 @@ function build_narayana {
 
 function preamble {
   export JVM_ARGS="-DMAX_ERRORS=10"
+  os=`uname -a`
   ptype=`cat /proc/cpuinfo | grep "model name" | head -1`
   pcnt=`cat /proc/cpuinfo | grep processor | wc -l`
   date >> $1
-  echo "Processor $ptype" >> $1
+  echo "Platform: $os" >> $1
+  echo "Processor: $ptype" >> $1
   echo "Number of Cores: $pcnt" >> $1
   java -version >> $1
   echo -e "Blog Text\n=========" >> $1
