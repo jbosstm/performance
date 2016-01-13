@@ -49,9 +49,11 @@ function publish_bm {
   cp $1 $2 tmp2/jobs/tm-comparison
   cd tmp2
   git add -u
-  git commit -m "Generated using tag $GIT_BRANCH"
+  host=`hostname`
+  tm=`date`
+  git commit -m "Generated on host $host ($tm) using tag $GIT_BRANCH"
   GPW=$(urlencode ${BOT_PASSWORD})
-  git push https://jbosstm-bot:$GPW@github.com/jbosstm/artifacts.git
+  git push https://jbosstm-bot:${GPW}@github.com/jbosstm/artifacts.git
 }
 
 #build_narayana
@@ -61,12 +63,12 @@ mvn -f narayana/pom.xml clean package -DskipTests
 
 rm -f bm-output.txt benchmark-output.txt benchmark.png
 
-JMHARGS="-foe -i 1 -wi 4 -f 1 -t 400 -r 100" bm bm-output.txt
-JMHARGS="-foe -i 1 -wi 4 -f 1 -t 300 -r 100" bm bm-output.txt
-JMHARGS="-foe -i 1 -wi 4 -f 1 -t 100 -r 100" bm bm-output.txt
-JMHARGS="-foe -i 1 -wi 4 -f 1 -t  50 -r 100" bm bm-output.txt
-JMHARGS="-foe -i 1 -wi 4 -f 1 -t  10 -r 100" bm bm-output.txt
-JMHARGS="-foe -i 1 -wi 4 -f 1 -t   1 -r 100" bm bm-output.txt
+JMHARGS="-foe -i 1 -wi 4 -f 1 -t 400 -r 60" bm bm-output.txt
+JMHARGS="-foe -i 1 -wi 4 -f 1 -t 300 -r 60" bm bm-output.txt
+JMHARGS="-foe -i 1 -wi 4 -f 1 -t 100 -r 60" bm bm-output.txt
+JMHARGS="-foe -i 1 -wi 4 -f 1 -t  50 -r 60" bm bm-output.txt
+JMHARGS="-foe -i 1 -wi 4 -f 1 -t  10 -r 60" bm bm-output.txt
+JMHARGS="-foe -i 1 -wi 4 -f 1 -t   1 -r 60" bm bm-output.txt
 
 cp bm-output.txt benchmark-output.txt
 preamble benchmark-output.txt
