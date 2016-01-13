@@ -65,12 +65,19 @@ mvn -f narayana/pom.xml clean package -DskipTests
 
 rm -f bm-output.txt benchmark-output.txt benchmark.png
 
-JMHARGS="-foe -i 1 -wi 4 -f 1 -t 400 -r 100" bm bm-output.txt
-JMHARGS="-foe -i 1 -wi 4 -f 1 -t 300 -r 100" bm bm-output.txt
-JMHARGS="-foe -i 1 -wi 4 -f 1 -t 100 -r 100" bm bm-output.txt
-JMHARGS="-foe -i 1 -wi 4 -f 1 -t  50 -r 100" bm bm-output.txt
-JMHARGS="-foe -i 1 -wi 4 -f 1 -t  10 -r 100" bm bm-output.txt
-JMHARGS="-foe -i 1 -wi 4 -f 1 -t   1 -r 100" bm bm-output.txt
+if [ -z ${THREAD_COUNTS+x} ]
+then
+  THREAD_COUNTS="1 10 50 100 300 400"
+fi
+if [ -z ${RUN_DURATION+x} ]
+then
+  RUN_DURATION=100
+fi
+
+for i in $THREAD_COUNTS
+do
+  JMHARGS="-foe -i 1 -wi 4 -f 1 -t $i -r $RUN_DURATION" bm bm-output.txt
+done
 
 cp bm-output.txt benchmark-output.txt
 preamble benchmark-output.txt
