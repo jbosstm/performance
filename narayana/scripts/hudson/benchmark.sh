@@ -40,6 +40,7 @@ function mk_output_dirs {
 function run_bm {
   suffix=".\*"
   f=${2%$suffix}
+  f=$(echo "$f" | tr \* _)
   cd $1
   CSV_DIR="target/jmh"
   [ -d $CSV_DIR ] || mkdir -p $CSV_DIR
@@ -52,7 +53,7 @@ function run_bm {
     mk_output_dirs
     jotm_init
 
-    JVM_ARGS="$JVM_ARGS -DBUILD_DIR=target -Dcom.atomikos.icatch.file=target/classes/atomikos.properties -Dcom.atomikos.icatch.log_base_dir=target/atomikos -Dcom.arjuna.ats.arjuna.common.propertiesFile=jbossts-properties.xml -Dbitronix.tm.journal.disk.logPart1Filename=target/bitronix/btm1.tlog -Dbitronix.tm.journal.disk.logPart2Filename=target/bitronix/btm2.tlog -Djotm.base=target/jotm -Dhowl.log.FileDirectory=target/jotm"
+    JVM_ARGS="$JVM_ARGS "$4" -DBUILD_DIR=target -Dcom.atomikos.icatch.file=target/classes/atomikos.properties -Dcom.atomikos.icatch.log_base_dir=target/atomikos -Dcom.arjuna.ats.arjuna.common.propertiesFile=jbossts-properties.xml -Dbitronix.tm.journal.disk.logPart1Filename=target/bitronix/btm1.tlog -Dbitronix.tm.journal.disk.logPart2Filename=target/bitronix/btm2.tlog -Djotm.base=target/jotm -Dhowl.log.FileDirectory=target/jotm"
   fi
 
   echo "java -classpath target/classes $JVM_ARGS -jar target/benchmarks.jar $2 $JMHARGS -rf csv -rff $CSVF"
@@ -64,7 +65,7 @@ function run_bm {
     return $res
   fi
 
-  if [ ! -f $CSVF ]; then
+  if [ ! -f ${CSVF} ]; then
     echo "JMH runner failed (missing csv output)"
     return 1
   fi
@@ -77,7 +78,7 @@ function run_bm {
   cat $CSVF >> $RESFILE
 
   # there should be $3 results in the csv file
-  let tc=$(wc -l < $CSVF)
+  let tc=$(wc -l < ${CSVF})
   let tc=tc-1 # subtract 1 to account for the header
   if [ $tc != $3 ]; then
     echo "Some benchmark tests did not finish. Expected: $3 Actual: $tc ($1 and $2)"
@@ -90,7 +91,7 @@ function run_benchmarks {
   [ -d $1 ] || fatal "module directory $1 not found"
   bmjar="$1/target/benchmarks.jar"
   [ -f $bmjar ] || fatal "benchmark jar $bmjar not found"
-  run_bm "$1" "$2" "$3"
+  run_bm "$1" "$2" "$3" "$4"
   return $?
 }
 
@@ -131,7 +132,7 @@ case $# in
      [ $? = 0 ] || res=1
    done;;
 1) fatal "syntax: module-dir benchmark-pattern";;
-*) run_benchmarks "$1" "$2" "$3"
+*) run_benchmarks "$1" "$2" "$3" "$4"
    res=$?;;
 esac
 
