@@ -58,7 +58,7 @@ function publish_bm {
   git push https://jbosstm-bot:${GPW}@github.com/jbosstm/artifacts.git
 }
 
-#build_narayana
+build_narayana
 
 res=0 
 mvn -f narayana/pom.xml clean package -DskipTests
