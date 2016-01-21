@@ -5,15 +5,15 @@
         <entry key="ObjectStoreEnvironmentBean.objectStoreDir">target/narayana</entry>
         <entry key="ObjectStoreEnvironmentBean.communicationStore">target/narayana</entry>
         <entry key="CoordinatorEnvironmentBean.transactionStatusManagerEnable">false</entry>
-        <entry key="HornetqJournalEnvironmentBean.asyncIO">true</entry>
+        <entry key="HornetqJournalEnvironmentBean.asyncIO">false</entry>
         <entry key="HornetqJournalEnvironmentBean.storeDir">target/narayana</entry>
         <!-- default for NIO is 300 and for AIO it's 2000 -->
         <!--
         <entry key="HornetqJournalEnvironmentBean.bufferFlushesPerSecond">7812</entry>
 -->
-        <entry key="HornetqJournalEnvironmentBean.bufferFlushesPerSecond">1500</entry>
+        <entry key="HornetqJournalEnvironmentBean.bufferFlushesPerSecond">2000</entry>
         <entry key="HornetqJournalEnvironmentBean.syncDeletes">false</entry>
         <!-- default for NIO is 1 and for AIO it's 500 -->
-        <entry key="HornetqJournalEnvironmentBean.maxIO">500</entry>
+        <entry key="HornetqJournalEnvironmentBean.maxIO">1</entry>
 
 </properties>
