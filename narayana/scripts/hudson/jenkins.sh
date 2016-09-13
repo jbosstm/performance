@@ -61,7 +61,7 @@ function publish_bm {
 build_narayana
 
 res=0 
-mvn -f narayana/pom.xml clean package -DskipTests
+./build.sh -f narayana/pom.xml clean package -DskipTests
 
 rm -f bm-output.txt benchmark-output.txt benchmark.png
 

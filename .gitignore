@@ -1,4 +1,6 @@
 target
+/tools/maven
+/tools/maven.zip
 .project
 .classpath
 .settings
