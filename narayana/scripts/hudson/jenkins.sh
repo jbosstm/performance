@@ -55,7 +55,7 @@ function publish_bm {
   tm=`date`
   git commit -m "Generated on host $host ($tm) using tag $GIT_BRANCH"
   GPW=$(urlencode ${BOT_PASSWORD})
-  git push https://jbosstm-bot:${GPW}@github.com/jbosstm/artifacts.git
+  git push https://jbosstm-bot:${GPW}@github.com/jbosstm/artifacts.git master
 }
 
 build_narayana
