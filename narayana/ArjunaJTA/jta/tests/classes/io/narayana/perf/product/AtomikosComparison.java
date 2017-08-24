@@ -26,6 +26,7 @@ import com.arjuna.ats.jta.xa.performance.JMHConfigJTA;
 import com.atomikos.icatch.config.UserTransactionServiceImp;
 import com.atomikos.icatch.jta.UserTransactionManager;
 
+import com.atomikos.icatch.system.Configuration;
 import org.junit.Before;
 import org.junit.Test;
 import org.openjdk.jmh.annotations.Benchmark;
@@ -79,6 +80,7 @@ public class AtomikosComparison extends ProductComparison {
 //            System.setProperty(UserTransactionServiceImp.HIDE_INIT_FILE_PATH_PROPERTY_NAME, "no thanks");
 
             utm = new UserTransactionManager();
+            Configuration.addResource(new AomikosXAResource());
 
             try {
                 utm.init();
