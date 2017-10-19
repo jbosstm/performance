@@ -15,7 +15,7 @@ Copy artifacts to EAP5 and EAP6 server deploy directories:
 
 Start two servers (EAP5 or EAP6 but not both) and send an HTTP request to lauch a test:
 
-	curl http://localhost:8080/perf/test -d "count=10000&threads=24&html=false"
+	curl http://localhost:8180/perf/test -d "count=10000&threads=24&html=false"
 
 Unattended Testing
 ==================
@@ -62,8 +62,8 @@ Build and deploy the performance testing ear:
 
 Test the throughput for 100 transactional ejb calls using an HTTP client:
 
-	curl http://localhost:8080/perf-war/PerfTest -d "count=100
-	wget http://localhost:8080/perf-war/PerfTest?count=100
+	curl http://localhost:8180/perf-war/PerfTest -d "count=100
+	wget http://localhost:8180/perf-war/PerfTest?count=100
 
 Manual EAP 6 testing:
 =====================
@@ -92,6 +92,6 @@ Build and deploy the performance testing ear:
 
 Test the throughput for 100 transactional ejb calls
 
-	curl http://localhost:8080/perf-war/PerfTest -d "count=100
-	wget http://localhost:8080/perf-war/PerfTest?count=100
+	curl http://localhost:8180/perf-war/PerfTest -d "count=100
+	wget http://localhost:8180/perf-war/PerfTest?count=100
 

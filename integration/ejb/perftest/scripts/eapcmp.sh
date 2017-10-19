@@ -168,7 +168,7 @@ function start_eap {
   server=$2
 
   if [ "$2" = "0" ]; then
-    port=8080
+    port=8180
     ports=default
   elif [ "$2" = "1" ]; then
     port=8180
@@ -348,7 +348,7 @@ function onetest {
     qs="count=$calls&threads=$threads&verbose=$verbose&prepareDelay=$prepareDelay&enlist=$enlist&remote=$remote&transactional=$transactional&version=$version&html=$html&show_header=$show_header&store_type=$store_type&jacorb_patch=$jacorb_patch"
     echo "qs=$qs"
 
-    curl http://localhost:8080/perf/test -d "$qs" >> $RES_FILE 2>/dev/null
+    curl http://localhost:8180/perf/test -d "$qs" >> $RES_FILE 2>/dev/null
 
     return 0
 }

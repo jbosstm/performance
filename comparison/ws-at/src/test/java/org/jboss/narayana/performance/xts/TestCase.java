@@ -35,7 +35,7 @@ import org.junit.runner.RunWith;
 @RunWith(Arquillian.class)
 public class TestCase extends AbstractTestCase {
 
-    private static final String EXECUTOR_URL = "http://127.0.0.1:8080/" + CLIENT_DEPLOYMENT_NAME + "/"
+    private static final String EXECUTOR_URL = "http://127.0.0.1:8180/" + CLIENT_DEPLOYMENT_NAME + "/"
             + TestExecutor.RESOURCE_PATH;
 
     @Deployment(name = CLIENT_DEPLOYMENT_NAME, managed = false, testable = false)
