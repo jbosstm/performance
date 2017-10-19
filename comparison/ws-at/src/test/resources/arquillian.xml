@@ -13,6 +13,7 @@
                 <property name="serverConfig">standalone-xts.xml</property>
                 <property name="managementAddress">127.0.0.1</property>
                 <property name="managementPort">9990</property>
+                <property name="httpPort">8180</property>
             </configuration>
         </container>
 
@@ -25,6 +26,7 @@
                 <property name="serverConfig">standalone-xts.xml</property>
                 <property name="managementAddress">127.0.0.1</property>
                 <property name="managementPort">10090</property>
+                <property name="httpPort">8280</property>
             </configuration>
         </container>
 
@@ -37,6 +39,7 @@
                 <property name="serverConfig">standalone-xts.xml</property>
                 <property name="managementAddress">127.0.0.1</property>
                 <property name="managementPort">10190</property>
+                <property name="httpPort">8380</property>
             </configuration>
         </container>
     </group>

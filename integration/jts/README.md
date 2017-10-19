@@ -140,13 +140,13 @@ Since this quickstart builds two separate components, you can not use the standa
 Access the application 
 ---------------------
 
-The application will be running at the following URL: <http://localhost:8080/jboss-as-jts-application-component-1/>.
+The application will be running at the following URL: <http://localhost:8180/jboss-as-jts-application-component-1/>.
 
 When you enter a name and click to "Add" that customer, you will see the following in the application server 1 console:
     
-    14:31:48,334 WARNING [javax.enterprise.resource.webcontainer.jsf.renderkit] (http-localhost-127.0.0.1-8080-1) Unable to find component with ID name in view.
-    14:31:50,457 ERROR [jacorb.orb] (http-localhost-127.0.0.1-8080-1) no adapter activator exists for jts-quickstart&%InvoiceManagerEJBImpl&%home
-    14:31:50,767 INFO  [org.jboss.ejb.client] (http-localhost-127.0.0.1-8080-1) JBoss EJB Client version 1.0.5.Final
+    14:31:48,334 WARNING [javax.enterprise.resource.webcontainer.jsf.renderkit] (http-localhost-127.0.0.1-8180-1) Unable to find component with ID name in view.
+    14:31:50,457 ERROR [jacorb.orb] (http-localhost-127.0.0.1-8180-1) no adapter activator exists for jts-quickstart&%InvoiceManagerEJBImpl&%home
+    14:31:50,767 INFO  [org.jboss.ejb.client] (http-localhost-127.0.0.1-8180-1) JBoss EJB Client version 1.0.5.Final
     14:31:51,430 WARN  [com.arjuna.ats.jts] (RequestProcessor-5) ARJUNA022261: ServerTopLevelAction detected that the transaction was inactive
 
 You will also see the following in application-server-2 console:

@@ -26,6 +26,6 @@ mvn clean install jboss-as:deploy -f application-component-1/pom.xml
 mvn clean install jboss-as:deploy -f application-component-2/pom.xml
 
 # start the test (the name param determines how many transactions are run):
-curl http://localhost:8080/jboss-as-jts-application-component-1/addCustomer.jsf?name=100
+curl http://localhost:8180/jboss-as-jts-application-component-1/addCustomer.jsf?name=100
 curl http://localhost:8280/jboss-as-jta/addCustomer.jsf?name=100
 
