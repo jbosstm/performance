@@ -57,7 +57,7 @@ function run_bm {
   fi
 
   echo "java -classpath target/classes $JVM_ARGS -jar target/benchmarks.jar $2 $JMHARGS -rf csv -rff $CSVF"
-  java -classpath target/classes $JVM_ARGS -jar target/benchmarks.jar "$2" $JMHARGS -rf csv -rff $CSVF
+  LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$(pwd)/etc/ java -classpath target/classes $JVM_ARGS -jar target/benchmarks.jar "$2" $JMHARGS -rf csv -rff $CSVF
   res=$?
 
   if [ $res != 0 ]; then

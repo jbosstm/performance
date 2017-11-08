@@ -14,7 +14,7 @@ function cmp_narayana {
     gt=""
   fi
 
-  echo -e "${1}\t${2}\t${3}\t${4}\t${tput}\t${gt}" >> results
+  echo -e "${1}\t${2}\t${3}\t${4}\t${tput}\t${gt}" >> results.txt
 }
 
 function cmp_all {
@@ -26,14 +26,14 @@ function cmp_all {
   jtps=$(tail -2 $5 | head -1 | tr -s ' ' | cut -d ' ' -f 4)
   ntps=$(tail -1 $5 | head -1 | tr -s ' ' | cut -d ' ' -f 4)
 
-  echo -e "${1}\t${2}\t${3}\t${4}\t${atps}\t${btps}\t${gtps}\t${jtps}\t${ntps}" >> results
+  echo -e "${1}\t${2}\t${3}\t${4}\t${atps}\t${btps}\t${gtps}\t${jtps}\t${ntps}" >> results.txt
 }
 
 function runs {
-  echo -e "threads\tmaxIO\tbf/s\tAIO\ttput\t\tchange" > results
-  for threads in 1 100 300 400; do
-    for maxio in 1 10 100 300 500; do
-      for bf in 100 1000 2000 3000 4000; do
+  echo -e "threads\tmaxIO\tbf/s\tAIO\ttput\t\tchange" > results.txt
+  for threads in 1 50 100 200 400 800; do
+    for maxio in 1 500; do
+      for bf in 100 1000 2000 3000 4000 7812 8000; do
         cmp_narayana $threads $maxio $bf true r.txt
         cmp_narayana $threads $maxio $bf false r.txt $tput
       done
@@ -42,7 +42,7 @@ function runs {
 }
 
 function runs2 {
-  echo -e "threads\tmaxIO\tbf/s\tAIO\ttput\t\tchange" > results
+  echo -e "threads\tmaxIO\tbf/s\tAIO\ttput\t\tchange" > results.txt
   #for threads in 1 100 300 400; do
   for threads in 100; do
     for maxio in 500; do
@@ -55,7 +55,7 @@ function runs2 {
 }
 
 function runs3 {
-  echo -e "threads\tmaxIO\tbf/s\tAIO\tatomikos\tbitronix\tgeronimo\tjotm\tnarayana" > results
+  echo -e "threads\tmaxIO\tbf/s\tAIO\tatomikos\tbitronix\tgeronimo\tjotm\tnarayana" > results.txt
   for threads in 1 100 300 400; do
     for maxio in 500; do
       for bf in 2000 ; do
@@ -66,4 +66,4 @@ function runs3 {
 }
 
 
-runs2
+runs
