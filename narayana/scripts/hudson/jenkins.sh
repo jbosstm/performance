@@ -1,14 +1,15 @@
 #!/bin/bash -e
 
 function build_narayana {
-  rm -rf tmp
-  mkdir tmp
-  git clone git://github.com/jbosstm/narayana.git tmp
-  cd tmp
-  git fetch
-  git checkout $GIT_BRANCH
-  ./build.sh clean install -DskipTests
-  cd ..
+  if [ ! -d tmp ]; then
+    mkdir tmp
+    git clone git://github.com/jbosstm/narayana.git tmp
+    cd tmp
+    git fetch
+    git checkout $GIT_BRANCH
+    ./build.sh clean install -DskipTests
+    cd ..
+  fi
 }
 
 function preamble {
@@ -26,7 +27,7 @@ function preamble {
 
 function bm {
   echo "NEXT RUN using $JMHARGS"
-  narayana/scripts/hudson/benchmark.sh "ArjunaJTA/jta" "io.narayana.perf.product.*Comparison.*" 5 "$2"
+  narayana/scripts/hudson/benchmark.sh "ArjunaJTA/jta" "$2" "$3"
   [ $? = 0 ] || res=1
   cat benchmark-output.txt >> $1
   echo "RUN status: $res"
@@ -74,9 +75,15 @@ then
   RUN_DURATION=100
 fi
 
+if [ -z ${COMPARISON+x} ] 
+then
+  COMPARISON="io.narayana.perf.product.*Comparison.*"
+  COMPARISON_COUNT=5
+fi
+
 for i in $THREAD_COUNTS
 do
-  JMHARGS="-foe -i 1 -wi 4 -f 1 -t $i -r $RUN_DURATION" bm bm-output.txt
+  JMHARGS="-foe -i 1 -wi 4 -f 1 -t $i -r $RUN_DURATION" bm bm-output.txt $COMPARISON $COMPARISON_COUNT
 done
 
 cp bm-output.txt benchmark-output.txt
