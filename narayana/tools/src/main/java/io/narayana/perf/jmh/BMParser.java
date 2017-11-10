@@ -70,7 +70,9 @@ public class BMParser {
         Benchmark bm = parser.nextBenchmark();
 
         while (bm != null) {
-            benchmarks.put(bm.benchmark, bm);
+            if (!bm.benchmark.contains(":·stack")) {
+                benchmarks.put(bm.benchmark, bm);
+            }
             bm = parser.nextBenchmark();
         }
 
