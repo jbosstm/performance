@@ -1,3 +1,32 @@
+function comment_on_pull
+{
+    if [ "$COMMENT_ON_PULL" = "" ]; then return; fi
+
+    PULL_NUMBER=$(echo $GIT_BRANCH | awk -F 'pull' '{ print $2 }' | awk -F '/' '{ print $2 }')
+    if [ "$PULL_NUMBER" != "" ]
+    then
+        JSON="{ \"body\": \"$1\" }"
+        curl -d "$JSON" -ujbosstm-bot:$BOT_PASSWORD https://api.github.com/repos/$GIT_ACCOUNT/$GIT_REPO/issues/$PULL_NUMBER/comments
+    else
+        echo "Not a pull request, so not commenting"
+    fi
+}
+
+
+export GIT_ACCOUNT=jbosstm
+export GIT_REPO=performance
+
+PULL_NUMBER=$(echo $GIT_BRANCH | awk -F 'pull' '{ print $2 }' | awk -F '/' '{ print $2 }')
+PULL_DESCRIPTION=$(curl -ujbosstm-bot:$BOT_PASSWORD -s https://api.github.com/repos/$GIT_ACCOUNT/$GIT_REPO/pulls/$PULL_NUMBER)
+if [[ $PULL_DESCRIPTION =~ "\"state\": \"closed\"" ]]; then
+  echo "pull closed"
+  exit 0
+fi
+
+PATH=$WORKSPACE/tmp/tools/maven/bin/:$PATH
+
+comment_on_pull "Started testing this pull request: $BUILD_URL"
+
 GIT_BRANCH=master THREAD_COUNTS="1 50 100 400" COMPARISON="com.arjuna.ats.jta.xa.performance.*StoreBenchmark.*" COMPARISON_COUNT=4 narayana/scripts/hudson/jenkins.sh
 cp benchmark-output.txt benchmark-store-output.txt
 cp benchmark.png benchmark-store.png
@@ -20,3 +49,6 @@ export JBOSS_HOME=$PWD/$(ls -d wildfly-dist/wildfly-*/ | head -n 1)
 #  mvn -f comparison/rest-at/pom.xml test
 #  mvn -f comparison/ws-at/pom.xml test
 ./build.sh -f comparison/jts/pom.xml test
+./narayana/scripts/hudson/bm.sh
+
+comment_on_pull "Pull passed: $BUILD_URL"
