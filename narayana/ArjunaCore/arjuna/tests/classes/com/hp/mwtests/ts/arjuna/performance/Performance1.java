@@ -53,12 +53,12 @@ import com.arjuna.ats.internal.arjuna.objectstore.VolatileStore;
 import com.arjuna.common.internal.util.propertyservice.BeanPopulator;
 import com.hp.mwtests.ts.arjuna.JMHConfigCore;
 
-@Warmup(iterations = JMHConfigCore.WI, time = JMHConfigCore.WT)
+//@Warmup(iterations = JMHConfigCore.WI, time = JMHConfigCore.WT)
 // , timeUnit = JMHConfigCore.WTU)
-@Measurement(iterations = JMHConfigCore.MI, time = JMHConfigCore.MT)
+//@Measurement(iterations = JMHConfigCore.MI, time = JMHConfigCore.MT)
 // , timeUnit = JMHConfigCore.MTU)
-@Fork(JMHConfigCore.BF)
-@Threads(JMHConfigCore.BT)
+//@Fork(JMHConfigCore.BF)
+//@Threads(JMHConfigCore.BT)
 public class Performance1 {
     @State(Scope.Thread)
     public static class BenchmarkState {

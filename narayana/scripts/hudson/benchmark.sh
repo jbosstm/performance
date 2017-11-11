@@ -15,7 +15,7 @@ BMDIR=$WORKSPACE/narayana
 # profilers: gc,stack,comp
 # NB if you want to profile with JFR on the oracle jvm use -XX:+UnlockCommercialFeatures and -prof jfr if supported
 
-[ -z "${JMHARGS}" ] && JMHARGS="-foe -i 1 -wi 10 -f 1 -t 1 -r 100 -prof stack"
+[ -z "${JMHARGS}" ] && JMHARGS="-t 240 -r 30 -f 3 -wi 5 -i 5"
 CJVM_ARGS="$JVM_ARGS"
 
 RESFILE=$WORKSPACE/benchmark-output.txt
@@ -57,7 +57,7 @@ function run_bm {
   fi
 
   echo "java -classpath target/classes $JVM_ARGS -jar target/benchmarks.jar $2 $JMHARGS -rf csv -rff $CSVF"
-  LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$(pwd)/etc/ java -classpath target/classes $JVM_ARGS -jar target/benchmarks.jar "$2" $JMHARGS -rf csv -rff $CSVF
+  LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$(pwd)/etc/ java -Xms4096m -Xmx4096m -classpath target/classes $JVM_ARGS -jar target/benchmarks.jar "$2" $JMHARGS -rf csv -rff $CSVF
   res=$?
 
   if [ $res != 0 ]; then

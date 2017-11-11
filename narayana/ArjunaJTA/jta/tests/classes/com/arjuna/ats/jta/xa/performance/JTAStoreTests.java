@@ -32,10 +32,10 @@ import org.openjdk.jmh.runner.options.*;
  2) method level annotations
  3) class level annotations
  */
-@Warmup(iterations = JMHConfigJTA.WI, time = JMHConfigJTA.WT)//, timeUnit = JMHConfigJTA.WTU)
-@Measurement(iterations = JMHConfigJTA.MI, time = JMHConfigJTA.MT)//, timeUnit = JMHConfigJTA.MTU)
-@Fork(JMHConfigJTA.BF)
-@Threads(JMHConfigJTA.BT)
+//@Warmup(iterations = JMHConfigJTA.WI, time = JMHConfigJTA.WT)//, timeUnit = JMHConfigJTA.WTU)
+//@Measurement(iterations = JMHConfigJTA.MI, time = JMHConfigJTA.MT)//, timeUnit = JMHConfigJTA.MTU)
+//@Fork(JMHConfigJTA.BF)
+//@Threads(JMHConfigJTA.BT)
 @State(Scope.Benchmark)
 public class JTAStoreTests extends JTAStoreBase {
     @Setup(Level.Trial)

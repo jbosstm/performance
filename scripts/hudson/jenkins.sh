@@ -27,17 +27,17 @@ PATH=$WORKSPACE/tmp/tools/maven/bin/:$PATH
 
 comment_on_pull "Started testing this pull request: $BUILD_URL"
 
-GIT_BRANCH=master THREAD_COUNTS="1 50 100 400" COMPARISON="com.arjuna.ats.jta.xa.performance.*StoreBenchmark.*" COMPARISON_COUNT=4 narayana/scripts/hudson/jenkins.sh
+GIT_BRANCH=master THREAD_COUNTS="1 24 240 1600" COMPARISON="com.arjuna.ats.jta.xa.performance.*StoreBenchmark.*" COMPARISON_COUNT=4 narayana/scripts/hudson/jenkins.sh
 cp benchmark-output.txt benchmark-store-output.txt
 cp benchmark.png benchmark-store.png
 
-GIT_BRANCH=master THREAD_COUNTS="1 50 100 400" COMPARISON="io.narayana.perf.product.*Comparison.*" COMPARISON_COUNT=5 narayana/scripts/hudson/jenkins.sh
+GIT_BRANCH=master THREAD_COUNTS="1 24 240 1600" COMPARISON="io.narayana.perf.product.*Comparison.*" COMPARISON_COUNT=5 narayana/scripts/hudson/jenkins.sh
 cp benchmark-output.txt benchmark-comparison-output.txt
 cp benchmark.png benchmark-comparison.png
 
-JMHARGS="-foe -i 1 -wi 4 -f 1 -t 240 -r 30" JVM_ARGS="-DMAX_ERRORS=10" ./narayana/scripts/hudson/benchmark.sh
-cp benchmark-output.txt benchmark-benchmarksh-output.txt
-cp benchmark.png benchmark-benchmarksh.png
+JVM_ARGS="-DMAX_ERRORS=10" ./narayana/scripts/hudson/benchmark.sh "ArjunaJTA/jta" "org.jboss.narayana.rts.*TxnTest.*" 3
+cp benchmark-output.txt benchmark-rts-output.txt
+cp benchmark.png benchmark-rts.png
 
 ./build.sh -f narayana/pom.xml clean package -DskipTests
 wget https://ci.jboss.org/hudson/job/WildFly-latest-master/lastSuccessfulBuild/artifact/dist/target/wildfly-10.x.zip

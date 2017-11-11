@@ -28,7 +28,7 @@ import org.openjdk.jmh.annotations.State;
 import org.openjdk.jmh.runner.RunnerException;
 import org.openjdk.jmh.runner.options.*;
 
-@State(Scope.Benchmark)
+//@State(Scope.Benchmark)
 public class CheckedActionTest {
     @State(Scope.Benchmark)
     public static class BenchmarkState {

@@ -83,7 +83,7 @@ fi
 
 for i in $THREAD_COUNTS
 do
-  JMHARGS="-foe -i 1 -wi 4 -f 1 -t $i -r $RUN_DURATION" bm bm-output.txt $COMPARISON $COMPARISON_COUNT
+  JMHARGS="-t $i -r 30 -f 3 -wi 5 -i 5 $JMHARGS" bm bm-output.txt $COMPARISON $COMPARISON_COUNT
 done
 
 cp bm-output.txt benchmark-output.txt
@@ -95,7 +95,7 @@ then
 else
   separator=":"
 fi
-java -Danonymize=true -classpath "narayana/ArjunaJTA/jta/target/classes"$separator"narayana/ArjunaJTA/jta/target/benchmarks.jar" io.narayana.perf.product.ReportGenerator bm-output.txt >> benchmark-output.txt
+java -Xms4096m -Xmx4096m -Danonymize=true -classpath "narayana/ArjunaJTA/jta/target/classes"$separator"narayana/ArjunaJTA/jta/target/benchmarks.jar" io.narayana.perf.product.ReportGenerator bm-output.txt >> benchmark-output.txt
 cat benchmark-output.txt
 
 if [ -z ${DO_NOT_PUBLISH} ]
