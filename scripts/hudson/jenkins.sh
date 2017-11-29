@@ -56,11 +56,8 @@ rm -rf wildfly-dist
 unzip wildfly-10.x.zip -d wildfly-dist
 sed -i "s/8080/8180/g" wildfly-dist/*/standalone/configuration/standalone-full.xml
 export JBOSS_HOME=$PWD/$(ls -d wildfly-dist/wildfly-*/ | head -n 1)
-./build.sh -f comparison/pom.xml clean install -DskipTests
+./build.sh -f comparison/pom.xml clean install
 [ $? = 0 ] || fatal "Transport comparison failed"
-#  mvn -f comparison/rest-at/pom.xml test
-#  mvn -f comparison/ws-at/pom.xml test
-./build.sh -f comparison/jts/pom.xml test
 ./narayana/scripts/hudson/bm.sh
 [ $? = 0 ] || fatal "BM properties failed"
 
