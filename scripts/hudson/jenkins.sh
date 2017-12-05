@@ -45,7 +45,7 @@ GIT_BRANCH=master THREAD_COUNTS="1 24 240 1600" COMPARISON="io.narayana.perf.pro
 mv benchmark-output.txt benchmark-comparison-output.txt
 mv benchmark.png benchmark-comparison.png
 
-JVM_ARGS="-DMAX_ERRORS=10" ./narayana/scripts/hudson/benchmark.sh "ArjunaJTA/jta" "org.jboss.narayana.rts.*TxnTest.*" 3
+JVM_ARGS="-DMAX_ERRORS=10" ./narayana/scripts/hudson/benchmark.sh "ArjunaJTA/jta" "org.jboss.narayana.rts.*TxnTest.*" 2
 [ $? = 0 ] || fatal "RTS benchmark failed"
 mv benchmark-output.txt benchmark-rts-output.txt
 mv benchmark.png benchmark-rts.png
