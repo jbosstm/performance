@@ -30,10 +30,10 @@ public class TestExecutor {
 
     public static final Logger LOG = Logger.getLogger(TestExecutor.class);
 
-    @EJB(lookup = "corbaname:iiop:localhost:3628#jts/FirstEJBImpl")
+    @EJB(lookup = "corbaname:iiop:localhost:3728#jts/FirstEJBImpl")
     private FirstEJBHome firstEJBHome;
 
-    @EJB(lookup = "corbaname:iiop:localhost:3728#jts/SecondEJBImpl")
+    @EJB(lookup = "corbaname:iiop:localhost:3828#jts/SecondEJBImpl")
     private SecondEJBHome secondEJBHome;
 
     @GET

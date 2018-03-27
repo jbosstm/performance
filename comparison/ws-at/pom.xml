@@ -87,12 +87,9 @@
                             <skip>false</skip>
                             <systemPropertyVariables combine.children="append">
                                 <arquillian.launch>wildfly-cluster</arquillian.launch>
-                                <server1.jvm.args>${jvm.args.other}
-                                    ${jvm.args.memory}</server1.jvm.args>
-                                <server2.jvm.args>${jvm.args.other}
-                                    ${jvm.args.memory}</server2.jvm.args>
-                                <server3.jvm.args>${jvm.args.other}
-                                    ${jvm.args.memory}</server3.jvm.args>
+                                <server1.jvm.args>${jvm.args.other} ${jvm.args.memory}</server1.jvm.args>
+                                <server2.jvm.args>${jvm.args.other} ${jvm.args.memory}</server2.jvm.args>
+                                <server3.jvm.args>${jvm.args.other} ${jvm.args.memory}</server3.jvm.args>
                             </systemPropertyVariables>
                         </configuration>
                     </plugin>
@@ -154,10 +151,7 @@
                         <artifactId>maven-surefire-plugin</artifactId>
                         <configuration>
                             <systemPropertyVariables combine.children="append">
-                                <server1.jvm.args>
-                                    ${jvm.args.other}
-                                    ${jvm.args.memory} ${jvm.args.debug}
-                                </server1.jvm.args>
+                                <server1.jvm.args>${jvm.args.other} ${jvm.args.memory} ${jvm.args.debug}</server1.jvm.args>
                             </systemPropertyVariables>
                         </configuration>
                     </plugin>
@@ -176,10 +170,7 @@
                         <artifactId>maven-surefire-plugin</artifactId>
                         <configuration>
                             <systemPropertyVariables combine.children="append">
-                                <server2.jvm.args>
-                                    ${jvm.args.other}
-                                    ${jvm.args.memory} ${jvm.args.debug}
-                                </server2.jvm.args>
+                                <server2.jvm.args>${jvm.args.other} ${jvm.args.memory} ${jvm.args.debug}</server2.jvm.args>
                             </systemPropertyVariables>
                         </configuration>
                     </plugin>
@@ -198,10 +189,7 @@
                         <artifactId>maven-surefire-plugin</artifactId>
                         <configuration>
                             <systemPropertyVariables combine.children="append">
-                                <server3.jvm.args>
-                                    ${jvm.args.other}
-                                    ${jvm.args.memory} ${jvm.args.debug}
-                                </server3.jvm.args>
+                                <server3.jvm.args>${jvm.args.other} ${jvm.args.memory} ${jvm.args.debug}</server3.jvm.args>
                             </systemPropertyVariables>
                         </configuration>
                     </plugin>

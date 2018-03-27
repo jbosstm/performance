@@ -1,4 +1,5 @@
 #!/bin/bash
+set -x
 
 function fatal {
   comment_on_pull "Tests failed ($BUILD_URL): $1"
@@ -51,11 +52,14 @@ mv benchmark-output.txt benchmark-rts-output.txt
 mv benchmark.png benchmark-rts.png
 
 ./build.sh -f narayana/pom.xml clean package -DskipTests
-wget https://ci.jboss.org/hudson/job/WildFly-latest-master/lastSuccessfulBuild/artifact/dist/target/wildfly-10.x.zip
-rm -rf wildfly-dist
-unzip wildfly-10.x.zip -d wildfly-dist
-sed -i "s/8080/8180/g" wildfly-dist/*/standalone/configuration/standalone-full.xml
-export JBOSS_HOME=$PWD/$(ls -d wildfly-dist/wildfly-*/ | head -n 1)
+wget -q --user=guest --password=guest https://ci.wildfly.org/httpAuth/repository/downloadAll/WF_Nightly/.lastSuccessful/artifacts.zip
+unzip -q artifacts.zip
+export WILDFLY_DIST_ZIP=$(ls wildfly-*-SNAPSHOT.zip)
+unzip -q $WILDFLY_DIST_ZIP
+export WILDFLY_HOME=`pwd`/${WILDFLY_DIST_ZIP%.zip}
+export JBOSS_HOME="${WILDFLY_HOME}"
+[ ! -d "${JBOSS_HOME}" ] && fatal "JBOSS_HOME directory '${JBOSS_HOME}' does not exist"
+
 ./build.sh -f comparison/pom.xml clean install
 [ $? = 0 ] || fatal "Transport comparison failed"
 ./narayana/scripts/hudson/bm.sh

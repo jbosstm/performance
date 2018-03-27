@@ -12,7 +12,7 @@ import javax.xml.ws.Service;
 public class FirstServiceClientFactory {
 
     public static FirstService getInstance() throws MalformedURLException {
-        final URL wsdlLocation = new URL("http://localhost:8180/first-service-deployment/FirstServiceService/FirstService?wsdl");
+        final URL wsdlLocation = new URL("http://localhost:8280/first-service-deployment/FirstServiceService/FirstService?wsdl");
         final QName serviceName = new QName("http://www.narayana.io", "FirstServiceService");
         final QName portName = new QName("http://www.narayana.io", "FirstService");
 
