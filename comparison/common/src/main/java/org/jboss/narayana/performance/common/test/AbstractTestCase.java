@@ -41,12 +41,17 @@ import org.jboss.as.cli.CommandLineException;
  *
  */
 public abstract class AbstractTestCase {
+    protected static final int HTTP_REMOTING_PORT = 9990;
+    protected static final int HTTP_PORT = 8080;
 
     protected static final String CLIENT_CONTAINER_NAME = "server1";
+    protected static final int CLIENT_CONTAINER_OFFSET = 100;
 
     protected static final String FIRST_SERVICE_CONTAINER_NAME = "server2";
+    protected static final int FIRST_SERVICE_CONTAINER_OFFSET = 200;
 
     protected static final String SECOND_SERVICE_CONTAINER_NAME = "server3";
+    protected static final int SECOND_SERVICE_CONTAINER_OFFSET = 300;
 
     protected static final String CLIENT_DEPLOYMENT_NAME = "client-deployment";
 
@@ -54,11 +59,12 @@ public abstract class AbstractTestCase {
 
     protected static final String SECOND_SERVICE_DEPLOYMENT_NAME = "second-service-deployment";
 
-    protected static final String CLIENT_CONTROLLER = "http-remoting://localhost:9990";
 
-    protected static final String FIRST_SERVICE_CONTROLLER = "http-remoting://localhost:10090";
+    protected static final String CLIENT_CONTROLLER = "http-remoting://localhost:" + (HTTP_REMOTING_PORT + CLIENT_CONTAINER_OFFSET);
 
-    protected static final String SECOND_SERVICE_CONTROLLER = "http-remoting://localhost:10190";
+    protected static final String FIRST_SERVICE_CONTROLLER = "http-remoting://localhost:" + (HTTP_REMOTING_PORT + FIRST_SERVICE_CONTAINER_OFFSET);
+
+    protected static final String SECOND_SERVICE_CONTROLLER = "http-remoting://localhost:" + (HTTP_REMOTING_PORT + SECOND_SERVICE_CONTAINER_OFFSET);
 
     protected final String numberOfThreads;
 
@@ -80,13 +86,16 @@ public abstract class AbstractTestCase {
 
     protected void startContainers() {
         final Map<String, String> config1 = new Config().add("javaVmArguments",
-                System.getProperty("server1.jvm.args").trim()).map();
+                System.getProperty("server1.jvm.args").trim() + " -Djboss.socket.binding.port-offset="
+                        + CLIENT_CONTAINER_OFFSET + " -Djboss.node.name=" + CLIENT_CONTAINER_NAME).map();
 
         final Map<String, String> config2 = new Config().add("javaVmArguments",
-                System.getProperty("server2.jvm.args").trim() + " -Djboss.socket.binding.port-offset=100").map();
+                System.getProperty("server2.jvm.args").trim() + " -Djboss.socket.binding.port-offset="
+                        + FIRST_SERVICE_CONTAINER_OFFSET + " -Djboss.node.name=" + FIRST_SERVICE_CONTAINER_NAME).map();
 
         final Map<String, String> config3 = new Config().add("javaVmArguments",
-                System.getProperty("server3.jvm.args").trim() + " -Djboss.socket.binding.port-offset=200").map();
+                System.getProperty("server3.jvm.args").trim() + " -Djboss.socket.binding.port-offset="
+                        + SECOND_SERVICE_CONTAINER_OFFSET  + " -Djboss.node.name=" + SECOND_SERVICE_CONTAINER_NAME).map();
 
         controller.start(CLIENT_CONTAINER_NAME, config1);
         controller.start(FIRST_SERVICE_CONTAINER_NAME, config2);

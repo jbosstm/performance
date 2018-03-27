@@ -37,14 +37,14 @@ public class TestCase extends AbstractTestCase {
 
     private static final String BASE_URL = "http://127.0.0.1";
 
-    private static final String EXECUTOR_URL = BASE_URL + ":8180/" + CLIENT_DEPLOYMENT_NAME + "/"
-            + TestExecutor.RESOURCE_PATH;
+    private static final String EXECUTOR_URL = BASE_URL + ":" + (HTTP_PORT + CLIENT_CONTAINER_OFFSET)
+            + "/" + CLIENT_DEPLOYMENT_NAME + "/" + TestExecutor.RESOURCE_PATH;
 
-    private static final String FIRST_SERVICE_URL = BASE_URL + ":8180/" + FIRST_SERVICE_DEPLOYMENT_NAME;
+    private static final String FIRST_SERVICE_URL = BASE_URL + ":" + (HTTP_PORT + FIRST_SERVICE_CONTAINER_OFFSET) + "/" + FIRST_SERVICE_DEPLOYMENT_NAME;
 
-    private static final String SECOND_SERVICE_URL = BASE_URL + ":8280/" + SECOND_SERVICE_DEPLOYMENT_NAME;
+    private static final String SECOND_SERVICE_URL = BASE_URL + ":" + (HTTP_PORT + SECOND_SERVICE_CONTAINER_OFFSET) + "/" + SECOND_SERVICE_DEPLOYMENT_NAME;
 
-    private static final String COORDINATOR_URL = BASE_URL + ":8180/rest-at-coordinator/tx/transaction-manager";
+    private static final String COORDINATOR_URL = BASE_URL + ":" + (HTTP_PORT + CLIENT_CONTAINER_OFFSET) + "/rest-at-coordinator/tx/transaction-manager";
 
     @Deployment(name = CLIENT_DEPLOYMENT_NAME, managed = false, testable = false)
     @TargetsContainer(CLIENT_CONTAINER_NAME)
