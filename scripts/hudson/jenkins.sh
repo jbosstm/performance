@@ -52,13 +52,19 @@ mv benchmark-output.txt benchmark-rts-output.txt
 mv benchmark.png benchmark-rts.png
 
 ./build.sh -f narayana/pom.xml clean package -DskipTests
-wget -q --user=guest --password=guest https://ci.wildfly.org/httpAuth/repository/downloadAll/WF_Nightly/.lastSuccessful/artifacts.zip
-unzip -q artifacts.zip
+wget -q http://narayanaci1.eng.hst.ams2.redhat.com/job/narayana-AS800/lastSuccessfulBuild/artifact/dist/target/*zip*/target.zip
+[ $? = 0 ] || fatal "Could not download zip"
+unzip -q target.zip
+[ $? = 0 ] || fatal "Could not extract zip"
+cd target
 export WILDFLY_DIST_ZIP=$(ls wildfly-*-SNAPSHOT.zip)
+[ $? = 0 ] || fatal "Could not find WFLY"
 unzip -q $WILDFLY_DIST_ZIP
+[ $? = 0 ] || fatal "Could not extract WFLY"
 export WILDFLY_HOME=`pwd`/${WILDFLY_DIST_ZIP%.zip}
 export JBOSS_HOME="${WILDFLY_HOME}"
 [ ! -d "${JBOSS_HOME}" ] && fatal "JBOSS_HOME directory '${JBOSS_HOME}' does not exist"
+cd -
 
 ./build.sh -f comparison/pom.xml clean install
 [ $? = 0 ] || fatal "Transport comparison failed"
