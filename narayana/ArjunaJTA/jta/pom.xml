@@ -47,7 +47,7 @@
 
         <!-- RTS -->
         <rts.version>${project.version}</rts.version>
-        <undertow.io.version>1.3.0.Beta6</undertow.io.version>
+        <undertow.io.version>1.3.31</undertow.io.version>
         <resteasy.version>3.0.11.Final</resteasy.version>
 
         <version.org.apache.activemq>1.1.0.wildfly-010</version.org.apache.activemq>
