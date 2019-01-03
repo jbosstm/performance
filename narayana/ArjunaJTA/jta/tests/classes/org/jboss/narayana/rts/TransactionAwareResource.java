@@ -140,7 +140,7 @@ public class TransactionAwareResource {
 
         reqHeaders.put("Link", linkHeader);
 
-        return new TxSupport().httpRequest(new int[] {HttpURLConnection.HTTP_CREATED}, enlistUrl, "POST",
+        return new TxSupport(0).httpRequest(new int[] {HttpURLConnection.HTTP_CREATED}, enlistUrl, "POST",
                 TxMediaType.POST_MEDIA_TYPE, null, null, reqHeaders);
     }
 
