@@ -382,7 +382,7 @@
 <!--
                 <repository>
                     <id>repository.jboss.org</id>
-                    <url>http://repository.jboss.org/maven2</url>
+                    <url>https://repository.jboss.org/maven2</url>
                 </repository>
 -->
                 <!-- pull in a jacorb and jbossjts-4.6.1.GA_CP12 -->
@@ -390,7 +390,7 @@
     <repository>
       <id>mead-repository.redhat.com</id>
       <name>JBoss Production Releases MEAD Repository</name>
-      <url>http://download.lab.bos.redhat.com/brewroot/repos/jb-eap-5.1.2-repo/latest/maven</url>
+      <url>https://download.lab.bos.redhat.com/brewroot/repos/jb-eap-5.1.2-repo/latest/maven</url>
       <releases>
         <enabled>true</enabled>
       </releases>

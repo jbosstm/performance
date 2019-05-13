@@ -19,7 +19,7 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
     <parent>
       <groupId>org.jboss</groupId>
       <artifactId>jboss-parent</artifactId>
-      <version>11</version>
+      <version>35</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
