@@ -10,12 +10,6 @@ function fatal {
 BMDIR=$WORKSPACE/narayana
 [ -z "${BMDIR}" ] && fatal "directory $BMDIR does not exist"
 
-# -i (1 iteration), -wi (10 warm ups), -r (300 seconds at each iteration)
-# use java -jar <maven module>/target/benchmarks.jar -h for options
-# profilers: gc,stack,comp
-# NB if you want to profile with JFR on the oracle jvm use -XX:+UnlockCommercialFeatures and -prof jfr if supported
-
-[ -z "${JMHARGS}" ] && JMHARGS="-t 240 -r 30 -f 3 -wi 5 -i 5"
 CJVM_ARGS="$JVM_ARGS"
 
 RESFILE=$WORKSPACE/benchmark-output.txt
