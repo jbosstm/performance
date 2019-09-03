@@ -64,13 +64,7 @@
 		</dependency>
 		<dependency>
 			<groupId>org.jboss.narayana.jts</groupId>
-			<artifactId>jts</artifactId>
-			<version>${project.version}</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.jboss.narayana.jts</groupId>
-			<artifactId>idlj-idl</artifactId>
+			<artifactId>narayana-jts-idlj</artifactId>
 			<version>${project.version}</version>
 			<scope>test</scope>
 		</dependency>
