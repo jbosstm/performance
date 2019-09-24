@@ -37,10 +37,11 @@ import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
 public class ReportGenerator {
-    private static final String BM_LINE_PATTERN = "(io.narayana.perf|i.n.p.p)";
+    private static String BM_LINE_PATTERN = "(io.narayana.perf|i.n.p.p)";
     private static final String CHART_TITLE = "Parallelism Performance Comparison";
     private static final String XAXIS_LABEL = "Number of Threads";
     private static final String YAXIS_LABEL = "Transactions / sec";//"Normalised Transactions / sec";
+    private static String PATTERN2="Comparison";
 
     private Map<Long, Row> results = new TreeMap<>();
 
@@ -51,10 +52,15 @@ public class ReportGenerator {
     }
 
     public static void main(String[] args) {
+        System.out.println(System.getProperty("user.dir"));
         if (args.length == 0)
-            fatal("syntax: GenerateReport <benchmark output file>");
+            fatal("syntax: GenerateReport <benchmark output file> [override pattern: " +  BM_LINE_PATTERN + " and: " + PATTERN2 + "]");
 
         Path path = Paths.get(args[0]);
+        if (args.length > 1) {
+            BM_LINE_PATTERN = args[1];
+            PATTERN2 = args[2];
+        }
         Pattern pattern = Pattern.compile(BM_LINE_PATTERN);
         ReportGenerator report = new ReportGenerator();
         boolean anonymize = Boolean.valueOf(System.getProperty("anonymize", "true"));
@@ -125,7 +131,7 @@ public class ReportGenerator {
         String[] fields = data.split(",");
         if (fields.length == 7) {
             // first field contains the name of the class that performs the comparison
-            Optional productName = Arrays.stream(fields[0].split("\\.")).filter(name -> name.contains("Comparison")).findFirst();
+            Optional productName = Arrays.stream(fields[0].split("\\.")).filter(name -> name.contains(PATTERN2)).findFirst();
 
             if (!productName.isPresent())
                 return;
