@@ -19,6 +19,7 @@ package com.arjuna.ats.jta.xa.performance;
 import com.arjuna.ats.arjuna.common.CoreEnvironmentBeanException;
 import com.arjuna.ats.internal.arjuna.objectstore.ShadowNoFileLockStore;
 
+import com.arjuna.ats.internal.arjuna.objectstore.VolatileStore;
 import org.junit.BeforeClass;
 import org.openjdk.jmh.annotations.*;
 
@@ -41,7 +42,7 @@ public class JTAStoreTests extends JTAStoreBase {
     @Setup(Level.Trial)
     @BeforeClass
     public static void setup() throws CoreEnvironmentBeanException {
-        JTAStoreBase.setup(ShadowNoFileLockStore.class.getName());
+        JTAStoreBase.setup(VolatileStore.class.getName());
     }
 
     @Benchmark
