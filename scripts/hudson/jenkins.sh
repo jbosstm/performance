@@ -65,7 +65,7 @@ cd tmp
 cd ../..
 rm -rf tmp
 
-GIT_BRANCH=master THREAD_COUNTS="1 24 240 1600" COMPARISON="com.arjuna.ats.jta.xa.performance.*StoreBenchmark.*" COMPARISON_COUNT=4 narayana/scripts/hudson/jenkins.sh
+GIT_BRANCH=master THREAD_COUNTS="1 24 240 1600" COMPARISON="com.arjuna.ats.jta.xa.performance.*StoreBenchmark.*" COMPARISON_COUNT=4 BM_LINE_PATTERN="(com.arjuna.ats.jta.xa.performance|i.n.p.p)" PATTERN2="Benchmark" narayana/scripts/hudson/jenkins.sh
 [ $? = 0 ] || fatal "Store benchmark failed"
 mv benchmark-output.txt benchmark-store-output.txt
 mv benchmark.png benchmark-store.png
