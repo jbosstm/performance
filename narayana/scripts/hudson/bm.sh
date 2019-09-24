@@ -8,7 +8,7 @@ function cmp_narayana {
     JMHARGS="-t $i -r 20 -f 1 -wi 3 -i 5"
   fi
   JMHARGS="$JMHARGS" ./narayana/scripts/hudson/benchmark.sh "ArjunaJTA/jta" "io.narayana.perf.product.NarayanaComparison.*" 1 "$XARGS" > $5
-  tput=$(tail -1 $5 | tr -s ' ' | cut -d ' ' -f 4)
+  tput=$(grep NarayanaComparison.test $5  | tail -1  | tr -s ' ' | cut -d ' ' -f 4)
   if [ $# = 6 ]; then
     echo "evaluating $6'<'$tput | bc -l"
     gt=$(echo $6'<'$tput | bc -l)
