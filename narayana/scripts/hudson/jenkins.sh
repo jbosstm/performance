@@ -86,7 +86,7 @@ do
   if [ -z "${JMHARGS}" ] ; then
     JMHARGS="-t $i -r 25 -f 2 -wi 5 -i 5"
   else
-    JMHARGS="-t $i $JMHARGS"
+    JMHARGS="-t $i -r 20 -f 1 -wi 3 -i 5"
   fi
   JMHARGS="$JMHARGS" bm bm-output.txt $COMPARISON $COMPARISON_COUNT
 done
