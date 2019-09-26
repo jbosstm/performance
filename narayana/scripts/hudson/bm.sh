@@ -2,7 +2,11 @@
 
 function cmp_narayana {
   XARGS="-DHornetqJournalEnvironmentBean.maxIO=$2 -DHornetqJournalEnvironmentBean.bufferFlushesPerSecond=$3 -DHornetqJournalEnvironmentBean.asyncIO=$4"
-  [ -z "${JMHARGS}" ] && JMHARGS="-t $1 -r 25 -f 2 -wi 5 -i 5"
+  if [ -z "${JMHARGS}" ] ; then
+    JMHARGS="-t $i -r 25 -f 2 -wi 5 -i 5"
+  else
+    JMHARGS="-t $i $JMHARGS"
+  fi
   JMHARGS="$JMHARGS" ./narayana/scripts/hudson/benchmark.sh "ArjunaJTA/jta" "io.narayana.perf.product.NarayanaComparison.*" 1 "$XARGS" > $5
   tput=$(tail -1 $5 | tr -s ' ' | cut -d ' ' -f 4)
   if [ $# = 6 ]; then
