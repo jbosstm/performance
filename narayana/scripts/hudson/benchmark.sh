@@ -1,3 +1,4 @@
+[ -z "${JMHARGS}" ] && JMHARGS="-t 240 -r 25 -f 2 -wi 5 -i 5"
 
 function fatal {
   echo "$1"

@@ -83,7 +83,8 @@ fi
 
 for i in $THREAD_COUNTS
 do
-  JMHARGS="-t $i -r 30 -f 3 -wi 5 -i 5 $JMHARGS" bm bm-output.txt $COMPARISON $COMPARISON_COUNT
+  [ -z "${JMHARGS}" ] && JMHARGS="-t $i -r 25 -f 2 -wi 5 -i 5"
+  JMHARGS="$JMHARGS" bm bm-output.txt $COMPARISON $COMPARISON_COUNT
 done
 
 cp bm-output.txt benchmark-output.txt
