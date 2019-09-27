@@ -23,7 +23,7 @@ function runs {
   echo -e "threads\tmaxIO\tbf/s\tAIO\ttput\t\tchange" > results.txt
   for threads in 24 240 2400; do
     for bf in 4000 7812; do
-      cmp_narayana $threads 500 $bf true r.txt
+      cmp_narayana $threads 500 $bf true r-${threads}-${bf}.txt
       cmp_narayana $threads 1 $bf false r.txt $tput
     done
   done
