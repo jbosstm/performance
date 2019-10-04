@@ -75,11 +75,10 @@ GIT_BRANCH=master THREAD_COUNTS="1 24 240 1600" COMPARISON="io.narayana.perf.pro
 mv benchmark-output.txt benchmark-comparison-output.txt
 mv benchmark.png benchmark-comparison.png
 
-# JBTM-3193 temporary disable (also, it might be the case that 3 tests can be ran when this is reenabled)
-#JVM_ARGS="-DMAX_ERRORS=10" ./narayana/scripts/hudson/benchmark.sh "ArjunaJTA/jta" "org.jboss.narayana.rts.*TxnTest.*" 2
-#[ $? = 0 ] || fatal "RTS benchmark failed"
-#mv benchmark-output.txt benchmark-rts-output.txt
-#mv benchmark.png benchmark-rts.png
+JVM_ARGS="-DMAX_ERRORS=10" ./narayana/scripts/hudson/benchmark.sh "ArjunaJTA/jta" "org.jboss.narayana.rts.*TxnTest.*" 2
+[ $? = 0 ] || fatal "RTS benchmark failed"
+mv benchmark-output.txt benchmark-rts-output.txt
+mv benchmark.png benchmark-rts.png
 
 ./build.sh -f narayana/pom.xml clean package -DskipTests
 wget -q http://narayanaci1.eng.hst.ams2.redhat.com/job/narayana-AS800/lastSuccessfulBuild/artifact/dist/target/*zip*/target.zip
