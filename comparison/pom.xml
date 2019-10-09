@@ -21,7 +21,7 @@
         <version.arquillian>1.4.1.Final</version.arquillian>
         <version.arquillian.wildfly.container>2.1.1.Final</version.arquillian.wildfly.container>
         <version.wildfly.core>7.0.0.Final</version.wildfly.core>
-        <version.org.jboss.narayana>5.9.9.Final-SNAPSHOT</version.org.jboss.narayana>
+        <version.org.jboss.narayana>5.10.0.Final-SNAPSHOT</version.org.jboss.narayana>
         <version.org.jboss.spec.javax.ejb>1.0.0.Final</version.org.jboss.spec.javax.ejb>
         <version.org.jboss.spec.javax.transaction>1.0.0.Final</version.org.jboss.spec.javax.transaction>
         <version.org.jboss.resteasy>3.0.8.Final</version.org.jboss.resteasy>
