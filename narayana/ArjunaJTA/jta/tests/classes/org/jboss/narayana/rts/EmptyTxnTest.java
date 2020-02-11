@@ -21,6 +21,7 @@ import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.openjdk.jmh.annotations.*;
+import org.openjdk.jmh.infra.Blackhole;
 
 import javax.ws.rs.core.Link;
 
@@ -31,6 +32,8 @@ import java.util.Set;
 
 @State(Scope.Benchmark)
 public class EmptyTxnTest extends TestBase {
+
+    static Set<Link> links;
 
     @Setup(Level.Trial)
     @BeforeClass
@@ -44,15 +47,23 @@ public class EmptyTxnTest extends TestBase {
         TestBase.tearDown();
     }
 
-    @Test
     @Benchmark
-    public void testEmptyTxn() throws IOException {
-        Set<Link> links = TxnHelper.beginTxn(txnClient, TXN_URL);
+    public void testEmptyTxn(Blackhole bh) throws IOException {
+        bh.consume(beginTx());
         // make two service calls for comparison with RTSTests#testTxn
+        bh.consume(sendRequest());
+        bh.consume(TxnHelper.endTxn(txnClient, links));
+    }
+
+    public boolean beginTx() throws IOException {
+        links = TxnHelper.beginTxn(txnClient, TXN_URL);
+        return true;
+    }
+
+    private boolean sendRequest() throws IOException {
         for (int i = 0; i < TxnHelper.NO_OF_SVC_CALLS; i++) {
-            String val = TxnHelper.sendRequest(HttpURLConnection.HTTP_OK, svcClient, SVC_URL);
-            Assert.assertEquals(TransactionAwareResource.NON_TXN_MSG, val);
+            TxnHelper.sendRequest(HttpURLConnection.HTTP_OK, svcClient, SVC_URL);
         }
-        TxnHelper.endTxn(txnClient, links);
+        return true;
     }
 }

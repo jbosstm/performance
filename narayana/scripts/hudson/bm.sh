@@ -3,11 +3,9 @@
 function cmp_narayana {
   XARGS="-DHornetqJournalEnvironmentBean.maxIO=$2 -DHornetqJournalEnvironmentBean.bufferFlushesPerSecond=$3 -DHornetqJournalEnvironmentBean.asyncIO=$4"
   if [ -z "${JMHARGS}" ] ; then
-    JMHARGS="-t $1 -r 25 -f 2 -wi 5 -i 5"
-  else
-    JMHARGS="-t $1 -r 20 -f 1 -wi 3 -i 5"
+   JMHARGS="-t $1 -r 30 -f 3 -wi 5 -i 5"
   fi
-  JMHARGS="$JMHARGS" ./narayana/scripts/hudson/benchmark.sh "ArjunaJTA/jta" "io.narayana.perf.product.NarayanaComparison.*" 1 "$XARGS" > $5
+  JMHARGS="-t $1 ${JMHARGS/-t*-r/ -r}" ./narayana/scripts/hudson/benchmark.sh "ArjunaJTA/jta" "io.narayana.perf.product.NarayanaComparison.*" 1 "$XARGS" > $5
   tput=$(grep NarayanaComparison.test $5  | tail -1  | tr -s ' ' | cut -d ' ' -f 4)
   if [ $# = 6 ]; then
     echo "evaluating $6'<'$tput | bc -l"

@@ -23,13 +23,10 @@ import com.arjuna.common.internal.util.propertyservice.BeanPopulator;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.openjdk.jmh.annotations.*;
-
-import javax.transaction.TransactionManager;
+import org.openjdk.jmh.infra.Blackhole;
 
 @State(Scope.Benchmark)
 public class HQStoreBenchmark extends JTAStoreBase {
-
-    private static TransactionManager tm;
 
     @Setup(Level.Trial)
     @BeforeClass
@@ -44,7 +41,7 @@ public class HQStoreBenchmark extends JTAStoreBase {
 
     @Test
     @Benchmark
-    public void testHQStore() {
-        super.jtaTest();
+    public void testHQStore(Blackhole bh) {
+        bh.consume(super.jtaTest());
     }
 }
