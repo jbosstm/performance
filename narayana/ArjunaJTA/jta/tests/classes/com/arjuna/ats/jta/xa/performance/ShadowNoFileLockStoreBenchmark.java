@@ -21,6 +21,7 @@ import com.arjuna.ats.internal.arjuna.objectstore.ShadowNoFileLockStore;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.openjdk.jmh.annotations.*;
+import org.openjdk.jmh.infra.Blackhole;
 
 @State(Scope.Benchmark)
 public class ShadowNoFileLockStoreBenchmark extends JTAStoreBase {
@@ -32,7 +33,7 @@ public class ShadowNoFileLockStoreBenchmark extends JTAStoreBase {
 
     @Test
     @Benchmark
-    public void testShadowNoFileLockStore() {
-        super.jtaTest();
+    public void testShadowNoFileLockStore(Blackhole bh) {
+        bh.consume(super.jtaTest());
     }
 }

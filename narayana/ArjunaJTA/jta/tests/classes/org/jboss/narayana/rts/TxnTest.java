@@ -23,6 +23,7 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.openjdk.jmh.annotations.*;
+import org.openjdk.jmh.infra.Blackhole;
 
 import javax.ws.rs.core.Link;
 
@@ -40,6 +41,8 @@ import static org.junit.Assert.fail;
 public class TxnTest extends TestBase {
     protected final static Logger log = Logger.getLogger(TxnTest.class);
     static final ExecutorService threadpool = Executors.newFixedThreadPool(10);
+    static Set<Link> links;
+    static String serviceRequest;
 
     @Setup(Level.Trial)
     @BeforeClass
@@ -53,25 +56,37 @@ public class TxnTest extends TestBase {
         TestBase.tearDown();
     }
 
-    @Test
     @Benchmark
-    public void testTxn() throws IOException {
-        Set<Link> links = TxnHelper.beginTxn(txnClient, TXN_URL);
-        Link enlistmentLink = TxnHelper.getLink(links, TxLinkNames.PARTICIPANT);
-        String serviceRequest = SVC_URL + "?enlistURL=" + enlistmentLink.getUri() +
-                "&tid=" + Thread.currentThread().getName();
-
+    public void testTxn(Blackhole bh) throws IOException {
+        bh.consume(preExeTransaction());
         // we want 2 txn participants so make 2 transactional requests
-        for (int i = 0; i < TxnHelper.NO_OF_SVC_CALLS; i++)
-            TxnHelper.sendRequest(HttpURLConnection.HTTP_OK, svcClient, serviceRequest + i);
+        bh.consume(sendRequest());
+        bh.consume(TxnHelper.endTxn(txnClient, links));
+    }
 
-        TxnHelper.endTxn(txnClient, links);
+    private boolean preExeTransaction() throws IOException {
+        links = TxnHelper.beginTxn(txnClient, TXN_URL);
+        Link enlistmentLink = TxnHelper.getLink(links, TxLinkNames.PARTICIPANT);
+        serviceRequest = SVC_URL + "?enlistURL=" + enlistmentLink.getUri() +
+                "&tid=" + Thread.currentThread().getName();
+        return true;
+    }
+
+    public Set<Link> beginTx() throws IOException {
+        return TxnHelper.beginTxn(txnClient, TXN_URL);
+    }
+
+    private boolean sendRequest() throws IOException {
+        for (int svcCallInc = 0; svcCallInc < TxnHelper.NO_OF_SVC_CALLS; svcCallInc++) {
+            TxnHelper.sendRequest(HttpURLConnection.HTTP_OK, svcClient, serviceRequest + svcCallInc);
+        }
+        return true;
     }
 
     public int runTxn() throws IOException {
         try {
             log.tracef("[%s] BEGINING%n", Thread.currentThread().getName());
-            Set<Link> links = TxnHelper.beginTxn(txnClient, TXN_URL);
+            Set<Link> links = beginTx();
             log.tracef("[%s] BEGUN%n", Thread.currentThread().getName());
             Link enlistmentLink = TxnHelper.getLink(links, TxLinkNames.PARTICIPANT);
             String serviceRequest = SVC_URL + "?tid=" + Thread.currentThread().getName() + "&enlistURL=" + enlistmentLink.getUri();

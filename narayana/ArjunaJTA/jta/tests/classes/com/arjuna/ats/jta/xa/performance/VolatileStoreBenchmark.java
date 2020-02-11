@@ -21,6 +21,7 @@ import com.arjuna.ats.internal.arjuna.objectstore.VolatileStore;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.openjdk.jmh.annotations.*;
+import org.openjdk.jmh.infra.Blackhole;
 
 @State(Scope.Benchmark)
 public class VolatileStoreBenchmark extends JTAStoreBase {
@@ -32,7 +33,7 @@ public class VolatileStoreBenchmark extends JTAStoreBase {
 
     @Test
     @Benchmark
-    public void testVolatileStore() {
-        super.jtaTest();
+    public void testVolatileStore(Blackhole bh) {
+        bh.consume(super.jtaTest());
     }
 }

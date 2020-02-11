@@ -84,11 +84,9 @@ fi
 for i in $THREAD_COUNTS
 do
   if [ -z "${JMHARGS}" ] ; then
-    JMHARGS="-t $i -r 25 -f 2 -wi 5 -i 5"
-  else
-    JMHARGS="-t $i -r 20 -f 1 -wi 3 -i 5"
+   JMHARGS="-t $i -r 30 -f 3 -wi 5 -i 5"
   fi
-  JMHARGS="$JMHARGS" bm bm-output.txt $COMPARISON $COMPARISON_COUNT
+  JMHARGS="-t $i ${JMHARGS/-t*-r/ -r}" bm bm-output.txt $COMPARISON $COMPARISON_COUNT
 done
 
 cp bm-output.txt benchmark-output.txt
