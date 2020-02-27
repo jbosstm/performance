@@ -16,18 +16,6 @@
  */
 package org.jboss.narayana.rts;
 
-import java.net.HttpURLConnection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.atomic.AtomicInteger;
-
-import javax.ws.rs.*;
-import javax.ws.rs.client.Client;
-import javax.ws.rs.client.Entity;
-import javax.ws.rs.core.*;
-
 import org.apache.http.client.HttpClient;
 import org.apache.http.conn.ClientConnectionManager;
 import org.apache.http.impl.client.DefaultHttpClient;
@@ -41,11 +29,36 @@ import org.jboss.logging.Logger;
 import org.jboss.resteasy.client.jaxrs.ResteasyClientBuilder;
 import org.jboss.resteasy.client.jaxrs.engines.ApacheHttpClient4Engine;
 
+import javax.ws.rs.Path;
+import javax.ws.rs.ApplicationPath;
+import javax.ws.rs.GET;
+import javax.ws.rs.Produces;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.DefaultValue;
+import javax.ws.rs.PUT;
+import javax.ws.rs.HEAD;
+import javax.ws.rs.QueryParam;
+
+import javax.ws.rs.client.Client;
+import javax.ws.rs.client.Entity;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.Application;
+import javax.ws.rs.core.UriInfo;
+import javax.ws.rs.core.Form;
+import javax.ws.rs.core.Link;
+import java.net.HttpURLConnection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.atomic.AtomicInteger;
+
 /**
  * An example of how a REST resource can act as a participant in a REST Atomic transaction.
  * For a complete implementation of a participant please refer to the test suite, in particular the inner class:
  * org.jboss.jbossts.star.test.BaseTest$TransactionalResource which implements all the responsibilities of a participant
- *
+ * <p>
  * The example sends a service request which is handled by the method someServiceRequest. The request includes the
  * URL for registering durable participants within the transaction. This naive implementation assumes every request
  * with a valid enlistment URL is a request a new unit of transactional work and enlists a new URL into the transaction.
@@ -55,9 +68,9 @@ import org.jboss.resteasy.client.jaxrs.engines.ApacheHttpClient4Engine;
  */
 @Path(TransactionAwareResource.PSEGMENT)
 public class TransactionAwareResource {
-    protected final static Logger log = Logger.getLogger(TxnTest.class);
+    protected static final Logger log = Logger.getLogger(TxnTest.class);
     public static final String PSEGMENT = "service";
-//    private static AtomicInteger workId = new AtomicInteger(0);
+    //    private static AtomicInteger workId = new AtomicInteger(0);
     private static AtomicInteger commitCnt = new AtomicInteger(0);
     static final String NON_TXN_MSG = "non transactional request";
     static Client client = null;
@@ -81,11 +94,9 @@ public class TransactionAwareResource {
 
 
     @ApplicationPath("eg")
-    public static class ServiceApp extends Application
-    {
+    public static class ServiceApp extends Application {
         @Override
-        public Set<Class<?>> getClasses()
-        {
+        public Set<Class<?>> getClasses() {
             HashSet<Class<?>> classes = new HashSet<>();
             classes.add(TransactionAwareResource.class);
 
@@ -94,7 +105,7 @@ public class TransactionAwareResource {
     }
 
     @GET
-    @Produces( "text/plain" )
+    @Produces("text/plain")
     public Response someServiceRequest(@Context UriInfo info, @QueryParam("tid") String wid, @QueryParam("enlistURL") String enlistUrl) {
         if (enlistUrl == null || enlistUrl.length() == 0)
             return Response.ok(NON_TXN_MSG).build();
@@ -128,7 +139,7 @@ public class TransactionAwareResource {
             if (log.isTraceEnabled())
                 log.tracef("[%s]: workId %s returning%n", wid, wid);
             return response;
-        } catch (HttpResponseException e){
+        } catch (HttpResponseException e) {
             return Response.status(e.getActualResponse()).build();
         } catch (Throwable e) {
             return Response.serverError().build();
@@ -140,7 +151,7 @@ public class TransactionAwareResource {
 
         reqHeaders.put("Link", linkHeader);
 
-        return new TxSupport().httpRequest(new int[] {HttpURLConnection.HTTP_CREATED}, enlistUrl, "POST",
+        return new TxSupport().httpRequest(new int[]{HttpURLConnection.HTTP_CREATED}, enlistUrl, "POST",
                 TxMediaType.POST_MEDIA_TYPE, null, null, reqHeaders);
     }
 
@@ -157,7 +168,7 @@ public class TransactionAwareResource {
      */
     @PUT
     @Path("{wId}/terminator")
-    public Response terminate(@PathParam("wId") @DefaultValue("")String wId, String content) {
+    public Response terminate(@PathParam("wId") @DefaultValue("") String wId, String content) {
 //        System.out.println("Service: PUT request to terminate url: wId=" + wId + ", status:=" + content);
         TxStatus status = TxSupport.toTxStatus(content);
 
@@ -169,13 +180,13 @@ public class TransactionAwareResource {
             return Response.status(HttpURLConnection.HTTP_BAD_REQUEST).build();
         }
         if (log.isTraceEnabled())
-            log.tracef("terminated workId %s enlist%n", wId );
+            log.tracef("terminated workId %s enlist%n", wId);
         return Response.ok(TxSupport.toStatusContent(status.name())).build();
     }
 
     @HEAD
     @Path("{pId}/participant")
-    public Response getTerminator(@Context UriInfo info, @PathParam("pId") @DefaultValue("")String wId) {
+    public Response getTerminator(@Context UriInfo info, @PathParam("pId") @DefaultValue("") String wId) {
         String serviceURL = info.getBaseUri() + info.getPath();
 
         String linkHeader = makeTwoPhaseAwareParticipantLinkHeader(serviceURL, false, wId, null);
@@ -197,7 +208,7 @@ public class TransactionAwareResource {
 
         StringBuilder participantLinkHeader = new StringBuilder(
                 Link.fromUri(resourcePrefix + TxLinkNames.PARTICIPANT_RESOURCE).rel(TxLinkNames.PARTICIPANT_RESOURCE).build().toString()).
-                        append(',').
+                append(',').
                 append(Link.fromUri(resourcePrefix + TxLinkNames.PARTICIPANT_TERMINATOR).rel(TxLinkNames.PARTICIPANT_TERMINATOR).build());
 
         if (vParticipant)

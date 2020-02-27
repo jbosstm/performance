@@ -22,7 +22,11 @@ import com.arjuna.ats.internal.arjuna.objectstore.hornetq.HornetqObjectStoreAdap
 import com.arjuna.common.internal.util.propertyservice.BeanPopulator;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.openjdk.jmh.annotations.*;
+import org.openjdk.jmh.annotations.Benchmark;
+import org.openjdk.jmh.annotations.Scope;
+import org.openjdk.jmh.annotations.State;
+import org.openjdk.jmh.annotations.Setup;
+import org.openjdk.jmh.annotations.Level;
 
 import javax.transaction.TransactionManager;
 

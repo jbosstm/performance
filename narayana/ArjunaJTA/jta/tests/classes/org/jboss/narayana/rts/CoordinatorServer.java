@@ -18,7 +18,8 @@ package org.jboss.narayana.rts;
 
 import org.jboss.jbossts.star.util.TxSupport;
 
-import org.openjdk.jmh.annotations.*;
+import org.openjdk.jmh.annotations.Scope;
+import org.openjdk.jmh.annotations.State;
 
 import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.GET;
@@ -31,23 +32,20 @@ import java.util.Set;
 @State(Scope.Benchmark)
 public class CoordinatorServer {
     @Path("/test")
-    public static class Resource
-    {
+    public static class Resource {
         @GET
         @Produces("text/plain")
-        public String get()
-        {
+        public String get() {
             return "hello world";
         }
     }
 
     private static final String APP_PATH = TxSupport.TX_PATH; // "/base"
+
     @ApplicationPath(APP_PATH)
-    public static class MyApp extends Application
-    {
+    public static class MyApp extends Application {
         @Override
-        public Set<Class<?>> getClasses()
-        {
+        public Set<Class<?>> getClasses() {
             HashSet<Class<?>> classes = new HashSet<>();
             classes.add(Resource.class);
 

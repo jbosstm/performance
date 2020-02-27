@@ -20,7 +20,11 @@ import com.arjuna.ats.arjuna.common.CoreEnvironmentBeanException;
 import com.arjuna.ats.internal.arjuna.objectstore.VolatileStore;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.openjdk.jmh.annotations.*;
+import org.openjdk.jmh.annotations.Benchmark;
+import org.openjdk.jmh.annotations.Scope;
+import org.openjdk.jmh.annotations.State;
+import org.openjdk.jmh.annotations.Setup;
+import org.openjdk.jmh.annotations.Level;
 
 @State(Scope.Benchmark)
 public class VolatileStoreBenchmark extends JTAStoreBase {

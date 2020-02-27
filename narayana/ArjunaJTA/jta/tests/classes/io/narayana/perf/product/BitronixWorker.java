@@ -21,12 +21,12 @@
  */
 package io.narayana.perf.product;
 
-import io.narayana.perf.product.btm.BtmResourceBean;
-import io.narayana.perf.product.btm.BtmXAResourceHolderState;
-import io.narayana.perf.product.btm.BtmXAResourceProducer;
 import bitronix.tm.recovery.RecoveryException;
 import bitronix.tm.resource.ResourceRegistrar;
 import bitronix.tm.resource.common.XAResourceProducer;
+import io.narayana.perf.product.btm.BtmResourceBean;
+import io.narayana.perf.product.btm.BtmXAResourceHolderState;
+import io.narayana.perf.product.btm.BtmXAResourceProducer;
 
 public class BitronixWorker<Void> extends ProductWorker<Void> {
 
@@ -35,7 +35,7 @@ public class BitronixWorker<Void> extends ProductWorker<Void> {
     public BitronixWorker(ProductInterface prod) {
         super(prod);
     }
-    
+
     @Override
     public void init() {
         super.init();
