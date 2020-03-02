@@ -56,6 +56,8 @@ public class Performance1 {
         private BasicRecord record2 = new BasicRecord();
     }
 
+    ;
+
     static {
         try {
             BeanPopulator.getDefaultInstance(ObjectStoreEnvironmentBean.class).setObjectStoreType(VolatileStore.class.getName());
