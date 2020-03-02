@@ -28,7 +28,6 @@ import org.openjdk.jmh.annotations.State;
 import org.openjdk.jmh.annotations.Setup;
 import org.openjdk.jmh.annotations.Level;
 
-import javax.transaction.TransactionManager;
 import org.openjdk.jmh.infra.Blackhole;
 
 @State(Scope.Benchmark)

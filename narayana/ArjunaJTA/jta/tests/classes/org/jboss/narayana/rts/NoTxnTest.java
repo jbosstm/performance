@@ -26,6 +26,7 @@ import org.openjdk.jmh.annotations.State;
 import org.openjdk.jmh.annotations.Setup;
 import org.openjdk.jmh.annotations.Level;
 import org.openjdk.jmh.annotations.TearDown;
+import org.openjdk.jmh.annotations.OperationsPerInvocation;
 
 import javax.ws.rs.client.Client;
 import java.io.IOException;
