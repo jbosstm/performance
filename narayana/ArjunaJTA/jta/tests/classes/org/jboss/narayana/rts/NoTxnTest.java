@@ -55,13 +55,12 @@ public class NoTxnTest {
 
     @Test
     @Benchmark
+    @OperationsPerInvocation(TxnHelper.NO_OF_SVC_CALLS)
     public void testNoTxn() throws IOException {
         // make four calls for comparison with RTSTests#testTxn which makes 2 REST calls for starting and stopping
         // the txn plus two service calls (assuming that they are not cached)
-        for (int i = 0; i < TxnHelper.NO_OF_SVC_CALLS; i++) {
-            String val = TxnHelper.sendRequest(HttpURLConnection.HTTP_OK, client, serviceUrl);
+        String val = TxnHelper.sendRequest(HttpURLConnection.HTTP_OK, client, serviceUrl);
 
-            Assert.assertEquals(TransactionAwareResource.NON_TXN_MSG, val);
-        }
+        Assert.assertEquals(TransactionAwareResource.NON_TXN_MSG, val);
     }
 }

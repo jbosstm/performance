@@ -39,6 +39,7 @@ import com.hp.mwtests.ts.arjuna.JMHConfigCore;
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.Scope;
 import org.openjdk.jmh.annotations.State;
+import org.openjdk.jmh.infra.Blackhole;
 import org.openjdk.jmh.runner.RunnerException;
 import org.openjdk.jmh.runner.options.CommandLineOptionException;
 
@@ -66,25 +67,35 @@ public class Performance1 {
     }
 
     @Benchmark
-    public boolean onePhase(BenchmarkState benchmarkState) {
+    public boolean onePhaseTest(BenchmarkState benchmarkState, Blackhole bh) {
+        bh.consume(onePhase(benchmarkState));
+
+        return true;
+    }
+
+    private boolean onePhase(BenchmarkState benchmarkState) {
         AtomicAction A = new AtomicAction();
 
         A.begin();
         A.add(benchmarkState.record1);
         A.commit();
-
         return true;
     }
 
     @Benchmark
-    public boolean twoPhase(BenchmarkState benchmarkState) {
+    public boolean twoPhaseTest(BenchmarkState benchmarkState, Blackhole bh) {
+        bh.consume(twoPhase(benchmarkState));
+
+        return true;
+    }
+
+    private boolean twoPhase(BenchmarkState benchmarkState) {
         AtomicAction A = new AtomicAction();
 
         A.begin();
         A.add(benchmarkState.record1);
         A.add(benchmarkState.record2);
         A.commit();
-
         return true;
     }
 

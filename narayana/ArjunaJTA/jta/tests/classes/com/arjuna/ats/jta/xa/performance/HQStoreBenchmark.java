@@ -29,11 +29,10 @@ import org.openjdk.jmh.annotations.Setup;
 import org.openjdk.jmh.annotations.Level;
 
 import javax.transaction.TransactionManager;
+import org.openjdk.jmh.infra.Blackhole;
 
 @State(Scope.Benchmark)
 public class HQStoreBenchmark extends JTAStoreBase {
-
-    private static TransactionManager tm;
 
     @Setup(Level.Trial)
     @BeforeClass
@@ -48,7 +47,7 @@ public class HQStoreBenchmark extends JTAStoreBase {
 
     @Test
     @Benchmark
-    public void testHQStore() {
-        super.jtaTest();
+    public void testHQStore(Blackhole bh) {
+        bh.consume(super.jtaTest());
     }
 }

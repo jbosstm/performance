@@ -16,6 +16,15 @@
  */
 package com.arjuna.ats.jta.xa.performance;
 
+import org.junit.BeforeClass;
+import org.junit.Test;
+import org.openjdk.jmh.annotations.Benchmark;
+import org.openjdk.jmh.annotations.Level;
+import org.openjdk.jmh.annotations.Scope;
+import org.openjdk.jmh.annotations.Setup;
+import org.openjdk.jmh.annotations.State;
+import org.openjdk.jmh.infra.Blackhole;
+
 import com.arjuna.ats.arjuna.common.CoreEnvironmentBeanException;
 import com.arjuna.ats.arjuna.common.ObjectStoreEnvironmentBean;
 import com.arjuna.ats.internal.arjuna.objectstore.jdbc.JDBCStore;
@@ -56,7 +65,7 @@ public class JDBCStoreBenchmark extends JTAStoreBase {
 
     @Test
     @Benchmark
-    public void testJDBCStore() {
-        super.jtaTest();
+    public void testJDBCStore(Blackhole bh) {
+        bh.consume(super.jtaTest());
     }
 }

@@ -25,6 +25,7 @@ import org.openjdk.jmh.annotations.Scope;
 import org.openjdk.jmh.annotations.State;
 import org.openjdk.jmh.annotations.Setup;
 import org.openjdk.jmh.annotations.Level;
+import org.openjdk.jmh.infra.Blackhole;
 
 @State(Scope.Benchmark)
 public class ShadowNoFileLockStoreBenchmark extends JTAStoreBase {
@@ -36,7 +37,7 @@ public class ShadowNoFileLockStoreBenchmark extends JTAStoreBase {
 
     @Test
     @Benchmark
-    public void testShadowNoFileLockStore() {
-        super.jtaTest();
+    public void testShadowNoFileLockStore(Blackhole bh) {
+        bh.consume(super.jtaTest());
     }
 }

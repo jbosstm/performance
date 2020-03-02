@@ -25,6 +25,7 @@ import org.openjdk.jmh.annotations.Scope;
 import org.openjdk.jmh.annotations.State;
 import org.openjdk.jmh.annotations.Setup;
 import org.openjdk.jmh.annotations.Level;
+import org.openjdk.jmh.infra.Blackhole;
 
 @State(Scope.Benchmark)
 public class VolatileStoreBenchmark extends JTAStoreBase {
@@ -36,7 +37,7 @@ public class VolatileStoreBenchmark extends JTAStoreBase {
 
     @Test
     @Benchmark
-    public void testVolatileStore() {
-        super.jtaTest();
+    public void testVolatileStore(Blackhole bh) {
+        bh.consume(super.jtaTest());
     }
 }
