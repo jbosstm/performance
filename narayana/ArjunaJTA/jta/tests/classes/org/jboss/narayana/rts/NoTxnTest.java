@@ -20,7 +20,13 @@ import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.openjdk.jmh.annotations.*;
+import org.openjdk.jmh.annotations.Benchmark;
+import org.openjdk.jmh.annotations.Scope;
+import org.openjdk.jmh.annotations.State;
+import org.openjdk.jmh.annotations.Setup;
+import org.openjdk.jmh.annotations.Level;
+import org.openjdk.jmh.annotations.TearDown;
+import org.openjdk.jmh.annotations.OperationsPerInvocation;
 
 import javax.ws.rs.client.Client;
 import java.io.IOException;
