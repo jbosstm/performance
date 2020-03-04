@@ -21,19 +21,11 @@
  */
 package io.narayana.perf.product;
 
-import com.arjuna.ats.arjuna.common.CoreEnvironmentBean;
 import com.arjuna.ats.arjuna.common.CoreEnvironmentBeanException;
-import com.arjuna.ats.arjuna.common.ObjectStoreEnvironmentBean;
-import com.arjuna.ats.internal.arjuna.objectstore.hornetq.HornetqJournalEnvironmentBean;
 import com.arjuna.ats.jta.xa.performance.JMHConfigJTA;
 import com.arjuna.ats.jta.xa.performance.XAResourceImpl;
-import com.arjuna.common.internal.util.propertyservice.BeanPopulator;
-
-import org.junit.Test;
-import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.Scope;
 import org.openjdk.jmh.annotations.State;
-
 import org.openjdk.jmh.runner.RunnerException;
 import org.openjdk.jmh.runner.options.CommandLineOptionException;
 

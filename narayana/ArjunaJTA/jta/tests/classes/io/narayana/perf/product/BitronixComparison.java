@@ -27,8 +27,6 @@ import bitronix.tm.utils.DefaultExceptionAnalyzer;
 import com.arjuna.ats.arjuna.common.CoreEnvironmentBeanException;
 import com.arjuna.ats.jta.xa.performance.JMHConfigJTA;
 import com.arjuna.ats.jta.xa.performance.XAResourceImpl;
-import org.junit.Test;
-import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.Scope;
 import org.openjdk.jmh.annotations.State;
 import org.openjdk.jmh.runner.RunnerException;

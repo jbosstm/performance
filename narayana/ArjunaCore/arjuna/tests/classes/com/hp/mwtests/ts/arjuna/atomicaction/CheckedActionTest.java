@@ -27,7 +27,7 @@ import org.openjdk.jmh.annotations.Scope;
 import org.openjdk.jmh.annotations.State;
 import org.openjdk.jmh.infra.Blackhole;
 import org.openjdk.jmh.runner.RunnerException;
-import org.openjdk.jmh.runner.options.*;
+import org.openjdk.jmh.runner.options.CommandLineOptionException;
 
 //@State(Scope.Benchmark)
 public class CheckedActionTest {

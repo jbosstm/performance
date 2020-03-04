@@ -21,34 +21,31 @@
  */
 package io.narayana.perf.product;
 
+import com.arjuna.ats.arjuna.common.CoreEnvironmentBeanException;
+import com.arjuna.ats.jta.xa.performance.JMHConfigJTA;
 import org.junit.After;
 import org.junit.Before;
-
 import org.junit.Test;
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.Scope;
-import org.openjdk.jmh.annotations.Setup;
 import org.openjdk.jmh.annotations.State;
+import org.openjdk.jmh.annotations.Setup;
 import org.openjdk.jmh.annotations.TearDown;
 import org.openjdk.jmh.runner.BenchmarkException;
 import org.openjdk.jmh.runner.RunnerException;
 import org.openjdk.jmh.runner.options.CommandLineOptionException;
-import com.arjuna.ats.jta.xa.performance.JMHConfigJTA;
 
-import com.arjuna.ats.arjuna.common.CoreEnvironmentBeanException;
-
-import java.util.Calendar;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CyclicBarrier;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.atomic.AtomicInteger;
 
 @State(Scope.Benchmark)
-abstract public class ProductComparison {
-    final public static int TX_TIMEOUT = 50;
-    final protected static String outerClassName = ProductComparison.class.getName();
-    final static private int MAX_ERRORS = Integer.getInteger("MAX_ERRORS", 0);
+public abstract class ProductComparison {
+    public static final int TX_TIMEOUT = 50;
+    protected static final String outerClassName = ProductComparison.class.getName();
+    private static final int MAX_ERRORS = Integer.getInteger("MAX_ERRORS", 0);
 
     private AtomicInteger errorCount = new AtomicInteger(0);
     private AtomicInteger completionCount = new AtomicInteger(0);

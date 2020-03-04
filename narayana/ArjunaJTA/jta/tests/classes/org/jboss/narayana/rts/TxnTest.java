@@ -17,29 +17,35 @@
 package org.jboss.narayana.rts;
 
 import org.jboss.jbossts.star.util.TxLinkNames;
-
 import org.jboss.logging.Logger;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.openjdk.jmh.annotations.*;
+import org.openjdk.jmh.annotations.Benchmark;
+import org.openjdk.jmh.annotations.Scope;
+import org.openjdk.jmh.annotations.State;
+import org.openjdk.jmh.annotations.Setup;
+import org.openjdk.jmh.annotations.Level;
+import org.openjdk.jmh.annotations.TearDown;
 import org.openjdk.jmh.infra.Blackhole;
 
 import javax.ws.rs.core.Link;
-
 import java.io.IOException;
-
 import java.net.HttpURLConnection;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Set;
-import java.util.concurrent.*;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.Callable;
 
 import static org.junit.Assert.fail;
 
 @State(Scope.Benchmark)
 public class TxnTest extends TestBase {
-    protected final static Logger log = Logger.getLogger(TxnTest.class);
+    protected static final Logger log = Logger.getLogger(TxnTest.class);
     static final ExecutorService threadpool = Executors.newFixedThreadPool(10);
     static Set<Link> links;
     static String serviceRequest;
