@@ -20,14 +20,17 @@ import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.openjdk.jmh.annotations.*;
 import org.openjdk.jmh.infra.Blackhole;
+import org.openjdk.jmh.annotations.Benchmark;
+import org.openjdk.jmh.annotations.Scope;
+import org.openjdk.jmh.annotations.State;
+import org.openjdk.jmh.annotations.Setup;
+import org.openjdk.jmh.annotations.Level;
+import org.openjdk.jmh.annotations.TearDown;
 
 import javax.ws.rs.core.Link;
-
 import java.io.IOException;
 import java.net.HttpURLConnection;
-
 import java.util.Set;
 
 @State(Scope.Benchmark)

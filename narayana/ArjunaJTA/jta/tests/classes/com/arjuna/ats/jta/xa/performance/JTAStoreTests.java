@@ -17,15 +17,16 @@
 package com.arjuna.ats.jta.xa.performance;
 
 import com.arjuna.ats.arjuna.common.CoreEnvironmentBeanException;
-import com.arjuna.ats.internal.arjuna.objectstore.ShadowNoFileLockStore;
-
 import com.arjuna.ats.internal.arjuna.objectstore.VolatileStore;
 import org.junit.BeforeClass;
-import org.openjdk.jmh.annotations.*;
-
+import org.openjdk.jmh.annotations.Benchmark;
+import org.openjdk.jmh.annotations.Scope;
+import org.openjdk.jmh.annotations.State;
+import org.openjdk.jmh.annotations.Setup;
+import org.openjdk.jmh.annotations.Level;
 import org.openjdk.jmh.infra.Blackhole;
 import org.openjdk.jmh.runner.RunnerException;
-import org.openjdk.jmh.runner.options.*;
+import org.openjdk.jmh.runner.options.CommandLineOptionException;
 
 /*
  config priority order is:

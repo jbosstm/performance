@@ -22,22 +22,14 @@
 package io.narayana.perf.product;
 
 import com.arjuna.ats.arjuna.common.CoreEnvironmentBeanException;
-
 import com.arjuna.ats.jta.xa.performance.JMHConfigJTA;
-
 import org.apache.geronimo.transaction.GeronimoUserTransaction;
 import org.apache.geronimo.transaction.log.HOWLLog;
 import org.apache.geronimo.transaction.manager.TransactionManagerImpl;
 import org.apache.geronimo.transaction.manager.XidFactory;
 import org.apache.geronimo.transaction.manager.XidFactoryImpl;
-
-import org.junit.Before;
-import org.junit.Test;
-import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.Scope;
-import org.openjdk.jmh.annotations.Setup;
 import org.openjdk.jmh.annotations.State;
-
 import org.openjdk.jmh.runner.RunnerException;
 import org.openjdk.jmh.runner.options.CommandLineOptionException;
 
@@ -88,7 +80,7 @@ public class GeronimoComparison extends ProductComparison {
             try {
                 tm = createTransactionManager();
                 ut = new GeronimoUserTransaction(tm);
-            } catch (Exception e ) {
+            } catch (Exception e) {
                 try {
                     fini();
                 } catch (RuntimeException re) {
