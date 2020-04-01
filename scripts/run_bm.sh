@@ -40,7 +40,6 @@ BM3="com.arjuna.ats.jta.xa.performance.JTAStoreTests.*"
 
 function run_benchmarks {
   run_bm narayana/ArjunaCore/arjuna "$BM1" $1
-  run_bm narayana/ArjunaCore/arjuna "$BM2" $1
   run_bm narayana/ArjunaJTA/jta "$BM3" $1
 }
 
