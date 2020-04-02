@@ -1,4 +1,4 @@
 performance
 ===========
 
-Performance relatated work for blacktie and narayana
+Performance related work for blacktie and narayana.
