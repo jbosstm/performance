@@ -1,15 +1,17 @@
 #!/bin/bash -e
 
 function build_narayana {
-  if [ ! -d tmp ]; then
-    mkdir tmp
-    git clone git://github.com/jbosstm/narayana.git tmp
-    cd tmp
-    git fetch
-    git checkout $GIT_BRANCH
-    ./build.sh clean install -DskipTests
-    cd ..
-  fi
+    if [ -z $BUILD_NARAYANA ] || [ $BUILD_NARAYANA != "n" ];
+    then
+        rm -rf tmp
+        mkdir tmp
+        git clone git://github.com/jbosstm/narayana.git tmp
+        cd tmp
+        git fetch
+        git checkout $GIT_BRANCH
+        ./build.sh clean install -DskipTests
+        cd ..
+    fi
 }
 
 function preamble {

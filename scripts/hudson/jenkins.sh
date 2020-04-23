@@ -39,31 +39,34 @@ comment_on_pull "Started testing this pull request: $BUILD_URL"
 
 
 cd $WORKSPACE
-mkdir tmp
-cd tmp
-  rm -rf narayana
-  NARAYANA_REPO=${NARAYANA_REPO:-jbosstm}
-  NARAYANA_BRANCH="${NARAYANA_BRANCH:-master}"
-  git clone https://github.com/${NARAYANA_REPO}/narayana.git -b ${NARAYANA_BRANCH}
-  [ $? = 0 ] || fatal "git clone https://github.com/${NARAYANA_REPO}/narayana.git failed"
-  echo "Checking if need Narayana PR"
-  if [ -n "$NY_BRANCH" ]; then
-    echo "Building NY PR"
+if [ -z $BUILD_NARAYANA ] || [ $BUILD_NARAYANA == "y" ];
+then
+    mkdir tmp
+    cd tmp
+    rm -rf narayana
+    NARAYANA_REPO=${NARAYANA_REPO:-jbosstm}
+    NARAYANA_BRANCH="${NARAYANA_BRANCH:-master}"
+    git clone https://github.com/${NARAYANA_REPO}/narayana.git -b ${NARAYANA_BRANCH}
+    [ $? = 0 ] || fatal "git clone https://github.com/${NARAYANA_REPO}/narayana.git failed"
+    echo "Checking if need Narayana PR"
+    if [ -n "$NY_BRANCH" ]; then
+        echo "Building NY PR"
+        cd narayana
+        git fetch origin +refs/pull/*/head:refs/remotes/jbosstm/pull/*/head
+        [ $? = 0 ] || fatal "git fetch of pulls failed"
+        git checkout $NY_BRANCH
+        [ $? = 0 ] || fatal "git fetch of pull branch failed"
+        cd ../
+    fi
     cd narayana
-    git fetch origin +refs/pull/*/head:refs/remotes/jbosstm/pull/*/head
-    [ $? = 0 ] || fatal "git fetch of pulls failed"
-    git checkout $NY_BRANCH
-    [ $? = 0 ] || fatal "git fetch of pull branch failed"
-    cd ../
-  fi
-  cd narayana
-  ./build.sh clean install -B -DskipTests -Pcommunity
-  if [ $? != 0 ]; then
-    comment_on_pull "Narayana build failed: $BUILD_URL";
-    exit -1
-  fi
-cd ../..
-rm -rf tmp
+    ./build.sh clean install -B -DskipTests -Pcommunity
+    if [ $? != 0 ]; then
+        comment_on_pull "Narayana build failed: $BUILD_URL";
+        exit -1
+    fi
+    cd ../..
+    rm -rf tmp
+fi
 
 GIT_BRANCH=master THREAD_COUNTS="1 24 240 1600" COMPARISON="com.arjuna.ats.jta.xa.performance.*StoreBenchmark.*" COMPARISON_COUNT=4 BM_LINE_PATTERN="(com.arjuna.ats.jta.xa.performance|i.n.p.p)" PATTERN2="Benchmark" narayana/scripts/hudson/jenkins.sh
 [ $? = 0 ] || fatal "Store benchmark failed"
