@@ -1,6 +1,12 @@
 #!/bin/bash
 set -x
 
+if [ -z $WORKSPACE ]
+then
+    echo WORKSPACE is unset
+    exit -1
+fi
+
 function fatal {
   comment_on_pull "Tests failed ($BUILD_URL): $1"
   echo "$1"
