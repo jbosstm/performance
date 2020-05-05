@@ -31,7 +31,6 @@ import org.openjdk.jmh.annotations.Scope;
 import org.openjdk.jmh.annotations.State;
 import org.openjdk.jmh.annotations.Setup;
 import org.openjdk.jmh.annotations.TearDown;
-import org.openjdk.jmh.runner.BenchmarkException;
 import org.openjdk.jmh.runner.RunnerException;
 import org.openjdk.jmh.runner.options.CommandLineOptionException;
 
@@ -131,7 +130,7 @@ public abstract class ProductComparison {
             if (errorCount.incrementAndGet() > MAX_ERRORS) {
                 e.printStackTrace();
 
-                throw new BenchmarkException(e);
+                throw e;
             } else {
                 System.err.printf("%s: %s%n", getProductWorker().getName(), e.getMessage());
             }
