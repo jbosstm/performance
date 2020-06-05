@@ -20,7 +20,7 @@ function cmp_narayana {
 function runs {
   echo -e "threads\tmaxIO\tbf/s\tAIO\ttput\t\tchange" > results.txt
   for threads in 1 24 240 1600; do
-    for bf in 4000 7812; do
+    for bf in 300 2000 4000 7812; do
       cmp_narayana $threads 500 $bf true r-${threads}-${bf}.txt
       cmp_narayana $threads 1 $bf false r.txt $tput
     done
