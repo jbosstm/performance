@@ -57,8 +57,8 @@ function publish_bm {
   host=`hostname`
   tm=`date`
   git commit -m "Generated on host $host ($tm) using tag $GIT_BRANCH"
-  GPW=$(urlencode ${BOT_PASSWORD})
-  git push https://jbosstm-bot:${GPW}@github.com/jbosstm/artifacts.git master
+  GT=$(urlencode ${GITHUB_TOKEN})
+  git push https://jbosstm-bot:${GT}@github.com/jbosstm/artifacts.git master
 }
 
 build_narayana
