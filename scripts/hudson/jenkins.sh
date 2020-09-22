@@ -74,15 +74,21 @@ then
     rm -rf tmp
 fi
 
-GIT_BRANCH=master THREAD_COUNTS="1 24 240 1600" COMPARISON="com.arjuna.ats.jta.xa.performance.*StoreBenchmark.*" COMPARISON_COUNT=4 BM_LINE_PATTERN="(com.arjuna.ats.jta.xa.performance|i.n.p.p)" PATTERN2="Benchmark" narayana/scripts/hudson/jenkins.sh
-[ $? = 0 ] || fatal "Store benchmark failed"
-mv benchmark-output.txt benchmark-store-output.txt
-mv benchmark.png benchmark-store.png
+if [ -z $COMPARE_STORES ] || [ $COMPARE_STORES == "y" ];
+then
+	GIT_BRANCH=master THREAD_COUNTS="1 24 240 1600" COMPARISON="com.arjuna.ats.jta.xa.performance.*StoreBenchmark.*" COMPARISON_COUNT=4 BM_LINE_PATTERN="(com.arjuna.ats.jta.xa.performance|i.n.p.p)" PATTERN2="Benchmark" narayana/scripts/hudson/jenkins.sh
+	[ $? = 0 ] || fatal "Store benchmark failed"
+	mv benchmark-output.txt benchmark-store-output.txt
+	mv benchmark.png benchmark-store.png
+fi
 
-GIT_BRANCH=master THREAD_COUNTS="1 24 240 1600" COMPARISON="io.narayana.perf.product.*Comparison.*" COMPARISON_COUNT=5 narayana/scripts/hudson/jenkins.sh
-[ $? = 0 ] || fatal "Product comparison benchmark failed"
-mv benchmark-output.txt benchmark-comparison-output.txt
-mv benchmark.png benchmark-comparison.png
+if [ -z $COMPARE_IMPLEMENTATIONS ] || [ $COMPARE_IMPLEMENTATIONS == "y" ];
+then
+	GIT_BRANCH=master THREAD_COUNTS="1 24 240 1600" COMPARISON="io.narayana.perf.product.*Comparison.*" COMPARISON_COUNT=5 narayana/scripts/hudson/jenkins.sh
+	[ $? = 0 ] || fatal "Product comparison benchmark failed"
+	mv benchmark-output.txt benchmark-comparison-output.txt
+	mv benchmark.png benchmark-comparison.png
+fi
 
 # JBTM-3193 temporary disable (also, it might be the case that 3 tests can be ran when this is reenabled)
 #JVM_ARGS="-DMAX_ERRORS=10" ./narayana/scripts/hudson/benchmark.sh "ArjunaJTA/jta" "org.jboss.narayana.rts.*TxnTest.*" 2
@@ -90,24 +96,34 @@ mv benchmark.png benchmark-comparison.png
 #mv benchmark-output.txt benchmark-rts-output.txt
 #mv benchmark.png benchmark-rts.png
 
-./build.sh -f narayana/pom.xml clean package -DskipTests
-wget -q http://narayanaci1.eng.hst.ams2.redhat.com/job/narayana-AS800/lastSuccessfulBuild/artifact/dist/target/*zip*/target.zip
-[ $? = 0 ] || fatal "Could not download zip"
-unzip -q target.zip
-[ $? = 0 ] || fatal "Could not extract zip"
-cd target
-export WILDFLY_DIST_ZIP=$(ls wildfly-*-SNAPSHOT.zip)
-[ $? = 0 ] || fatal "Could not find WFLY"
-unzip -q $WILDFLY_DIST_ZIP
-[ $? = 0 ] || fatal "Could not extract WFLY"
-export WILDFLY_HOME=`pwd`/${WILDFLY_DIST_ZIP%.zip}
-export JBOSS_HOME="${WILDFLY_HOME}"
-[ ! -d "${JBOSS_HOME}" ] && fatal "JBOSS_HOME directory '${JBOSS_HOME}' does not exist"
-cd -
+if [ -z $COMPARE_TRANSPORTS ] || [ $COMPARE_TRANSPORTS == "y" ] || [ -z $COMPARE_JOURNAL_PARAMETERS ] || [ $COMPARE_JOURNAL_PARAMETERS == "y" ];
+then
+	./build.sh -f narayana/pom.xml clean package -DskipTests
+fi
 
-./build.sh -f comparison/pom.xml clean install
-[ $? = 0 ] || fatal "Transport comparison failed"
-./narayana/scripts/hudson/bm.sh
-[ $? = 0 ] || fatal "BM properties failed"
+if [ -z $COMPARE_TRANSPORTS ] || [ $COMPARE_TRANSPORTS == "y" ];
+then
+	wget -q http://narayanaci1.eng.hst.ams2.redhat.com/job/narayana-AS800/lastSuccessfulBuild/artifact/dist/target/*zip*/target.zip
+	[ $? = 0 ] || fatal "Could not download zip"
+	unzip -q target.zip
+	[ $? = 0 ] || fatal "Could not extract zip"
+	cd target
+	export WILDFLY_DIST_ZIP=$(ls wildfly-*-SNAPSHOT.zip)
+	[ $? = 0 ] || fatal "Could not find WFLY"
+	unzip -q $WILDFLY_DIST_ZIP
+	[ $? = 0 ] || fatal "Could not extract WFLY"
+	export WILDFLY_HOME=`pwd`/${WILDFLY_DIST_ZIP%.zip}
+	export JBOSS_HOME="${WILDFLY_HOME}"
+	[ ! -d "${JBOSS_HOME}" ] && fatal "JBOSS_HOME directory '${JBOSS_HOME}' does not exist"
+	cd -
+	./build.sh -f comparison/pom.xml clean install
+	[ $? = 0 ] || fatal "Transport comparison failed"
+fi
+
+if [ -z $COMPARE_JOURNAL_PARAMETERS ] || [ $COMPARE_JOURNAL_PARAMETERS == "y" ];
+then
+	./narayana/scripts/hudson/bm.sh
+	[ $? = 0 ] || fatal "BM properties failed"
+fi
 
 comment_on_pull "Pull passed: $BUILD_URL"
