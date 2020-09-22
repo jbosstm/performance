@@ -51,8 +51,8 @@ function run_bm {
     JVM_ARGS="$JVM_ARGS "$4" -DBUILD_DIR=target -Dcom.atomikos.icatch.file=target/classes/atomikos.properties -Dcom.atomikos.icatch.log_base_dir=target/atomikos -Dcom.arjuna.ats.arjuna.common.propertiesFile=jbossts-properties.xml -Dbitronix.tm.journal.disk.logPart1Filename=target/bitronix/btm1.tlog -Dbitronix.tm.journal.disk.logPart2Filename=target/bitronix/btm2.tlog -Djotm.base=target/jotm -Dhowl.log.FileDirectory=target/jotm"
   fi
 
-  echo "LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$(pwd)/etc/ java -Xms4096m -Xmx4096m -classpath target/classes $JVM_ARGS -jar target/benchmarks.jar "$2" $JMHARGS -rf csv -rff $CSVF"
-  LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$(pwd)/etc/ java -Xms4096m -Xmx4096m -classpath target/classes $JVM_ARGS -jar target/benchmarks.jar "$2" $JMHARGS -rf csv -rff $CSVF
+  echo "LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$(pwd)/etc/ java -Xms4096m -Xmx4096m -classpath target/classes $EXTRA_JVM_ARGS $JVM_ARGS -jar target/benchmarks.jar "$2" $JMHARGS -rf csv -rff $CSVF"
+  LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$(pwd)/etc/ java -Xms4096m -Xmx4096m -classpath target/classes $EXTRA_JVM_ARGS $JVM_ARGS -jar target/benchmarks.jar "$2" $JMHARGS -rf csv -rff $CSVF
   res=$?
 
   if [ $res != 0 ]; then
