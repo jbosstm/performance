@@ -45,8 +45,7 @@ comment_on_pull "Started testing this pull request: $BUILD_URL"
 
 
 cd $WORKSPACE
-if [ -z $BUILD_NARAYANA ] || [ $BUILD_NARAYANA == "y" ];
-then
+if [ -z $BUILD_NARAYANA ] || [ $BUILD_NARAYANA == "y" ]; then
     mkdir tmp
     cd tmp
     rm -rf narayana
@@ -74,22 +73,19 @@ then
     rm -rf tmp
 fi
 
-if [ -z $THREAD_COUNTS ];
-then
+if [ -z $THREAD_COUNTS ]; then
    THREAD_COUNTS="1 24 240 1600"
    export $THREAD_COUNTS
 fi
 
-if [ -z $COMPARE_STORES ] || [ $COMPARE_STORES == "y" ];
-then
+if [ -z $COMPARE_STORES ] || [ $COMPARE_STORES == "y" ]; then
 	GIT_BRANCH=master COMPARISON="com.arjuna.ats.jta.xa.performance.*StoreBenchmark.*" COMPARISON_COUNT=4 BM_LINE_PATTERN="(com.arjuna.ats.jta.xa.performance|i.n.p.p)" PATTERN2="Benchmark" narayana/scripts/hudson/jenkins.sh
 	[ $? = 0 ] || fatal "Store benchmark failed"
 	mv benchmark-output.txt benchmark-store-output.txt
 	mv benchmark.png benchmark-store.png
 fi
 
-if [ -z $COMPARE_IMPLEMENTATIONS ] || [ $COMPARE_IMPLEMENTATIONS == "y" ];
-then
+if [ -z $COMPARE_IMPLEMENTATIONS ] || [ $COMPARE_IMPLEMENTATIONS == "y" ]; then
 	GIT_BRANCH=master COMPARISON="io.narayana.perf.product.*Comparison.*" COMPARISON_COUNT=5 narayana/scripts/hudson/jenkins.sh
 	[ $? = 0 ] || fatal "Product comparison benchmark failed"
 	mv benchmark-output.txt benchmark-comparison-output.txt
@@ -102,13 +98,11 @@ fi
 #mv benchmark-output.txt benchmark-rts-output.txt
 #mv benchmark.png benchmark-rts.png
 
-if [ -z $COMPARE_TRANSPORTS ] || [ $COMPARE_TRANSPORTS == "y" ] || [ -z $COMPARE_JOURNAL_PARAMETERS ] || [ $COMPARE_JOURNAL_PARAMETERS == "y" ];
-then
+if [ -z $COMPARE_TRANSPORTS ] || [ $COMPARE_TRANSPORTS == "y" ] || [ -z $COMPARE_JOURNAL_PARAMETERS ] || [ $COMPARE_JOURNAL_PARAMETERS == "y" ]; then
 	./build.sh -f narayana/pom.xml clean package -DskipTests
 fi
 
-if [ -z $COMPARE_TRANSPORTS ] || [ $COMPARE_TRANSPORTS == "y" ];
-then
+if [ -z $COMPARE_TRANSPORTS ] || [ $COMPARE_TRANSPORTS == "y" ]; then
 	wget -q http://narayanaci1.eng.hst.ams2.redhat.com/job/narayana-AS800/lastSuccessfulBuild/artifact/dist/target/*zip*/target.zip
 	[ $? = 0 ] || fatal "Could not download zip"
 	unzip -q target.zip
@@ -126,8 +120,7 @@ then
 	[ $? = 0 ] || fatal "Transport comparison failed"
 fi
 
-if [ -z $COMPARE_JOURNAL_PARAMETERS ] || [ $COMPARE_JOURNAL_PARAMETERS == "y" ];
-then
+if [ -z $COMPARE_JOURNAL_PARAMETERS ] || [ $COMPARE_JOURNAL_PARAMETERS == "y" ]; then
 	./narayana/scripts/hudson/bm.sh
 	[ $? = 0 ] || fatal "BM properties failed"
 fi
