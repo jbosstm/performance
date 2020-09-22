@@ -74,9 +74,15 @@ then
     rm -rf tmp
 fi
 
+if [ -z $THREAD_COUNTS ];
+then
+   THREAD_COUNTS="1 24 240 1600"
+   export $THREAD_COUNTS
+fi
+
 if [ -z $COMPARE_STORES ] || [ $COMPARE_STORES == "y" ];
 then
-	GIT_BRANCH=master THREAD_COUNTS="1 24 240 1600" COMPARISON="com.arjuna.ats.jta.xa.performance.*StoreBenchmark.*" COMPARISON_COUNT=4 BM_LINE_PATTERN="(com.arjuna.ats.jta.xa.performance|i.n.p.p)" PATTERN2="Benchmark" narayana/scripts/hudson/jenkins.sh
+	GIT_BRANCH=master COMPARISON="com.arjuna.ats.jta.xa.performance.*StoreBenchmark.*" COMPARISON_COUNT=4 BM_LINE_PATTERN="(com.arjuna.ats.jta.xa.performance|i.n.p.p)" PATTERN2="Benchmark" narayana/scripts/hudson/jenkins.sh
 	[ $? = 0 ] || fatal "Store benchmark failed"
 	mv benchmark-output.txt benchmark-store-output.txt
 	mv benchmark.png benchmark-store.png
@@ -84,7 +90,7 @@ fi
 
 if [ -z $COMPARE_IMPLEMENTATIONS ] || [ $COMPARE_IMPLEMENTATIONS == "y" ];
 then
-	GIT_BRANCH=master THREAD_COUNTS="1 24 240 1600" COMPARISON="io.narayana.perf.product.*Comparison.*" COMPARISON_COUNT=5 narayana/scripts/hudson/jenkins.sh
+	GIT_BRANCH=master COMPARISON="io.narayana.perf.product.*Comparison.*" COMPARISON_COUNT=5 narayana/scripts/hudson/jenkins.sh
 	[ $? = 0 ] || fatal "Product comparison benchmark failed"
 	mv benchmark-output.txt benchmark-comparison-output.txt
 	mv benchmark.png benchmark-comparison.png
