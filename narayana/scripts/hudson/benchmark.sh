@@ -40,6 +40,7 @@ function run_bm {
   CSV_DIR="target/jmh"
   [ -d $CSV_DIR ] || mkdir -p $CSV_DIR
   CSVF="$CSV_DIR/$f.csv"
+
   touch $CSVF
 
   JVM_ARGS="$CJVM_ARGS"
@@ -58,6 +59,9 @@ function run_bm {
   echo "LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$(pwd)/etc/ java -classpath target/classes $EXTRA_JVM_ARGS $JVM_ARGS -jar target/benchmarks.jar $BENCHMARK_PROFILERS "$2" $JMHARGS -rf csv -rff $CSVF"
   LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$(pwd)/etc/ java -classpath target/classes $EXTRA_JVM_ARGS $JVM_ARGS -jar target/benchmarks.jar $BENCHMARK_PROFILERS "$2" $JMHARGS -rf csv -rff $CSVF
   res=$?
+
+  # Creating JSON format JMH benchmark output.
+  java $EXTRA_JVM_ARGS $JVM_ARGS -classpath "target/classes" -jar ../../tools/target/util-jar-with-dependencies.jar $CSVF
 
   if [ $res != 0 ]; then
     echo "benchmark run failed"
