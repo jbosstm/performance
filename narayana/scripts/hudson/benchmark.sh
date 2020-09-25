@@ -55,8 +55,8 @@ function run_bm {
     EXTRA_JVM_ARGS="-Xms4096m -Xmx4096m"
   fi
 
-  echo "LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$(pwd)/etc/ java -classpath target/classes $EXTRA_JVM_ARGS $JVM_ARGS -jar target/benchmarks.jar "$2" $JMHARGS -rf csv -rff $CSVF"
-  LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$(pwd)/etc/ java -classpath target/classes $EXTRA_JVM_ARGS $JVM_ARGS -jar target/benchmarks.jar "$2" $JMHARGS -rf csv -rff $CSVF
+  echo "LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$(pwd)/etc/ java -classpath target/classes $EXTRA_JVM_ARGS $JVM_ARGS -jar target/benchmarks.jar $BENCHMARK_PROFILERS "$2" $JMHARGS -rf csv -rff $CSVF"
+  LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$(pwd)/etc/ java -classpath target/classes $EXTRA_JVM_ARGS $JVM_ARGS -jar target/benchmarks.jar $BENCHMARK_PROFILERS "$2" $JMHARGS -rf csv -rff $CSVF
   res=$?
 
   if [ $res != 0 ]; then
