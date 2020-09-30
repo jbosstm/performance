@@ -33,20 +33,20 @@ import javax.transaction.xa.Xid;
 
 import java.util.Collection;
 
-public class AomikosXAResource extends XATransactionalResource implements com.atomikos.datasource.RecoverableResource, XAResource {
+public class AomikosXAResource2 extends XATransactionalResource implements com.atomikos.datasource.RecoverableResource, XAResource {
 
-    public AomikosXAResource(String uniqueResourceName) {
+    public AomikosXAResource2(String uniqueResourceName) {
         super(uniqueResourceName);
     }
 
-    public AomikosXAResource(String uniqueResourceName, XidFactory factory) {
+    public AomikosXAResource2(String uniqueResourceName, XidFactory factory) {
         super(uniqueResourceName, factory);
     }
 
 
     @Override
     public XAResource refreshXAConnection() throws ResourceException {
-        return new AomikosXAResource(String.valueOf((long)(Math.random() * 100000000)));
+        return new AomikosXAResource2(String.valueOf((long)(Math.random() * 100000000)));
     }
 
     @Override

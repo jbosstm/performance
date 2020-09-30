@@ -54,12 +54,13 @@
         <version.org.apache.geronimo.components.geronimo-transaction>3.1.4</version.org.apache.geronimo.components.geronimo-transaction>
         <version.org.apache.geronimo.specs.geronimo-jta_1.1_spec>1.1.1</version.org.apache.geronimo.specs.geronimo-jta_1.1_spec>
         <version.org.slf4j.slf4j-simple>1.6.4</version.org.slf4j.slf4j-simple>
+        <version.org.slf4j.slf4j-api>1.7.5</version.org.slf4j.slf4j-api>
         <geronimo.version.org.slf4j.slf4j-simple>1.5.5</geronimo.version.org.slf4j.slf4j-simple>
 
         <version.org.jboss.netty.netty>3.2.5.Final</version.org.jboss.netty.netty>
         <version.org.ow2.jotm.ow2-jotm-dist>2.2.3</version.org.ow2.jotm.ow2-jotm-dist>
-        <version.com.atomikos.transactions-jta>3.9.3</version.com.atomikos.transactions-jta>
-        <version.com.atomikos.transactions-jdbc>3.9.3</version.com.atomikos.transactions-jdbc>
+        <version.com.atomikos.transactions-jta>5.0.8</version.com.atomikos.transactions-jta>
+        <version.com.atomikos.transactions-jdbc>5.0.8</version.com.atomikos.transactions-jdbc>
         <version.org.codehaus.btm.btm>2.1.4</version.org.codehaus.btm.btm>
         <version.jfreechart>1.0.9</version.jfreechart>
         <version.jfreecommon>1.0.16</version.jfreecommon>
@@ -251,7 +252,7 @@
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-api</artifactId>
-            <version>2.13.0</version>
+            <version>2.13.3</version>
             <exclusions>
                 <exclusion>
                     <groupId>com.sun.jmx</groupId>
@@ -274,7 +275,7 @@
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-core</artifactId>
-            <version>[2.13.2,)</version>
+            <version>2.13.3</version>
             <exclusions>
                 <exclusion>
                     <groupId>com.sun.jmx</groupId>
@@ -293,6 +294,16 @@
                     <artifactId>mail</artifactId>
                 </exclusion>
             </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>${version.org.slf4j.slf4j-api}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-simple</artifactId>
+            <version>${version.org.slf4j.slf4j-simple}</version>
         </dependency>
 
         <!-- rts -->
