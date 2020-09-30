@@ -21,10 +21,12 @@
  */
 package io.narayana.perf.product;
 
+//import com.arjuna.ats.jta.xa.performance.XAResourceImpl;
+
 import com.arjuna.ats.arjuna.common.CoreEnvironmentBeanException;
 import com.arjuna.ats.jta.xa.performance.JMHConfigJTA;
 import com.atomikos.icatch.jta.UserTransactionManager;
-import com.atomikos.icatch.system.Configuration;
+import com.atomikos.icatch.config.Configuration;
 import org.openjdk.jmh.annotations.Scope;
 import org.openjdk.jmh.annotations.State;
 import org.openjdk.jmh.runner.RunnerException;
@@ -47,7 +49,7 @@ public class AtomikosComparison extends ProductComparison {
 
     private ProductInterface atomikos = new ProductInterface() {
         private UserTransactionManager utm;
-
+        private int count=0;
         @Override
         public UserTransaction getUserTransaction() throws SystemException {
             return new com.atomikos.icatch.jta.UserTransactionImp();
@@ -65,7 +67,11 @@ public class AtomikosComparison extends ProductComparison {
 
         @Override
         public XAResource getXAResource() {
-            return new AomikosXAResource();
+            if ((count++)%2==0){
+                return new AomikosXAResource(String.valueOf((long)(Math.random() * 100000000)));
+            } else {
+                return new AomikosXAResource2(String.valueOf((long)(Math.random() * 100000000)));
+            }
         }
 
         @Override
@@ -73,7 +79,9 @@ public class AtomikosComparison extends ProductComparison {
 //            System.setProperty(UserTransactionServiceImp.HIDE_INIT_FILE_PATH_PROPERTY_NAME, "no thanks");
 
             utm = new UserTransactionManager();
-            Configuration.addResource(new AomikosXAResource());
+
+            Configuration.addResource(new AomikosXAResource(String.valueOf((long)(Math.random() * 100000000))));
+            Configuration.addResource(new AomikosXAResource2(String.valueOf((long)(Math.random() * 100000000))));
 
             try {
                 utm.init();
