@@ -52,7 +52,7 @@ function run_bm {
     JVM_ARGS="$JVM_ARGS "$4" -DBUILD_DIR=target -Dcom.atomikos.icatch.file=target/classes/atomikos.properties -Dcom.atomikos.icatch.log_base_dir=target/atomikos -Dcom.arjuna.ats.arjuna.common.propertiesFile=jbossts-properties.xml -Dbitronix.tm.journal.disk.logPart1Filename=target/bitronix/btm1.tlog -Dbitronix.tm.journal.disk.logPart2Filename=target/bitronix/btm2.tlog -Djotm.base=target/jotm -Dhowl.log.FileDirectory=target/jotm"
   fi
 
-  if [ -z $EXTRA_JVM_ARGS ]; then
+  if [ -z ${EXTRA_JVM_ARGS+x} ]; then
     EXTRA_JVM_ARGS="-Xms4096m -Xmx4096m"
   fi
 
