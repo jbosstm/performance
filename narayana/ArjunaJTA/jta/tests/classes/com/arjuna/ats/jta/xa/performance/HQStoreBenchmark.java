@@ -38,7 +38,7 @@ public class HQStoreBenchmark extends JTAStoreBase {
         HornetqJournalEnvironmentBean hornetqJournalEnvironmentBean = BeanPopulator.getDefaultInstance(HornetqJournalEnvironmentBean.class);
         hornetqJournalEnvironmentBean.setAsyncIO(true);
         hornetqJournalEnvironmentBean.setSyncDeletes(false);
-        hornetqJournalEnvironmentBean.setBufferFlushesPerSecond(4000);
+        hornetqJournalEnvironmentBean.setBufferFlushesPerSecond(300);
         hornetqJournalEnvironmentBean.setMaxIO(500);
         JTAStoreBase.setup(HornetqObjectStoreAdaptor.class.getName());
     }
