@@ -5,6 +5,7 @@
         <entry key="ObjectStoreEnvironmentBean.objectStoreDir">target/narayana</entry>
         <entry key="ObjectStoreEnvironmentBean.communicationStore">target/narayana</entry>
         <entry key="CoordinatorEnvironmentBean.transactionStatusManagerEnable">false</entry>
+        <!-- Please keep the Journal config in line with the config in narayana/ArjunaJTA/jta/tests/classes/com/arjuna/ats/jta/xa/performance/HQStoreBenchmark.java -->
         <entry key="HornetqJournalEnvironmentBean.asyncIO">true</entry>
         <entry key="HornetqJournalEnvironmentBean.storeDir">target/narayana</entry>
         <!-- default for NIO is 300 and for AIO it's 2000 -->
