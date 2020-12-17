@@ -74,16 +74,21 @@ public class Benchmark implements Comparable<Benchmark> {
 
 	@Override
 	public String toString() {
-		if (previous != null) {
-			double percentChange = regression == 0 ? 0.0 : (score / previous.score - 1) * 100.0;
-			String changeType = regression == -1 ? "regression" : regression == 0 ? "no change" : "improvement";
-			return String.format("%s: %f vrs %f (%f%%: %s)%n", benchmark, score, previous.score, percentChange,
-					changeType);
+        if (previous != null) {
+            double percentChange = regression == 0 ? 0.0 : (score / previous.score - 1) * 100.0;
+            String changeType = regression == -1 ? "regression" : regression == 0 ? "no change" : "improvement";
+            if (regression == 0) {
+                String summary = "Considering the deviation of the numbers, we do not determine this performance test to have altered significantly.";
+                return String.format("%s:%s %f(deviation:%f) vrs %f(deviation:%f) %n", benchmark, summary, score,
+                        scoreError, previous.score, previous.scoreError);
+            }
+            return String.format("%s: %f vrs %f (%f%%: %s)%n", benchmark, score, previous.score, percentChange,
+                    changeType);
 
-		} else {
-			return String.format("%s: %f%n", benchmark, score);
-		}
-	}
+        } else {
+            return String.format("%s: %f%n", benchmark, score);
+        }
+    }
 
 	/**
 	 * Checks if there is any intersection between the scores of current and
