@@ -19,13 +19,14 @@
   </licenses>
   <properties>
     <version.com.fasterxml.jackson>2.10.5</version.com.fasterxml.jackson>
+    <version.com.fasterxml.jackson-databind>2.10.5.1</version.com.fasterxml.jackson-databind>
   </properties>
 
   <dependencies>
     <dependency>
       <groupId>com.fasterxml.jackson.core</groupId>
       <artifactId>jackson-databind</artifactId>
-      <version>${version.com.fasterxml.jackson}</version>
+      <version>${version.com.fasterxml.jackson-databind}</version>
     </dependency>
     <dependency>
       <groupId>com.fasterxml.jackson.dataformat</groupId>
