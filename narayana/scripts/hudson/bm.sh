@@ -23,6 +23,7 @@ function runs {
     for bf in 300 2000 4000 7812; do
       cmp_narayana $threads 500 $bf true r-${threads}-${bf}.txt
       cmp_narayana $threads 1 $bf false r.txt $tput
+      echo "$(date): $threads threads and $bf buffer flushes"
     done
   done
 }
