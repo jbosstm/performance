@@ -103,7 +103,7 @@ if [ -z $COMPARE_TRANSPORTS ] || [ $COMPARE_TRANSPORTS == "y" ] || [ -z $COMPARE
 fi
 
 if [ -z $COMPARE_TRANSPORTS ] || [ $COMPARE_TRANSPORTS == "y" ]; then
-	wget -q http://narayanaci1.eng.hst.ams2.redhat.com/job/narayana-AS800/lastSuccessfulBuild/artifact/dist/target/*zip*/target.zip
+	wget -q http://narayanaci1.eng.hst.ams2.redhat.com/job/narayana-AS800-notests/lastSuccessfulBuild/artifact/dist/target/*zip*/target.zip
 	[ $? = 0 ] || fatal "Could not download zip"
 	unzip -q target.zip
 	[ $? = 0 ] || fatal "Could not extract zip"
