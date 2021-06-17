@@ -26,6 +26,7 @@
         <version.org.jboss.spec.javax.transaction>1.0.0.Final</version.org.jboss.spec.javax.transaction>
         <version.org.jboss.resteasy>3.15.1.Final</version.org.jboss.resteasy>
         <version.junit>[4.13.1,)</version.junit>
+        <version.javax.ws.rs-api>2.0.1.Final</version.javax.ws.rs-api>
     </properties>
 
     <repositories>
@@ -68,9 +69,9 @@
                 <version>${version.org.jboss.spec.javax.transaction}</version>
             </dependency>
             <dependency>
-                <groupId>org.jboss.resteasy</groupId>
-                <artifactId>jaxrs-api</artifactId>
-                <version>${version.org.jboss.resteasy}</version>
+                <groupId>org.jboss.spec.javax.ws.rs</groupId>
+                <artifactId>jboss-jaxrs-api_2.1_spec</artifactId>
+                <version>${version.javax.ws.rs-api}</version>
             </dependency>
             <dependency>
                 <groupId>org.jboss.resteasy</groupId>
