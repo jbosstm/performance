@@ -3,7 +3,8 @@
 BASE_DIR=`pwd`
 RES_DIR=$BASE_DIR/results/$$
 RES_FILE=$RES_DIR/perf.$$.tab
-PERF_REPO=https://github.com/jbosstm/performance
+PERF_REPO=${PERF_REPO:-https://github.com/jbosstm/performance}
+PERF_REPO_BRANCH="${PERF_REPO_BRANCH:-${GIT_BRANCH}}"
 DR3_ZIP="http://download.devel.redhat.com/devel/candidates/JBEAP/JBEAP-6.1.0-DR3/jboss-eap-6.1.0.DR3.zip"
 PROD_DIR=$BASE_DIR/integration/ejb/perftest
 EAP5_DIR=$BASE_DIR/eap-5.1.1
@@ -140,7 +141,7 @@ function configure_eap6 {
 function clone_perf_repo {
   if [ ! -d $BASE_DIR/.git ]; then
     cd $BASE_DIR
-    git clone $PERF_REPO .
+    git clone $PERF_REPO -b ${PERF_REPO_BRANCH} .
     [ $? = 0 ] || fatal "clone performance repo failed"
   fi
 }

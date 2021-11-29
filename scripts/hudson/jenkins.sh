@@ -50,7 +50,7 @@ if [ -z $BUILD_NARAYANA ] || [ $BUILD_NARAYANA == "y" ]; then
     cd tmp
     rm -rf narayana
     NARAYANA_REPO=${NARAYANA_REPO:-jbosstm}
-    NARAYANA_BRANCH="${NARAYANA_BRANCH:-master}"
+    NARAYANA_BRANCH="${NARAYANA_BRANCH:-${GIT_BRANCH}}"
     git clone https://github.com/${NARAYANA_REPO}/narayana.git -b ${NARAYANA_BRANCH}
     [ $? = 0 ] || fatal "git clone https://github.com/${NARAYANA_REPO}/narayana.git failed"
     echo "Checking if need Narayana PR"
