@@ -28,7 +28,9 @@ function build_narayana_master {
   cd tmp
 
   rm -rf narayana
-  git clone https://github.com/jbosstm/narayana.git
+  NARAYANA_REPO=${NARAYANA_REPO:-jbosstm}
+  NARAYANA_BRANCH="${NARAYANA_BRANCH:-${GIT_BRANCH}}"
+  git clone https://github.com/${NARAYANA_REPO}/narayana.git -b ${NARAYANA_BRANCH}
   cd narayana
   ./build.sh clean install -DskipTests
   cd ../../

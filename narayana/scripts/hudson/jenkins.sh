@@ -1,14 +1,16 @@
 #!/bin/bash -e
 
+
 function build_narayana {
     if [ -z $BUILD_NARAYANA ] || [ $BUILD_NARAYANA != "n" ];
     then
         rm -rf tmp
         mkdir tmp
-        git clone git://github.com/jbosstm/narayana.git tmp
+        NARAYANA_REPO=${NARAYANA_REPO:-jbosstm}
+        NARAYANA_BRANCH="${NARAYANA_BRANCH:-$GIT_BRANCH}"
+        git clone https://github.com/${NARAYANA_REPO}/narayana.git -b ${NARAYANA_BRANCH} tmp
         cd tmp
         git fetch
-        git checkout $GIT_BRANCH
         ./build.sh clean install -DskipTests
         cd ..
     fi
