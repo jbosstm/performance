@@ -52,10 +52,10 @@ public class Benchmark implements Comparable<Benchmark> {
         double change = ( score / other.score - 1) * 100.0;
 
         change = Double.valueOf(DF.format(change));
-        
+
         if (scoresIntersecting()) {
-			return 0;
-		}
+          return 0;
+    }
 
         if (change <= PERFORMANCE_DEGRADATION_THRESHOLD)
             return -1;
@@ -72,8 +72,8 @@ public class Benchmark implements Comparable<Benchmark> {
         regression = compareTo(previous);
     }
 
-	@Override
-	public String toString() {
+  @Override
+  public String toString() {
         if (previous != null) {
             double percentChange = regression == 0 ? 0.0 : (score / previous.score - 1) * 100.0;
             String changeType = regression == -1 ? "regression" : regression == 0 ? "no change" : "improvement";
@@ -90,26 +90,26 @@ public class Benchmark implements Comparable<Benchmark> {
         }
     }
 
-	/**
-	 * Checks if there is any intersection between the scores of current and
-	 * previous version when scoreError is considered.
-	 * 
-	 * <p>
-	 * Suppose the ranges are [x1, x2] and [y1, y2] then they will overlap if both
-	 * the (start of the first interval (x1) is less than or equal to the end of the
-	 * second interval (y2)) AND (start of the second interval (y1) is less than or
-	 * equal to the end of the first interval (x2)).
-	 * </p>
-	 *
-	 * @return boolean
-	 */
-	private boolean scoresIntersecting() {
-		if ((score - scoreError > previous.score + previous.scoreError)
-				|| (score + scoreError < previous.score - previous.scoreError)) {
-			return false;
-		}
-		return true;
-	}
+  /**
+   * Checks if there is any intersection between the scores of current and
+   * previous version when scoreError is considered.
+   *
+   * <p>
+   * Suppose the ranges are [x1, x2] and [y1, y2] then they will overlap if both
+   * the (start of the first interval (x1) is less than or equal to the end of the
+   * second interval (y2)) AND (start of the second interval (y1) is less than or
+   * equal to the end of the first interval (x2)).
+   * </p>
+   *
+   * @return boolean
+   */
+  private boolean scoresIntersecting() {
+    if ((score - scoreError > previous.score + previous.scoreError)
+        || (score + scoreError < previous.score - previous.scoreError)) {
+      return false;
+    }
+    return true;
+  }
 
     public boolean isRegression() {
         return regression == -1;
@@ -133,7 +133,7 @@ public class Benchmark implements Comparable<Benchmark> {
 
         for (Benchmark bm : nbms.values())
             bm.setPrevious(pbms.get(bm.benchmark));
- 
+
         System.out.printf("Comparison (pull request versus master)%n");
         System.out.printf("(changes within the %% range [%f, %f] are regarded as insignificant):%n%n",
             PERFORMANCE_DEGRADATION_THRESHOLD, PERFORMANCE_INCREASE_THRESHOLD);

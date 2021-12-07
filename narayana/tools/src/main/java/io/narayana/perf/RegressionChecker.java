@@ -21,25 +21,36 @@
  */
 package io.narayana.perf;
 
-import java.io.*;
-import java.util.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
 
 public class RegressionChecker {
-    public final static String BASE_DIRECTORY_PROPERTY = "performanceprofilestore.dir";
+    public static final String BASE_DIRECTORY_PROPERTY = "performanceprofilestore.dir";
     public static final String RESET_NETRICS_PROP = "io.narayana.perf.resetmetrics";
     public static final String FAIL_ON_PERF_REGRESSION_PROP = "io.narayana.perf.failonregression";
 
-    private final static String BASE_DIR = System.getProperty(BASE_DIRECTORY_PROPERTY);
+    private static final String BASE_DIR = System.getProperty(BASE_DIRECTORY_PROPERTY);
 
-    public final static String PERF_ARGS_FILENAME = "PerformanceProfileStore.args";
-    public final static String PERF_DATA_FILENAME = "PerformanceProfileStore.last";
-    public final static String PERF_VAR_FILENAME = "PerformanceProfileStore.var";
+    public static final String PERF_ARGS_FILENAME = "PerformanceProfileStore.args";
+    public static final String PERF_DATA_FILENAME = "PerformanceProfileStore.last";
+    public static final String PERF_VAR_FILENAME = "PerformanceProfileStore.var";
 
-    public final static String PROPFILE_COMMENT =
+    public static final String PROPFILE_COMMENT =
             "Performance profile. Format is testName=value where value is the metric (throughput or duration)";
 
-    public final static Double DEFAULT_VARIANCE = 1.1; // percentage _variance that can be tolerated
-    private final static boolean regressionChecksEnabled = readBooleanProperty(FAIL_ON_PERF_REGRESSION_PROP);
+    public static final Double DEFAULT_VARIANCE = 1.1; // percentage _variance that can be tolerated
+    private static final boolean regressionChecksEnabled = readBooleanProperty(FAIL_ON_PERF_REGRESSION_PROP);
 
     private String testHistoryFileName;
     private Properties testArgs;

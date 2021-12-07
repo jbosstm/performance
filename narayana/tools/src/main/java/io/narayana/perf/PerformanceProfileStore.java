@@ -29,8 +29,19 @@
 
 package io.narayana.perf;
 
-import java.io.*;
-import java.util.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
 
 /**
  * Maintain performance data and check for regressions.
@@ -45,20 +56,19 @@ import java.util.*;
  * To disable regression checks set the boolean property {@link PerformanceProfileStore#FAIL_ON_PERF_REGRESSION_PROP}
  * To reset performance data for a test set the boolean property {@link PerformanceProfileStore#RESET_NETRICS_PROP}
  */
-public class PerformanceProfileStore
-{
-    public final static String BASE_DIRECTORY_PROPERTY = "performanceprofilestore.dir";
+public class PerformanceProfileStore {
+    public static final String BASE_DIRECTORY_PROPERTY = "performanceprofilestore.dir";
 
     private static final boolean DEFAULT_FAIL_ON_REGRESSION = false;
 
-    public final static Float DEFAULT_VARIANCE = 1.1F; // percentage _variance that can be tolerated
-    public final static String PERFDATAFILENAME = "PerformanceProfileStore.last";
-    public final static String PERFVARIANCEFILENAME = "PerformanceProfileStore.variance";
-    public final static String PERFARGSFILENAME = "PerformanceProfileStore.args";
-    public final static String PROPFILE_COMMENT =
+    public static final Float DEFAULT_VARIANCE = 1.1F; // percentage _variance that can be tolerated
+    public static final String PERFDATAFILENAME = "PerformanceProfileStore.last";
+    public static final String PERFVARIANCEFILENAME = "PerformanceProfileStore.variance";
+    public static final String PERFARGSFILENAME = "PerformanceProfileStore.args";
+    public static final String PROPFILE_COMMENT =
             "Performance profile. Format is testName=value where value is the metric (throughput or duration)";
 
-    private final static String BASE_DIR = System.getProperty(BASE_DIRECTORY_PROPERTY);
+    private static final String BASE_DIR = System.getProperty(BASE_DIRECTORY_PROPERTY);
     public static final String FAIL_ON_PERF_REGRESSION_PROP = "io.narayana.perf.failonregression";
     private static boolean failOnRegression = isFailOnRegression();
 
@@ -66,7 +76,7 @@ public class PerformanceProfileStore
     public static final boolean resetMetrics = isResetMetrics();
 
 
-    private final static PerformanceProfileStore metrics = new PerformanceProfileStore();
+    private static final PerformanceProfileStore metrics = new PerformanceProfileStore();
 
     private Properties data;
     private Properties variances;
