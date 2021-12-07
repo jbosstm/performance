@@ -27,6 +27,10 @@
 	<description>Narayana: ArjunaJTS performance tests</description>
 	<packaging>jar</packaging>
 
+  <properties>
+    <narayana.version>${project.version}</narayana.version>
+  </properties>
+
 	<repositories>
 		<repository>
 			<id>jboss-public-repository-group</id>
@@ -65,7 +69,7 @@
 		<dependency>
 			<groupId>org.jboss.narayana.jts</groupId>
 			<artifactId>narayana-jts-idlj</artifactId>
-			<version>${project.version}</version>
+			<version>${narayana.version}</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
