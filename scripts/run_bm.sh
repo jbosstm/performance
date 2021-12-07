@@ -28,9 +28,7 @@ function build_narayana_master {
   cd tmp
 
   rm -rf narayana
-  NARAYANA_REPO=${NARAYANA_REPO:-jbosstm}
-  NARAYANA_BRANCH="${NARAYANA_BRANCH:-${GIT_BRANCH}}"
-  git clone https://github.com/${NARAYANA_REPO}/narayana.git -b ${NARAYANA_BRANCH}
+  git clone https://github.com/jbosstm/narayana.git -b master
   cd narayana
   ./build.sh clean install -DskipTests
   cd ../../
@@ -69,7 +67,7 @@ function generate_csv_files {
   run_benchmarks pr # run the benchmarks against the local maven repo (should be the PR)
   
   build_narayana_master # build narayana master
-  mvn -f narayana/pom.xml package -DskipTests $MAVEN_OVERRIDE_NARAYANA_VERSION # build the benchmarks uber jar
+  mvn -f narayana/pom.xml package -DskipTests # build the benchmarks uber jar
   run_benchmarks master # run the benchmarks against this build of master
 }
 
