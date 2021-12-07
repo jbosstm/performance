@@ -58,7 +58,7 @@ function publish_bm {
   git add -u
   host=`hostname`
   tm=`date`
-  git commit -m "Generated on host $host ($tm) using tag $GIT_BRANCH"
+  git commit -m "Generated on host $host ($tm) using $NARAYANA_BRANCH"
   GT=$(urlencode ${GITHUB_TOKEN})
   git push https://jbosstm-bot:${GT}@github.com/jbosstm/artifacts.git master
 }
