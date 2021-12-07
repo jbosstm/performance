@@ -60,12 +60,16 @@ function regression_check {
   return $res
 }
 
+if [ -v OVERRIDE_NARAYANA_VERSION ]; then
+  MAVEN_OVERRIDE_NARAYANA_VERSION="-Dnarayana.version=${OVERRIDE_NARAYANA_VERSION}"
+fi
+
 function generate_csv_files {
-  mvn -f narayana/pom.xml package -DskipTests # build the benchmarks uber jar
+  mvn -f narayana/pom.xml package -DskipTests $MAVEN_OVERRIDE_NARAYANA_VERSION # build the benchmarks uber jar
   run_benchmarks pr # run the benchmarks against the local maven repo (should be the PR)
   
   build_narayana_master # build narayana master
-  mvn -f narayana/pom.xml package -DskipTests # build the benchmarks uber jar
+  mvn -f narayana/pom.xml package -DskipTests $MAVEN_OVERRIDE_NARAYANA_VERSION # build the benchmarks uber jar
   run_benchmarks master # run the benchmarks against this build of master
 }
 
