@@ -66,7 +66,11 @@ function publish_bm {
 build_narayana
 
 res=0 
-./build.sh -f narayana/pom.xml clean package -DskipTests
+if [ -v OVERRIDE_NARAYANA_VERSION ]; then
+  MAVEN_OVERRIDE_NARAYANA_VERSION="-Dnarayana.version=${OVERRIDE_NARAYANA_VERSION}"
+fi
+
+./build.sh -f narayana/pom.xml clean package -DskipTests $MAVEN_OVERRIDE_NARAYANA_VERSION
 
 rm -f bm-output.txt benchmark-output.txt benchmark.png
 

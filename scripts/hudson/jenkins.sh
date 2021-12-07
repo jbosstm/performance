@@ -98,8 +98,12 @@ fi
 #mv benchmark-output.txt benchmark-rts-output.txt
 #mv benchmark.png benchmark-rts.png
 
+if [ -v OVERRIDE_NARAYANA_VERSION ]; then
+  MAVEN_OVERRIDE_NARAYANA_VERSION="-Dnarayana.version=${OVERRIDE_NARAYANA_VERSION}"
+fi
+
 if [ -z $COMPARE_TRANSPORTS ] || [ $COMPARE_TRANSPORTS == "y" ] || [ -z $COMPARE_JOURNAL_PARAMETERS ] || [ $COMPARE_JOURNAL_PARAMETERS == "y" ]; then
-	./build.sh -f narayana/pom.xml clean package -DskipTests
+	./build.sh -f narayana/pom.xml clean package -DskipTests $MAVEN_OVERRIDE_NARAYANA_VERSION
 fi
 
 if [ -z $COMPARE_TRANSPORTS ] || [ $COMPARE_TRANSPORTS == "y" ]; then
