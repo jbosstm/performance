@@ -66,7 +66,9 @@ function generate_csv_files {
   mvn -f narayana/pom.xml package -DskipTests $MAVEN_OVERRIDE_NARAYANA_VERSION # build the benchmarks uber jar
   run_benchmarks pr # run the benchmarks against the local maven repo (should be the PR)
   
-  build_narayana_master # build narayana master
+  if [ -z $BUILD_NARAYANA ] || [ $BUILD_NARAYANA == "y" ]; then
+    build_narayana_master # build narayana master
+  fi
   mvn -f narayana/pom.xml package -DskipTests # build the benchmarks uber jar
   run_benchmarks master # run the benchmarks against this build of master
 }
