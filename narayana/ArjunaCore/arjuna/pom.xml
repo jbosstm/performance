@@ -31,6 +31,7 @@
     </prerequisites>
 
     <properties>
+        <narayana.version>${project.version}</narayana.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <version.org.jboss.logging.jboss-logging>3.1.3.GA</version.org.jboss.logging.jboss-logging>
         <version.org.jboss.logging.jboss-logging-processor>1.1.0.Final</version.org.jboss.logging.jboss-logging-processor>
@@ -118,7 +119,7 @@
         <dependency>
             <groupId>org.jboss.narayana.arjunacore</groupId>
             <artifactId>arjunacore</artifactId>
-            <version>${project.version}</version>
+            <version>${narayana.version}</version>
         </dependency>
         <dependency>
             <groupId>org.jboss.logging</groupId>
