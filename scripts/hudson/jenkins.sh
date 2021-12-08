@@ -30,6 +30,7 @@ function comment_on_pull
 
 export GIT_ACCOUNT=jbosstm
 export GIT_REPO=performance
+export GIT_BRANCH="${GIT_BRANCH:-master}"
 
 PULL_NUMBER=$(echo $GIT_BRANCH | awk -F 'pull' '{ print $2 }' | awk -F '/' '{ print $2 }')
 PULL_DESCRIPTION=$(curl -H "Authorization: token $GITHUB_TOKEN" -s https://api.github.com/repos/$GIT_ACCOUNT/$GIT_REPO/pulls/$PULL_NUMBER)
@@ -42,8 +43,6 @@ PATH=$WORKSPACE/tmp/tools/maven/bin/:$PATH
 
 
 comment_on_pull "Started testing this pull request: $BUILD_URL"
-
-export GIT_BRANCH="${GIT_BRANCH:-master}"
 
 cd $WORKSPACE
 if [ -z $BUILD_NARAYANA ] || [ $BUILD_NARAYANA == "y" ]; then
