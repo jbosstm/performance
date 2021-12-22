@@ -41,7 +41,7 @@
         <version.org.jboss.spec.javax.transaction>1.0.0.Final</version.org.jboss.spec.javax.transaction>
         <version.org.jboss.jboss-transaction-spi>7.5.1.Final</version.org.jboss.jboss-transaction-spi>
         <version.junit>[4.13.1,)</version.junit>
-        <version.com.h2database>1.4.182</version.com.h2database>
+        <version.com.h2database>2.0.202</version.com.h2database>
 
         <!-- RTS -->
         <narayana.version>${project.version}</narayana.version>
