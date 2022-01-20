@@ -52,7 +52,8 @@ function urlencode {
 
 function publish_bm {
   rm -rf tmp2
-  git clone https://github.com/jbosstm/artifacts tmp2
+  ARTIFACTS_USER=${ARTIFACTS_USER:-jbosstm-bot}
+  git clone https://github.com/${ARTIFACTS_USER}/artifacts tmp2
   cp $1 $2 tmp2/jobs/tm-comparison
   cd tmp2
   git add -u
@@ -60,7 +61,7 @@ function publish_bm {
   tm=`date`
   git commit -m "Generated on host $host ($tm) using $NARAYANA_BRANCH"
   GT=$(urlencode ${GITHUB_TOKEN})
-  git push https://jbosstm-bot:${GT}@github.com/jbosstm/artifacts.git master
+  git push https://${ARTIFACTS_USER}:${GT}@github.com/${ARTIFACTS_USER}/artifacts.git master
 }
 
 build_narayana
