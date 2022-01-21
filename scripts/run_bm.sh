@@ -22,16 +22,38 @@ function run_bm {
   cp $CSVF $WORKSPACE # the jmh plugin looks for csv files in $WORKSPACE
 }
 
-# build the product in order to calculate a baseline for the benchmark
-function build_narayana_master {
-  [[ -d tmp ]] || mkdir tmp
-  cd tmp
-
-  rm -rf narayana
-  git clone https://github.com/jbosstm/narayana.git -b master
-  cd narayana
-  ./build.sh clean install -DskipTests
-  cd ../../
+# Keep ./narayana/scripts/hudson/jenkins.sh ./scripts/hudson/jenkins.sh ./scripts/run_bm.sh uniform
+function build_narayana {
+    if [ -z $BUILD_NARAYANA ] || [ $BUILD_NARAYANA != "n" ];
+      then
+      if [ ! -d narayana-tmp ]; then
+        NARAYANA_REPO=${NARAYANA_REPO:-jbosstm}
+        NARAYANA_BRANCH="${NARAYANA_BRANCH:-${GIT_BRANCH}}"
+        git clone https://github.com/${NARAYANA_REPO}/narayana.git -b ${NARAYANA_BRANCH} narayana-tmp
+        [ $? = 0 ] || fatal "git clone https://github.com/${NARAYANA_REPO}/narayana.git failed"
+      else
+        cd narayana-tmp
+        git checkout ${NARAYANA_BRANCH}
+        git fetch origin
+        git reset --hard origin/${NARAYANA_BRANCH}
+        cd ../
+      fi
+      echo "Checking if need Narayana PR"
+      if [ -n "$NY_BRANCH" ]; then
+        echo "Building NY PR"
+        cd narayana-tmp
+        git fetch origin +refs/pull/*/head:refs/remotes/jbosstm/pull/*/head
+        [ $? = 0 ] || fatal "git fetch of pulls failed"
+        git checkout $NY_BRANCH
+        [ $? = 0 ] || fatal "git fetch of pull branch failed"
+        cd ../
+      fi
+      ./build.sh -f narayana-tmp/pom.xml clean install -B -DskipTests -Pcommunity
+      if [ $? != 0 ]; then
+          comment_on_pull "Narayana build failed: $BUILD_URL";
+          exit -1
+      fi
+    fi
 }
 
 BM1="com.hp.mwtests.ts.arjuna.performance.Performance1.*"
@@ -66,9 +88,8 @@ function generate_csv_files {
   mvn -f narayana/pom.xml package -DskipTests $MAVEN_OVERRIDE_NARAYANA_VERSION # build the benchmarks uber jar
   run_benchmarks pr # run the benchmarks against the local maven repo (should be the PR)
   
-  if [ -z $BUILD_NARAYANA ] || [ $BUILD_NARAYANA == "y" ]; then
-    build_narayana_master # build narayana master
-  fi
+  build_narayana
+
   mvn -f narayana/pom.xml package -DskipTests # build the benchmarks uber jar
   run_benchmarks master # run the benchmarks against this build of master
 }

@@ -1,18 +1,36 @@
 #!/bin/bash -e
 
-
+# Keep ./narayana/scripts/hudson/jenkins.sh ./scripts/hudson/jenkins.sh ./scripts/run_bm.sh uniform
 function build_narayana {
     if [ -z $BUILD_NARAYANA ] || [ $BUILD_NARAYANA != "n" ];
-    then
-        rm -rf tmp
-        mkdir tmp
+      then
+      if [ ! -d narayana-tmp ]; then
         NARAYANA_REPO=${NARAYANA_REPO:-jbosstm}
-        NARAYANA_BRANCH="${NARAYANA_BRANCH:-$GIT_BRANCH}"
-        git clone https://github.com/${NARAYANA_REPO}/narayana.git -b ${NARAYANA_BRANCH} tmp
-        cd tmp
-        git fetch
-        ./build.sh clean install -DskipTests
-        cd ..
+        NARAYANA_BRANCH="${NARAYANA_BRANCH:-${GIT_BRANCH}}"
+        git clone https://github.com/${NARAYANA_REPO}/narayana.git -b ${NARAYANA_BRANCH} narayana-tmp
+        [ $? = 0 ] || fatal "git clone https://github.com/${NARAYANA_REPO}/narayana.git failed"
+      else
+        cd narayana-tmp
+        git checkout ${NARAYANA_BRANCH}
+        git fetch origin
+        git reset --hard origin/${NARAYANA_BRANCH}
+        cd ../
+      fi
+      echo "Checking if need Narayana PR"
+      if [ -n "$NY_BRANCH" ]; then
+        echo "Building NY PR"
+        cd narayana-tmp
+        git fetch origin +refs/pull/*/head:refs/remotes/jbosstm/pull/*/head
+        [ $? = 0 ] || fatal "git fetch of pulls failed"
+        git checkout $NY_BRANCH
+        [ $? = 0 ] || fatal "git fetch of pull branch failed"
+        cd ../
+      fi
+      ./build.sh -f narayana-tmp/pom.xml clean install -B -DskipTests -Pcommunity
+      if [ $? != 0 ]; then
+          comment_on_pull "Narayana build failed: $BUILD_URL";
+          exit -1
+      fi
     fi
 }
 

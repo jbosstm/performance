@@ -13,3 +13,4 @@ jboss-as
 CosServices.cfg
 ObjectStore/
 logs/
+narayana-tmp/
