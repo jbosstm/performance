@@ -186,9 +186,9 @@ main() {
 
     #  Execute in debug mode, or simply execute.
     if [ "x$MVN_DEBUG" != "x" ]; then
-        eval /bin/sh -x $MVN $MVN_ARGS $MVN_GOAL $ADDIT_PARAMS
+        eval /bin/sh -x $MVN $MVN_ARGS -Dorson.jar.location=`pwd`/narayana-tmp/ext/ $MVN_GOAL $ADDIT_PARAMS
     else
-        eval exec       $MVN $MVN_ARGS $MVN_GOAL $ADDIT_PARAMS
+        eval exec       $MVN $MVN_ARGS -Dorson.jar.location=`pwd`/narayana-tmp/ext/ $MVN_GOAL $ADDIT_PARAMS
     fi
 }
 
