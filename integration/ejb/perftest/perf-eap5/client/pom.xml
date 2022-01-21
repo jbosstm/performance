@@ -32,18 +32,6 @@
             </snapshots>
         </repository>
 
-        <repository>
-            <id>mead-repository.redhat.com</id>
-            <name>JBoss Production Releases MEAD Repository</name>
-            <url>https://download.lab.bos.redhat.com/brewroot/repos/jb-eap-5.1.2-repo/latest/maven</url>
-            <releases>
-                <enabled>true</enabled>
-            </releases>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-        </repository>
-
     </repositories>
 
     <build>
