@@ -18,8 +18,14 @@ function cmp_narayana {
 }
 
 function runs {
+
+  if [ -z ${THREAD_COUNTS+x} ]
+  then
+    THREAD_COUNTS="1 24 240 1600"
+  fi
+
   echo -e "threads\tmaxIO\tbf/s\tAIO\ttput\t\tchange" > results.txt
-  for threads in 1 24 240 1600; do
+  for threads in $THREAD_COUNTS; do
     for bf in 300 2000 4000 7812; do
       cmp_narayana $threads 500 $bf true r-${threads}-${bf}.txt
       cmp_narayana $threads 1 $bf false r.txt $tput
