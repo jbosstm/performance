@@ -266,6 +266,18 @@ under the License.
       </pluginRepositories>
     </profile>
     <profile>
+      <id>httpsdownloadow2</id>
+      <activation>
+        <activeByDefault>true</activeByDefault>
+      </activation>
+      <repositories>
+        <repository>
+          <id>ow2</id>
+          <url>https://repository.ow2.org/nexus/content/repositories/ow2-legacy/</url>
+        </repository>
+      </repositories>
+    </profile>
+    <profile>
       <id>httpsdownloadjavanet</id>
       <activation>
         <activeByDefault>true</activeByDefault>
