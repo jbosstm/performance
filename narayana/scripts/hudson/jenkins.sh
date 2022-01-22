@@ -97,10 +97,6 @@ if [ -z ${THREAD_COUNTS+x} ]
 then
   THREAD_COUNTS="1 10 50 100 300 400"
 fi
-if [ -z ${RUN_DURATION+x} ]
-then
-  RUN_DURATION=100
-fi
 
 if [ -z ${COMPARISON+x} ] 
 then
