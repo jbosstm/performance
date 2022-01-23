@@ -31,6 +31,7 @@ function build_narayana {
           comment_on_pull "Narayana build failed: $BUILD_URL";
           exit -1
       fi
+      OVERRIDE_NARAYANA_VERSION=`grep "<version>" narayana-tmp/pom.xml | head -n 2 | tail -n 1 | sed "s/ *<version>//" | sed "s#</version>##"`
     fi
 }
 
