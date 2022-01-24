@@ -84,7 +84,6 @@ build_narayana
 
 if [ -z $THREAD_COUNTS ]; then
    THREAD_COUNTS="1 24 240 1600"
-   export $THREAD_COUNTS
 fi
 
 if [ -z $COMPARE_STORES ] || [ $COMPARE_STORES == "y" ]; then
