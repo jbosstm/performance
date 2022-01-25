@@ -106,7 +106,9 @@ then
 else
   separator=":"
 fi
-java -XX:+UnlockDiagnosticVMOptions -XX:+DebugNonSafepoints -Xms4096m -Xmx4096m -Danonymize=false -classpath "narayana/ArjunaJTA/jta/target/classes"$separator"narayana/ArjunaJTA/jta/target/benchmarks.jar" io.narayana.perf.product.ReportGenerator bm-output.txt $BM_LINE_PATTERN $PATTERN2 >> benchmark-output.txt
+
+# use -XX:+UnlockDiagnosticVMOptions -XX:+DebugNonSafepoints to enable async profiling
+java -Xms4096m -Xmx4096m -Danonymize=true -classpath "narayana/ArjunaJTA/jta/target/classes"$separator"narayana/ArjunaJTA/jta/target/benchmarks.jar" io.narayana.perf.product.ReportGenerator bm-output.txt $BM_LINE_PATTERN $PATTERN2 >> benchmark-output.txt
 cat benchmark-output.txt
 
 if [ -z ${DO_NOT_PUBLISH} ]
