@@ -6,7 +6,11 @@ function cmp_narayana {
    JMHARGS="-t $1 -r 30 -f 3 -wi 5 -i 5"
   fi
   JMHARGS="-t $1 ${JMHARGS/-t*-r/ -r}" ./narayana/scripts/hudson/benchmark.sh "ArjunaJTA/jta" "io.narayana.perf.product.NarayanaComparison.*" 1 "$XARGS" > $5
-  tput=$(grep NarayanaComparison.test $5  | tail -1  | tr -s ' ' | cut -d ' ' -f 4)
+  field=4
+  if grep "Measurement: 1 iterations" $5; then
+    field=3
+  fi
+  tput=$(grep NarayanaComparison.test $5  | tail -1  | tr -s ' ' | cut -d ' ' -f $field)
   if [ $# = 6 ]; then
     echo "evaluating $6'<'$tput | bc -l"
     gt=$(echo $6'<'$tput | bc -l)
