@@ -24,9 +24,14 @@ function runs {
     THREAD_COUNTS="1 24 240 1600"
   fi
 
+  if [ -z ${BF_COUNTS+x} ]
+  then
+    BF_COUNTS="300 2000 4000 7812"
+  fi
+
   echo -e "threads\tmaxIO\tbf/s\tAIO\ttput\t\tchange" > results.txt
   for threads in $THREAD_COUNTS; do
-    for bf in 300 2000 4000 7812; do
+    for bf in $BF_COUNTS; do
       cmp_narayana $threads 500 $bf true r-${threads}-${bf}.txt
       cmp_narayana $threads 1 $bf false r.txt $tput
     done
