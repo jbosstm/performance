@@ -20,9 +20,9 @@ function mvn_test {
     printf "%4s %8s %8s %10d %10d %7d %7d %6d %5b %8s %5s %8d %8b %8d\n" \
       "host" "04:10:34" $product -1 $iteration $warmUp $thread -1 $jts $xstore $aio $bufferSize $syncDelete $flushRate
   else
-    echo "TEST: $testrun of $testcount: mvn test -P $product -Diterations=$iteration -Dthreads=$thread -Djts=$jts -DwarmUpIterations=$warmUp -DobjectStoreDir=$storeDir $@"
+    echo "TEST: $testrun of $testcount: ${WORKSPACE}/build.sh test -P $product -Diterations=$iteration -Dthreads=$thread -Djts=$jts -DwarmUpIterations=$warmUp -DobjectStoreDir=$storeDir $@"
     # run the actual test
-    mvn test -P $product -Diterations=$iteration -DwarmUpIterations=$warmUp -Dthreads=$thread -Djts=$jts -DobjectStoreDir=$storeDir $@
+    ${WORKSPACE}/build.sh test -P $product -Diterations=$iteration -DwarmUpIterations=$warmUp -Dthreads=$thread -Djts=$jts -DobjectStoreDir=$storeDir $@
     res=$(cat target/surefire-reports/com.arjuna.ats.tools.perftest.task.ProductPerformanceTest-output.txt |grep $host)
     echo "TEST RESULT $testrun of $testcount: $res"
   fi
