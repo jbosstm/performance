@@ -48,7 +48,7 @@ function build_narayana {
         [ $? = 0 ] || fatal "git fetch of pull branch failed"
         cd ../
       fi
-      ./build.sh -f narayana-tmp/pom.xml clean install -B -DskipTests -Pcommunity
+      ${WORKSPACE}/build.sh -f narayana-tmp/pom.xml clean install -B -DskipTests -Pcommunity
       if [ $? != 0 ]; then
           comment_on_pull "Narayana build failed: $BUILD_URL";
           exit -1
@@ -86,12 +86,12 @@ if [ -v OVERRIDE_NARAYANA_VERSION ]; then
 fi
 
 function generate_csv_files {
-  mvn -f narayana/pom.xml package -DskipTests $MAVEN_OVERRIDE_NARAYANA_VERSION # build the benchmarks uber jar
+  ${WORKSPACE}/build.sh -f narayana/pom.xml package -DskipTests $MAVEN_OVERRIDE_NARAYANA_VERSION # build the benchmarks uber jar
   run_benchmarks pr # run the benchmarks against the local maven repo (should be the PR)
   
   build_narayana
 
-  mvn -f narayana/pom.xml package -DskipTests # build the benchmarks uber jar
+  ${WORKSPACE}/build.sh -f narayana/pom.xml package -DskipTests # build the benchmarks uber jar
   run_benchmarks master # run the benchmarks against this build of master
 }
 

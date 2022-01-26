@@ -151,9 +151,9 @@ function update_ear {
   [ $? = 0 ] || fatal "perftest dir doesn't exist"
 
 #  if [ ! -f perf-eap5/harness/ear/target/ear-1.0.ear ]; then
-#    mvn clean install -f perf-api/pom.xml
-#    mvn clean install -f perf-eap6/pom.xml
-    mvn clean install
+#    ${WORKSPACE}/build.sh clean install -f perf-api/pom.xml
+#    ${WORKSPACE}/build.sh clean install -f perf-eap6/pom.xml
+    ${WORKSPACE}/build.sh clean install
     [ $? = 0 ] || fatal "perftest clean install failed"
 #  fi
 
