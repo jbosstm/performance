@@ -23,12 +23,12 @@ function cmp_narayana {
 
 function runs {
 
-  if [ -z ${THREAD_COUNTS+x} ]
+  if [ -z "${THREAD_COUNTS}" ]
   then
     THREAD_COUNTS="1 24 240 1600"
   fi
 
-  if [ -z ${BF_COUNTS+x} ]
+  if [ -z "${BF_COUNTS}" ]
   then
     BF_COUNTS="300 2000 4000 7812"
   fi
