@@ -71,6 +71,10 @@ function urlencode {
 }
 
 function publish_bm {
+  VERSION_TO_PUBLISH=$OVERRIDE_NARAYANA_VERSION
+  if [ ! -v OVERRIDE_NARAYANA_VERSION ]; then
+    VERSION_TO_PUBLISH="`grep "<version>" narayana/pom.xml | head -n 2 | tail -n 1 | sed "s/ *<version>//" | sed "s#</version>##"` (performance repo)"
+  fi
   rm -rf tmp2
   ARTIFACTS_USER=${ARTIFACTS_USER:-jbosstm-bot}
   git clone https://github.com/${ARTIFACTS_USER}/artifacts tmp2
@@ -79,7 +83,7 @@ function publish_bm {
   git add -u
   host=`hostname`
   tm=`date`
-  git commit -m "Generated on host $host ($tm) using $NARAYANA_BRANCH"
+  git commit -m "Generated on host $host ($tm) using $VERSION_TO_PUBLISH"
   GT=$(urlencode ${GITHUB_TOKEN})
   git push https://${ARTIFACTS_USER}:${GT}@github.com/${ARTIFACTS_USER}/artifacts.git master
 }
