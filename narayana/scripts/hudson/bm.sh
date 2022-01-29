@@ -5,6 +5,7 @@ function cmp_narayana {
   if [ -z "${JMHARGS}" ] ; then
    JMHARGS="-t $1 -r 30 -f 3 -wi 5 -i 5"
   fi
+  echo "Running JMHARGS="-t $1 ${JMHARGS/-t*-r/ -r}" ./narayana/scripts/hudson/benchmark.sh "ArjunaJTA/jta" "io.narayana.perf.product.NarayanaComparison.*" 1 "$XARGS" > $5"
   JMHARGS="-t $1 ${JMHARGS/-t*-r/ -r}" ./narayana/scripts/hudson/benchmark.sh "ArjunaJTA/jta" "io.narayana.perf.product.NarayanaComparison.*" 1 "$XARGS" > $5
   field=4
   if grep "Measurement: 1 iterations" $5; then
