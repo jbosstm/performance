@@ -80,6 +80,10 @@ PATH=$WORKSPACE/tmp/tools/maven/bin/:$PATH
 
 comment_on_pull "Started testing this pull request: $BUILD_URL"
 
+if [ ! -z $JMHARGS ]; then
+  comment_on_pull "JMHARGS was overriden to: $JMHARGS"
+fi
+
 cd $WORKSPACE
 build_narayana
 
