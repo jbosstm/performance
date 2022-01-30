@@ -80,14 +80,14 @@ PATH=$WORKSPACE/tmp/tools/maven/bin/:$PATH
 
 comment_on_pull "Started testing this pull request: $BUILD_URL"
 
-if [ ! -z $JMHARGS ]; then
+if [ ! -z "$JMHARGS" ]; then
   comment_on_pull "JMHARGS was overriden to: $JMHARGS"
 fi
 
 cd $WORKSPACE
 build_narayana
 
-if [ -z $THREAD_COUNTS ]; then
+if [ -z "$THREAD_COUNTS" ]; then
    THREAD_COUNTS="1 24 240 1600"
 fi
 
