@@ -1,4 +1,5 @@
-[ -z "${JMHARGS}" ] && JMHARGS="-t 240 -r 30 -f 3 -wi 5 -i 5"
+[ ! -z "${THREAD_COUNTS}" ] && THREAD_ARG=`echo $THREAD_COUNTS | cut -f 1 -d " "` || THREAD_ARG="240"
+[ -z "${JMHARGS}" ] && JMHARGS="-t $THREAD_ARG -r 30 -f 3 -wi 5 -i 5"
 
 function fatal {
   echo "$1"
