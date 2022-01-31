@@ -37,8 +37,8 @@ function runs {
   echo -e "threads\tmaxIO\tbf/s\tAIO\ttput\t\tchange" > results.txt
   for threads in $THREAD_COUNTS; do
     for bf in $BF_COUNTS; do
-      cmp_narayana $threads 500 $bf true r-${threads}-${bf}.txt
-      cmp_narayana $threads 1 $bf false r.txt $tput
+      cmp_narayana $threads 500 $bf true r-${threads}-500-${bf}-true.txt
+      cmp_narayana $threads 1 $bf false r-${threads}-1-${bf}-false.txt $tput
     done
   done
 }
