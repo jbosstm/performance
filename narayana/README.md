@@ -14,10 +14,6 @@ Now clone and build the narayana performance git repository:
     cd performance/narayana
     mvn clean install -DskipTests
 
-Many benchmarks also double up as junit tests so if you just want to validate that the benchmark runs then execute it as a surefire test. For example:
-
-    mvn -f ArjunaJTA/jta/pom.xml -Dtest=com.arjuna.ats.jta.xa.performance.VolatileStoreBenchmark test
-
 Each maven module build produces a benchmarks.jar file in the target directory which contains the benchmark code and the dependencies required by the benchmark. Just run this jar to execute a benchmark. To see what options are available pass the -help argument to any benchmark jar, for example:
 
     java -jar ./ArjunaJTA/jta/target/benchmarks.jar -help

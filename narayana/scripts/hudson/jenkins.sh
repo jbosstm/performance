@@ -1,6 +1,20 @@
 #!/bin/bash -e
 
+# this script can be configured via environment variables. The best way
+# to get a good understanding of how it works is to study the bash scripts launched
+# by this script. Briefly, the following variables can be configured:
+
+# NARAYANA_REPO: the git repo to use (which is useful for testing different repos
+# NARAYANA_BRANCH: and the git branch to check out (which is useful for testing different branches)
+# OVERRIDE_NARAYANA_VERSION: the version of narayana that should be benchmarked
+# JMHARGS: arguments passed to the JMH, use `java -jar target/benchmarks.jar -h` for the available options
+# THREAD_COUNTS: the number of threads to use for running benchmarks as comma separated list
+#   for example THREAD_COUNTS="10 50 100" means perform 3 runs using 10 threads for the first run etc
+# COMPARISON: a regex pattern which determines which java class names to use when looking for benchmarks
+# COMPARISON_COUNT: and this is the expected number of class names that match the pattern
+
 # Keep ./narayana/scripts/hudson/jenkins.sh ./scripts/hudson/jenkins.sh ./scripts/run_bm.sh uniform
+# build the main narayana repo
 function build_narayana {
     if [ -z $BUILD_NARAYANA ] || [ $BUILD_NARAYANA != "n" ];
       then
@@ -36,6 +50,7 @@ function build_narayana {
     fi
 }
 
+# dump information about the OS enviroment and hardware (this is so that we determing the capacity of the platorm where the benchmarks run)
 function preamble {
   export JVM_ARGS="-DMAX_ERRORS=10"
   os=`uname -a`
@@ -49,6 +64,7 @@ function preamble {
   echo -e "Blog Text\n=========" >> $1
 }
 
+# run all of the benchmarks in the ArjunaJTA/jta module
 function bm {
   echo "NEXT RUN using $JMHARGS"
   chmod 755 ./narayana/scripts/hudson/benchmark.sh
@@ -59,6 +75,7 @@ function bm {
   return $res
 }
 
+# encode a string according to the rules laid out in https://www.ietf.org/rfc/rfc2396.txt
 function urlencode {
     local LANG=C
     local length="${#1}"
@@ -71,6 +88,7 @@ function urlencode {
     done
 }
 
+# upload the benchmark results to the artifacts git repo:
 function publish_bm {
   VERSION_TO_PUBLISH=$OVERRIDE_NARAYANA_VERSION
   if [ ! -v OVERRIDE_NARAYANA_VERSION ]; then
@@ -92,10 +110,13 @@ function publish_bm {
 build_narayana
 
 res=0 
+
+# the version of narayana that is being benchmarked
 if [ -v OVERRIDE_NARAYANA_VERSION ]; then
   MAVEN_OVERRIDE_NARAYANA_VERSION="-Dnarayana.version=${OVERRIDE_NARAYANA_VERSION}"
 fi
 
+# build the narayana project
 ./build.sh -f narayana/pom.xml clean package -DskipTests $MAVEN_OVERRIDE_NARAYANA_VERSION
 
 rm -f bm-output.txt benchmark-output.txt benchmark.png
@@ -111,6 +132,7 @@ then
   COMPARISON_COUNT=4
 fi
 
+# run the benchmarks using various numbers of threads for the workload
 for i in $THREAD_COUNTS
 do
   if [ -z "${JMHARGS}" ] ; then
