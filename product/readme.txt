@@ -36,10 +36,6 @@ lib/btm/lib/slf4j-api-1.6.0.jar
 lib/btm/lib/slf4j-log4j12-1.6.0.jar
 lib/btm/lib/log4j-1.2.14.jar 
 
-JOTM release 2.2.1
-Copy the contents of the lib dir from JOTM distribution to 
-lib/jotm
-
 JBossTS jars are sourced from the build
 
 The compile ant target below currently excludes all products (except JBossTS) - once
@@ -56,9 +52,9 @@ The following steps are needed to integrate a new transaction product:
 ====================
 To test particular products specify them on the command line with a -p flag (comma separated). For example:
 
-        ant -Dargs="-p org.narayana.tools.perf.AtomikosWorkerTask,org.narayana.tools.perf.NarayanaWorkerTask,org.narayana.tools.perf.BitronixWorkerTask,org.narayana.tools.perf.JotmWorkerTask -i 100 -t 5"
+        ant -Dargs="-p org.narayana.tools.perf.AtomikosWorkerTask,org.narayana.tools.perf.NarayanaWorkerTask,org.narayana.tools.perf.BitronixWorkerTask  -i 100 -t 5"
 
-will test Atomikos, JBossTS, Bitronix and JOTM and commit 100 transactions using 5 threads for each product.
+will test Atomikos, JBossTS and Bitronix and commit 100 transactions using 5 threads for each product.
 
 USAGE
 

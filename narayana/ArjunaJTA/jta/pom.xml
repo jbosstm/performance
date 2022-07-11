@@ -57,7 +57,6 @@
         <geronimo.version.org.slf4j.slf4j-simple>1.5.5</geronimo.version.org.slf4j.slf4j-simple>
 
         <version.org.jboss.netty.netty>3.2.5.Final</version.org.jboss.netty.netty>
-        <version.org.ow2.jotm.ow2-jotm-dist>2.2.3</version.org.ow2.jotm.ow2-jotm-dist>
         <version.com.atomikos.transactions-jta>5.0.8</version.com.atomikos.transactions-jta>
         <version.com.atomikos.transactions-jdbc>5.0.8</version.com.atomikos.transactions-jdbc>
         <version.org.codehaus.btm.btm>2.1.4</version.org.codehaus.btm.btm>
@@ -218,12 +217,6 @@
             <groupId>org.codehaus.btm</groupId>
             <artifactId>btm</artifactId>
             <version>${version.org.codehaus.btm.btm}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.ow2.jotm</groupId>
-            <artifactId>ow2-jotm-dist</artifactId>
-            <version>${version.org.ow2.jotm.ow2-jotm-dist}</version>
-            <type>pom</type>
         </dependency>
         <dependency>
             <groupId>com.atomikos</groupId>

@@ -18,15 +18,8 @@ RESFILE=$WORKSPACE/benchmark-output.txt
 
 echo "JMH Benchmarks Results" > $RESFILE
 
-function jotm_init {
-  if [ -f "target/classes/jotm.properties" ]; then
-    mkdir -p target/jotm/conf
-    cp target/classes/jotm.properties target/jotm/conf
-  fi
-}
-
 function mk_output_dirs {
-  for d in jotm bitronix narayana geronimo atomikos; do
+  for d in bitronix narayana geronimo atomikos; do
     mkdir -p target/$d
     rm -rf target/$d/*
   done
@@ -48,9 +41,8 @@ function run_bm {
 
   if [[ $2 == *"Comparison"* ]]; then
     mk_output_dirs
-    jotm_init
 
-    JVM_ARGS="$JVM_ARGS "$4" -DBUILD_DIR=target -Dcom.atomikos.icatch.file=target/classes/atomikos.properties -Dcom.atomikos.icatch.log_base_dir=target/atomikos -Dcom.arjuna.ats.arjuna.common.propertiesFile=jbossts-properties.xml -Dbitronix.tm.journal.disk.logPart1Filename=target/bitronix/btm1.tlog -Dbitronix.tm.journal.disk.logPart2Filename=target/bitronix/btm2.tlog -Djotm.base=target/jotm -Dhowl.log.FileDirectory=target/jotm"
+    JVM_ARGS="$JVM_ARGS "$4" -DBUILD_DIR=target -Dcom.atomikos.icatch.file=target/classes/atomikos.properties -Dcom.atomikos.icatch.log_base_dir=target/atomikos -Dcom.arjuna.ats.arjuna.common.propertiesFile=jbossts-properties.xml -Dbitronix.tm.journal.disk.logPart1Filename=target/bitronix/btm1.tlog -Dbitronix.tm.journal.disk.logPart2Filename=target/bitronix/btm2.tlog
   fi
 
   if [ -z ${EXTRA_JVM_ARGS+x} ]; then
@@ -112,7 +104,6 @@ BM4a="ArjunaJTA/jta io.narayana.perf.product.BitronixComparison.* 1"
 BM4b="ArjunaJTA/jta io.narayana.perf.product.GeronimoComparison.* 1"
 BM4c="ArjunaJTA/jta io.narayana.perf.product.NarayanaComparison.* 1"
 BM4d="ArjunaJTA/jta io.narayana.perf.product.AtomikosComparison.* 1"
-BM4e="ArjunaJTA/jta io.narayana.perf.product.JotmComparison.* 1"
 #ArjunaJTA/jta/tests/classes/io/narayana/perf/product/ProductComparison.java
 BM5="ArjunaJTA/jta com.arjuna.ats.jta.xa.performance.*StoreBenchmark.* 4"
 #ArjunaJTA/jta/tests/classes/com/arjuna/ats/jta/xa/performance/HQStoreBenchmark.java
@@ -128,7 +119,7 @@ cd $BMDIR
 res=0
 case $# in
 0)
-   for  i in "$BM4a" "$BM4b" "$BM4c" "$BM4d" "$BM4e" "$BM1" "$BM2" "$BM3" "$BM5"; do
+   for  i in "$BM4a" "$BM4b" "$BM4c" "$BM4d" "$BM1" "$BM2" "$BM3" "$BM5"; do
      IFS=' ' read -a bms <<< "$i"
      cd $BMDIR
      ${WORKSPACE}/build.sh -f "${bms[0]}/pom.xml" clean install -DskipTests # build the benchmarks
