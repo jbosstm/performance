@@ -15,10 +15,6 @@ lib/btm/lib/slf4j-api-1.6.0.jar
 lib/btm/lib/slf4j-log4j12-1.6.0.jar
 lib/btm/lib/log4j-1.2.14.jar 
 
-JOTM release 2.2.1
-Copy the contents of the lib dir from JOTM distribution to 
-lib/jotm
-
 JBossTS jars are sourced from the build
 
 The compile ant target below currently excludes all products (except JBossTS) - once
@@ -34,9 +30,9 @@ The following steps are needed to integrate a new transaction product:
 ====================
 To test particular products specify them on the command line with a -p flag (comma separated). For example:
 
-	ant -Dargs="-p com.arjuna.ats.tools.perftest.task.AtomikosWorkerTask,com.arjuna.ats.tools.perftest.task.NarayanaWorkerTask,com.arjuna.ats.tools.perftest.task.BitronixWorkerTask,com.arjuna.ats.tools.perftest.task.JotmWorkerTask -i 100 -t 5"
+	ant -Dargs="-p com.arjuna.ats.tools.perftest.task.AtomikosWorkerTask,com.arjuna.ats.tools.perftest.task.NarayanaWorkerTask,com.arjuna.ats.tools.perftest.task.BitronixWorkerTask -i 100 -t 5"
 
-will test Atomikos, JBossTS, Bitronix and JOTM and commit 100 transactions using 5 threads for each product.
+will test Atomikos, JBossTS and Bitronix and commit 100 transactions using 5 threads for each product.
   -->
 
 <project name="JBoss" default="run" basedir=".">
@@ -63,16 +59,6 @@ will test Atomikos, JBossTS, Bitronix and JOTM and commit 100 transactions using
     <path id="classpath.atomikos">
 		<pathelement location="${lib.dir}/atomikos/transactions-osgi.jar" />
     </path>
-    <!-- JOTM: http://jotm.objectweb.org/download/index.html release 2.2.1 -->
-    <path id="classpath.jotm">
-        <pathelement location="${lib.dir}/jotm/ow2-connector-1.5-spec.jar" />
-        <pathelement location="${lib.dir}/jotm/howl.jar" />
-        <pathelement location="${lib.dir}/jotm/jotm-standalone.jar" />
-        <pathelement location="${lib.dir}/jotm/carol.jar" />
-        <pathelement location="${lib.dir}/jotm/xapool.jar" />
-        <pathelement location="${lib.dir}/jotm/jotm-core.jar" />
-        <pathelement location="${lib.dir}/jotm/jotm-client.jar" />
-    </path>
     <!-- JBossTS: http://www.jboss.org/download/ the current build -->
     <path id="classpath.jbossts">
         <pathelement location="${jbossts.install}/lib/narayana-jta.jar" />
@@ -94,7 +80,6 @@ will test Atomikos, JBossTS, Bitronix and JOTM and commit 100 transactions using
     <path id="classpath">
 		<path refid="classpath.bitronix"/>
 		<path refid="classpath.atomikos"/>
-		<path refid="classpath.jotm"/>
 		<path refid="classpath.jbossts"/>
 		<path refid="classpath.common"/>
     </path>
@@ -122,7 +107,6 @@ will test Atomikos, JBossTS, Bitronix and JOTM and commit 100 transactions using
 
 			<exclude name="org/narayana/tools/perf/AtomikosWorkerTask.java" />
 			<exclude name="org/narayana/tools/perf/BitronixWorkerTask.java" />
-			<exclude name="org/narayana/tools/perf/JotmWorkerTask.java" />
 
 <!--
             <compilerarg value="-Xlint"/>
@@ -130,7 +114,7 @@ will test Atomikos, JBossTS, Bitronix and JOTM and commit 100 transactions using
         </javac>
     </target>
 
-    <property name="args.all" value="-p com.arjuna.ats.tools.perftest.task.AtomikosWorkerTask,com.arjuna.ats.tools.perftest.task.NarayanaWorkerTask,com.arjuna.ats.tools.perftest.task.BitronixWorkerTask,com.arjuna.ats.tools.perftest.task.JotmWorkerTask -i 100 -t 5" />
+    <property name="args.all" value="-p com.arjuna.ats.tools.perftest.task.AtomikosWorkerTask,com.arjuna.ats.tools.perftest.task.NarayanaWorkerTask,com.arjuna.ats.tools.perftest.task.BitronixWorkerTask -i 100 -t 5" />
     <property name="args" value="-p com.arjuna.ats.tools.perftest.task.NarayanaWorkerTask -i 100 -t 5" />
 
     <target name="run" depends="compile">
@@ -141,7 +125,6 @@ will test Atomikos, JBossTS, Bitronix and JOTM and commit 100 transactions using
 			<!--
             <sysproperty key="com.arjuna.ats.arjuna.common.propertiesFile" value="${propfile}" />
             -->
-            <sysproperty key="jotm.base" value="${res.dir}" />
             <jvmarg value="-Dcom.atomikos.icatch.file=${res.dir}/atomikos.properties"/>
             <jvmarg value="-Dbitronix.tm.configuration=${res.dir}/btm.properties"/>
 

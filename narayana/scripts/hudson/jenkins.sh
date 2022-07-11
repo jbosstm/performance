@@ -107,7 +107,7 @@ fi
 if [ -z ${COMPARISON+x} ] 
 then
   COMPARISON="io.narayana.perf.product.*Comparison.*"
-  COMPARISON_COUNT=5
+  COMPARISON_COUNT=4
 fi
 
 for i in $THREAD_COUNTS

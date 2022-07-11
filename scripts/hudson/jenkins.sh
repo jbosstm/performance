@@ -99,7 +99,7 @@ if [ -z $COMPARE_STORES ] || [ $COMPARE_STORES == "y" ]; then
 fi
 
 if [ -z $COMPARE_IMPLEMENTATIONS ] || [ $COMPARE_IMPLEMENTATIONS == "y" ]; then
-	THREAD_COUNTS=$THREAD_COUNTS COMPARISON="io.narayana.perf.product.*Comparison.*" COMPARISON_COUNT=5 narayana/scripts/hudson/jenkins.sh
+	THREAD_COUNTS=$THREAD_COUNTS COMPARISON="io.narayana.perf.product.*Comparison.*" COMPARISON_COUNT=4 narayana/scripts/hudson/jenkins.sh
 	[ $? = 0 ] || fatal "Product comparison benchmark failed"
 	mv benchmark-output.txt benchmark-comparison-output.txt
 	mv benchmark.png benchmark-comparison.png
