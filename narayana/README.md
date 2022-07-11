@@ -22,6 +22,10 @@ For example, to run the VolatileStore benchmarks type the following:
 
     java  -jar ./ArjunaJTA/jta/target/benchmarks.jar com.arjuna.ats.jta.xa.performance.VolatileStoreBenchmark.* -i 1 -wi 2 -f 1 -t 2 -r 10
  
+To run the VolatileStore benchmarks, failing immediately if any benchmark had experienced an unrecoverable error, type the following :
+ 
+    java  -jar ./ArjunaJTA/jta/target/benchmarks.jar com.arjuna.ats.jta.xa.performance.VolatileStoreBenchmark.* -i 1 -wi 2 -f 1 -t 2 -r 10 -foe true
+     
 Here we have overridden the defaults and specified "-i 1 -wi 2 -f 1 -t 2 -r 10" which means:
   * run one iteration (-i 1) with 2 warm up cycles (-wi 2) and 1 fork (-f 1);
   * use 2 threads (-t 2) to execute the benchmark code;
