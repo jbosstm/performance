@@ -20,6 +20,7 @@ import org.jboss.jbossts.star.util.TxLinkNames;
 import org.jboss.logging.Logger;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.Scope;
@@ -44,6 +45,7 @@ import java.util.concurrent.Callable;
 import static org.junit.Assert.fail;
 
 @State(Scope.Benchmark)
+@Ignore // until JBTM-3193 is fixed
 public class TxnTest extends TestBase {
     protected static final Logger log = Logger.getLogger(TxnTest.class);
     static final ExecutorService threadpool = Executors.newFixedThreadPool(10);

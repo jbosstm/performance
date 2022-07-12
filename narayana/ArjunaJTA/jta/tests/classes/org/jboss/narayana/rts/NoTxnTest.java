@@ -19,6 +19,7 @@ package org.jboss.narayana.rts;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.Scope;
@@ -33,6 +34,7 @@ import java.io.IOException;
 import java.net.HttpURLConnection;
 
 @State(Scope.Benchmark)
+@Ignore // until JBTM-3193 is fixed
 public class NoTxnTest {
     private static JAXRSServer server;
     private static Client client;
