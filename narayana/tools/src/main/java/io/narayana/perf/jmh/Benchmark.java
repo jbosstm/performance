@@ -104,7 +104,8 @@ public class Benchmark implements Comparable<Benchmark> {
    * @return boolean
    */
   private boolean scoresIntersecting() {
-    if ((score - scoreError > previous.score + previous.scoreError)
+    if (scoreError == null
+        || (score - scoreError > previous.score + previous.scoreError)
         || (score + scoreError < previous.score - previous.scoreError)) {
       return false;
     }
