@@ -50,8 +50,9 @@
         <resteasy.async-http-servlet.version>3.0.19.Final</resteasy.async-http-servlet.version>
 
         <!-- geronimo -->
-        <version.org.apache.geronimo.components.geronimo-transaction>3.1.4</version.org.apache.geronimo.components.geronimo-transaction>
+        <version.org.apache.geronimo.components.geronimo-transaction>3.1.5</version.org.apache.geronimo.components.geronimo-transaction>
         <version.org.apache.geronimo.specs.geronimo-jta_1.1_spec>1.1.1</version.org.apache.geronimo.specs.geronimo-jta_1.1_spec>
+	<org.objectweb.howl-howl>1.0.1-1</org.objectweb.howl-howl>
         <version.org.slf4j.slf4j-simple>1.6.4</version.org.slf4j.slf4j-simple>
         <version.org.slf4j.slf4j-api>1.7.5</version.org.slf4j.slf4j-api>
         <geronimo.version.org.slf4j.slf4j-simple>1.5.5</geronimo.version.org.slf4j.slf4j-simple>
@@ -239,7 +240,11 @@
             <artifactId>geronimo-jta_1.1_spec</artifactId>
                 <version>${version.org.apache.geronimo.specs.geronimo-jta_1.1_spec}</version>
         </dependency>
-
+        <dependency>
+            <groupId>org.objectweb.howl</groupId>
+            <artifactId>howl</artifactId>
+            <version>${org.objectweb.howl-howl}</version>
+        </dependency>
         <!-- TODO why don't other modules need this explicit dependency -->
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
