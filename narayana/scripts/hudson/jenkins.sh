@@ -51,7 +51,8 @@ function preamble {
 
 function bm {
   echo "NEXT RUN using $JMHARGS"
-  narayana/scripts/hudson/benchmark.sh "ArjunaJTA/jta" "$2" "$3"
+  chmod 755 ./narayana/scripts/hudson/benchmark.sh
+  ./narayana/scripts/hudson/benchmark.sh "ArjunaJTA/jta" "$2" "$3"
   [ $? = 0 ] || res=1
   cat benchmark-output.txt >> $1
   echo "RUN status: $res"

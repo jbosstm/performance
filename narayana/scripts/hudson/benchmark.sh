@@ -42,14 +42,14 @@ function run_bm {
   if [[ $2 == *"Comparison"* ]]; then
     mk_output_dirs
 
-    JVM_ARGS="$JVM_ARGS "$4" -DBUILD_DIR=target -Dcom.atomikos.icatch.file=target/classes/atomikos.properties -Dcom.atomikos.icatch.log_base_dir=target/atomikos -Dcom.arjuna.ats.arjuna.common.propertiesFile=jbossts-properties.xml -Dbitronix.tm.journal.disk.logPart1Filename=target/bitronix/btm1.tlog -Dbitronix.tm.journal.disk.logPart2Filename=target/bitronix/btm2.tlog
+    JVM_ARGS="$JVM_ARGS $4 -DBUILD_DIR=target -Dcom.atomikos.icatch.file=target/classes/atomikos.properties -Dcom.atomikos.icatch.log_base_dir=target/atomikos -Dcom.arjuna.ats.arjuna.common.propertiesFile=jbossts-properties.xml -Dbitronix.tm.journal.disk.logPart1Filename=target/bitronix/btm1.tlog -Dbitronix.tm.journal.disk.logPart2Filename=target/bitronix/btm2.tlog"
   fi
 
   if [ -z ${EXTRA_JVM_ARGS+x} ]; then
     EXTRA_JVM_ARGS="-Xms4096m -Xmx4096m"
   fi
 
-  echo "LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$(pwd)/etc/ java -classpath target/classes $EXTRA_JVM_ARGS $JVM_ARGS -jar target/benchmarks.jar $BENCHMARK_PROFILERS "$2" $JMHARGS -rf csv -rff $CSVF"
+  echo "LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$(pwd)/etc/ java -classpath target/classes $EXTRA_JVM_ARGS $JVM_ARGS -jar target/benchmarks.jar $BENCHMARK_PROFILERS $2 $JMHARGS -rf csv -rff $CSVF"
   LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$(pwd)/etc/ java -classpath target/classes $EXTRA_JVM_ARGS $JVM_ARGS -jar target/benchmarks.jar $BENCHMARK_PROFILERS "$2" $JMHARGS -rf csv -rff $CSVF
   res=$?
 
@@ -62,7 +62,7 @@ function run_bm {
   fi
 
   if [ ! -f ${CSVF} ]; then
-    echo "JMH runner failed (missing csv output)"
+    echo "JMH runner failed - missing csv output"
     return 1
   fi
 
@@ -77,7 +77,7 @@ function run_bm {
   let tc=$(wc -l < ${CSVF})
   let tc=tc-1 # subtract 1 to account for the header
   if [ $tc != $3 ]; then
-    echo "Some benchmark tests did not finish. Expected: $3 Actual: $tc ($1 and $2)"
+    echo "Some benchmark tests did not finish. Expected: ${3} Actual: ${tc} - ${1} and ${2}"
     return 1
   fi
 }
