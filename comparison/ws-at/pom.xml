@@ -8,6 +8,7 @@
         <groupId>org.jboss.narayana.performance</groupId>
         <artifactId>comparison-parent</artifactId>
         <version>1.0-SNAPSHOT</version>
+        <relativePath>../pom.xml</relativePath>
     </parent>
 
     <artifactId>ws-at</artifactId>
@@ -34,9 +35,27 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>org.jboss.spec.javax.transaction</groupId>
-            <artifactId>jboss-transaction-api_1.2_spec</artifactId>
+           <groupId>org.jboss.spec.javax.xml.ws</groupId>
+           <artifactId>jboss-jaxws-api_2.3_spec</artifactId>
+           <version>${version.org.jboss.spec.javax.xml.ws.jboss-jaxws-api_2.3_spec}</version>
+           <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>javax.annotation</groupId>
+            <artifactId>javax.annotation-api</artifactId>
+	    <version>${version.javax.annotation}</version>
             <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.sun.xml.ws</groupId>
+            <artifactId>jaxws-ri</artifactId>
+            <version>${version.jaxws-ri}</version>
+            <type>pom</type>
+        </dependency>
+        <dependency>
+            <groupId>javax.transaction</groupId>
+            <artifactId>javax.transaction-api</artifactId>
+            <version>1.2</version>
         </dependency>
         <dependency>
             <groupId>junit</groupId>

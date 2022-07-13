@@ -10,6 +10,8 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	<maven.compiler.source>11</maven.compiler.source>
+	<maven.compiler.target>11</maven.compiler.target>
         <aio.lib.path>${basedir}/lib</aio.lib.path>
         <jvm.args>-Xms1024m -Xmx1024m -Djava.library.path=${aio.lib.path}</jvm.args>
         <version.EAP5>4.6.1.GA_CP12</version.EAP5>
