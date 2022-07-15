@@ -23,12 +23,14 @@
         <version.jacorb.EAP5>4.6.1.GA</version.jacorb.EAP5>
         <version.jacorb.EAP6>2.3.1.jbossorg-1</version.jacorb.EAP6>
         <version.jacorb.EAP6.latest>2.3.1.jbossorg-1</version.jacorb.EAP6.latest>
+        <version.io.netty>4.1.79.Final</version.io.netty>
+        <version.hornetq>2.2.21.Final</version.hornetq>
 <!-- To use a patched jacorb change use the following instead of the previous 2 lines
         <version.jacorb.EAP5>${version.jacorb.patched}</version.jacorb.EAP5>
         <version.jacorb.EAP6>${version.jacorb.patched}</version.jacorb.EAP6>
 -->
     </properties>
-
+    
     <repositories>
         <!-- to get bitronix artifacts -->
         <repository>
@@ -206,9 +208,9 @@
                     <version>${version.org.apache.activemq}</version>
                 </dependency>
                 <dependency>
-                    <groupId>org.jboss.netty</groupId>
-                    <artifactId>netty</artifactId>
-                    <version>3.2.6.Final</version>
+                    <groupId>io.netty</groupId>
+                    <artifactId>netty-all</artifactId>
+                    <version>${version.io.netty}</version>
                 </dependency>
             </dependencies>
             <build>
@@ -280,9 +282,9 @@
                     <version>${version.hornetq}</version>
                 </dependency>
                 <dependency>
-                    <groupId>org.jboss.netty</groupId>
-                    <artifactId>netty</artifactId>
-                    <version>3.2.6.Final</version>
+                    <groupId>io.netty</groupId>
+                    <artifactId>netty-all</artifactId>
+                    <version>${version.io.netty}</version>
                 </dependency>
             </dependencies>
             <build>
@@ -349,9 +351,9 @@
                     <version>${version.hornetq}</version>
                 </dependency>
                 <dependency>
-                    <groupId>org.jboss.netty</groupId>
-                    <artifactId>netty</artifactId>
-                    <version>3.2.6.Final</version>
+                    <groupId>io.netty</groupId>
+                    <artifactId>netty-all</artifactId>
+                    <version>${version.io.netty}</version>
                 </dependency>
             </dependencies>
             <build>

@@ -1,15 +1,18 @@
 package com.arjuna.ats.tools.perftest.common;
 
-import org.apache.log4j.Logger;
 
 import java.util.Collection;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.util.ArrayList;
 
 import com.arjuna.ats.tools.perftest.product.Product;
 
 public class TestRunner
 {
-    private final static Logger log = Logger.getLogger(Product.class);
+    private final static Logger log = LogManager.getLogger(Product.class);
 
     private Collection<Target> tests = new ArrayList<Target>();
     private long max;

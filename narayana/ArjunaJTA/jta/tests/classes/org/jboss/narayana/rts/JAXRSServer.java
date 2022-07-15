@@ -24,8 +24,8 @@ import org.apache.http.conn.routing.HttpRoute;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.jboss.jbossts.star.service.TMApplication;
-import org.jboss.resteasy.client.jaxrs.ResteasyClientBuilder;
-import org.jboss.resteasy.client.jaxrs.engines.ApacheHttpClient4Engine;
+import org.jboss.resteasy.client.jaxrs.engines.ApacheHttpClient43Engine;
+import org.jboss.resteasy.client.jaxrs.internal.ResteasyClientBuilderImpl;
 import org.jboss.resteasy.plugins.server.undertow.UndertowJaxrsServer;
 import org.openjdk.jmh.annotations.Scope;
 import org.openjdk.jmh.annotations.State;
@@ -64,9 +64,9 @@ public class JAXRSServer {
 
         HttpClient httpClient = HttpClients.createMinimal(cm);
 
-        ApacheHttpClient4Engine engine = new ApacheHttpClient4Engine(httpClient);
+        ApacheHttpClient43Engine engine = new ApacheHttpClient43Engine(httpClient);
 
-        return new ResteasyClientBuilder().httpEngine(engine).build();
+        return new ResteasyClientBuilderImpl().httpEngine(engine).build();
     }
 
     public void stop() {
