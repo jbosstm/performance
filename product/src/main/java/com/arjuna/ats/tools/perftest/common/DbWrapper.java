@@ -16,11 +16,13 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.io.File;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class DbWrapper
 {
-    private final static Logger log = Logger.getLogger(Product.class);
+    private final static Logger log = LogManager.getLogger(Product.class);
     private static final String JNDIBASE = "jndi/";
 
     public static DataSource initMysqlDS(XADataSource xds, String user, String pass, String url)
@@ -428,7 +430,7 @@ public class DbWrapper
 
     public static boolean isWarnEnabled(Logger log)
     {
-        return log.isEnabledFor(org.apache.log4j.Priority.WARN);
+        return log.isEnabled(Level.WARN);
     }
 
     public static void logSQLException(Logger log, SQLException e)

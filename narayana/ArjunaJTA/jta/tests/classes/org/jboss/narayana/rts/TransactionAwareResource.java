@@ -51,8 +51,8 @@ import org.jboss.jbossts.star.util.TxMediaType;
 import org.jboss.jbossts.star.util.TxStatus;
 import org.jboss.jbossts.star.util.TxSupport;
 import org.jboss.logging.Logger;
-import org.jboss.resteasy.client.jaxrs.ResteasyClientBuilder;
-import org.jboss.resteasy.client.jaxrs.engines.ApacheHttpClient4Engine;
+import org.jboss.resteasy.client.jaxrs.engines.ApacheHttpClient43Engine;
+import org.jboss.resteasy.client.jaxrs.internal.ResteasyClientBuilderImpl;
 
 /**
  * An example of how a REST resource can act as a participant in a REST Atomic transaction.
@@ -78,9 +78,9 @@ public class TransactionAwareResource {
     private static Client createClient() {
         ClientConnectionManager cm = new ThreadSafeClientConnManager();
         HttpClient httpClient = new DefaultHttpClient(cm);
-        ApacheHttpClient4Engine engine = new ApacheHttpClient4Engine(httpClient);
+        ApacheHttpClient43Engine engine = new ApacheHttpClient43Engine(httpClient);
 
-        return new ResteasyClientBuilder().httpEngine(engine).build();
+        return new ResteasyClientBuilderImpl().httpEngine(engine).build();
     }
 
     static Client getClient() {

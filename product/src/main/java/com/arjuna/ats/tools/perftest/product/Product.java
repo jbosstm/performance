@@ -1,9 +1,11 @@
 package com.arjuna.ats.tools.perftest.product;
 
-import org.apache.log4j.Logger;
-
 import javax.transaction.*;
 import javax.transaction.xa.XAException;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import javax.sql.DataSource;
 import javax.management.JMException;
 import java.sql.*;
@@ -768,7 +770,7 @@ public abstract class Product
         }
     }
 
-    protected final static Logger log = Logger.getLogger(Product.class);
+    protected final static  Logger log = LogManager.getLogger(Product.class);
 
     private static String SQLT1 = "create table $DB.TEST(id int, value varchar(40))";
     private static String SQLT1_I = "insert into $DB.TEST values (?, ?)";

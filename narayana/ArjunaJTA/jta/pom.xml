@@ -45,8 +45,8 @@
 
         <!-- RTS -->
         <narayana.version>${project.version}</narayana.version>
-        <undertow.io.version>2.2.11.Final</undertow.io.version>
-        <resteasy.version>3.15.1.Final</resteasy.version>
+        <undertow.io.version>2.2.18.Final</undertow.io.version>
+        <resteasy.version>4.7.2.Final</resteasy.version>
         <resteasy.async-http-servlet.version>3.0.19.Final</resteasy.async-http-servlet.version>
 
         <!-- geronimo -->
@@ -57,7 +57,7 @@
         <version.org.slf4j.slf4j-api>1.7.5</version.org.slf4j.slf4j-api>
         <geronimo.version.org.slf4j.slf4j-simple>1.5.5</geronimo.version.org.slf4j.slf4j-simple>
 
-        <version.org.jboss.netty.netty>3.2.5.Final</version.org.jboss.netty.netty>
+        <version.io.netty>4.1.79.Final</version.io.netty>
         <version.com.atomikos.transactions-jta>5.0.8</version.com.atomikos.transactions-jta>
         <version.com.atomikos.transactions-jdbc>5.0.8</version.com.atomikos.transactions-jdbc>
         <version.org.codehaus.btm.btm>2.1.4</version.org.codehaus.btm.btm>
@@ -154,9 +154,9 @@
             <scope>provided</scope>                          
         </dependency>                                        
         <dependency>
-            <groupId>org.jboss.netty</groupId>
-            <artifactId>netty</artifactId>
-            <version>${version.org.jboss.netty.netty}</version>
+            <groupId>io.netty</groupId>
+            <artifactId>netty-all</artifactId>
+            <version>${version.io.netty}</version>
         </dependency>
         <!-- JTA (local: ArjunaJTA/jta and remote: ArjunaJTS/jtax) need JTA and
                 JCA (for tx inflow) apis. -->
@@ -315,11 +315,14 @@
             <artifactId>restat-api</artifactId>
             <version>${narayana.version}</version>
         </dependency>
-
-
         <dependency>
             <groupId>org.jboss.resteasy</groupId>
-            <artifactId>resteasy-jaxrs</artifactId>
+            <artifactId>resteasy-core</artifactId>
+            <version>${resteasy.version}</version>
+            </dependency>
+        <dependency>
+            <groupId>org.jboss.resteasy</groupId>
+            <artifactId>resteasy-jaxb-provider</artifactId>
             <version>${resteasy.version}</version>
         </dependency>
         <dependency>
