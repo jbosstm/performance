@@ -45,7 +45,7 @@
 
         <!-- RTS -->
         <narayana.version>${project.version}</narayana.version>
-        <undertow.io.version>2.2.18.Final</undertow.io.version>
+        <undertow.io.version>2.2.19.Final</undertow.io.version>
         <resteasy.version>4.7.2.Final</resteasy.version>
         <resteasy.async-http-servlet.version>3.0.19.Final</resteasy.async-http-servlet.version>
 
