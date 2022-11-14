@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.jboss.narayana.performance</groupId>
     <artifactId>product-perf-test-harness</artifactId>
-    <version>5.13.1.Final</version>
+    <version>6.0.0.Final-SNAPSHOT</version>
     <name>product-perf-test-harness</name>
     <description>Performance Comparison Test Harness</description>
     <packaging>jar</packaging>
