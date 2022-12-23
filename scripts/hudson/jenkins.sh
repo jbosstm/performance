@@ -120,7 +120,11 @@ if [ -z $COMPARE_TRANSPORTS ] || [ $COMPARE_TRANSPORTS == "y" ] || [ -z $COMPARE
 fi
 
 if [ -z $COMPARE_TRANSPORTS ] || [ $COMPARE_TRANSPORTS == "y" ]; then
-	wget -q http://narayanaci1.eng.hst.ams2.redhat.com/job/narayana-AS800-notests/lastSuccessfulBuild/artifact/dist/target/*zip*/target.zip
+	if [[ -z $APP_SERVER_ZIP_LOCATION ]]; then
+		echo "Error, APP_SERVER_ZIP_LOCATION was not set"
+		exit -1
+	fi
+	wget -q $APP_SERVER_ZIP_LOCATION
 	[ $? = 0 ] || fatal "Could not download zip"
 	unzip -q target.zip
 	[ $? = 0 ] || fatal "Could not extract zip"
