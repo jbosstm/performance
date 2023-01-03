@@ -11,8 +11,8 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-	    <maven.compiler.source>11</maven.compiler.source>
-	    <maven.compiler.target>11</maven.compiler.target>
+        <maven.compiler.source>11</maven.compiler.source>
+        <maven.compiler.target>11</maven.compiler.target>
 
         <!-- Server settings -->
         <jvm.args.memory>-Xms64m -Xmx1024m -XX:MaxPermSize=512m</jvm.args.memory>
@@ -24,15 +24,15 @@
         <version.arquillian.wildfly.container>2.1.1.Final</version.arquillian.wildfly.container>
         <version.wildfly.core>7.0.0.Final</version.wildfly.core>
         <version.org.jboss.narayana>6.0.0.Final-SNAPSHOT</version.org.jboss.narayana>
-        <version.org.jboss.spec.javax.ejb>1.0.0.Final</version.org.jboss.spec.javax.ejb>
+        <version.jakarta.ejb-api>4.0.1</version.jakarta.ejb-api>
         <version.org.jboss.spec.javax.transaction>1.0.0.Final</version.org.jboss.spec.javax.transaction>
-        <version.org.jboss.resteasy>4.7.2.Final</version.org.jboss.resteasy>
+        <version.org.jboss.resteasy>6.2.2.Final</version.org.jboss.resteasy>
         <version.junit>[4.13.1,)</version.junit>
-        <version.javax.ws.rs-api>2.0.1.Final</version.javax.ws.rs-api>
-	    <version.org.jboss.spec.jakarta.xml.ws.jboss-jaxws-api_2.3_spec>1.0.0.Final</version.org.jboss.spec.jakarta.xml.ws.jboss-jaxws-api_2.3_spec>
-	    <version.javax.annotation>1.2</version.javax.annotation>
-	    <version.jaxws-ri>2.3.5</version.jaxws-ri>
-		<version.jaxb-api>2.3.1</version.jaxb-api>
+        <version.jakarta.ws.rs-api>3.1.0</version.jakarta.ws.rs-api>
+        <version.org.jboss-jakarta-xml-ws-api_4.0_spec>1.0.0.Final</version.org.jboss-jakarta-xml-ws-api_4.0_spec>
+        <version.jakarta.annotation-api>2.1.1</version.jakarta.annotation-api>
+        <version.jaxws-ri>2.3.5</version.jaxws-ri>
+        <version.jakarta.xml.bind-api>4.0.0</version.jakarta.xml.bind-api>
     </properties>
 
     <repositories>
@@ -65,8 +65,8 @@
                 <version>${version.org.jboss.narayana}</version>
             </dependency>
             <dependency>
-                <groupId>org.jboss.spec.javax.ejb</groupId>
-                <artifactId>jboss-ejb-api_3.2_spec</artifactId>
+                <groupId>jakarta.ejb</groupId>
+                <artifactId>jakarta.ejb-api</artifactId>
                 <version>${version.org.jboss.spec.javax.ejb}</version>
             </dependency>
             <dependency>
@@ -75,9 +75,9 @@
                 <version>${version.org.jboss.spec.javax.transaction}</version>
             </dependency>
             <dependency>
-                <groupId>org.jboss.spec.javax.ws.rs</groupId>
-                <artifactId>jboss-jaxrs-api_2.1_spec</artifactId>
-                <version>${version.javax.ws.rs-api}</version>
+                <groupId>jakarta.ws.rs</groupId>
+                <artifactId>jakarta.ws.rs-api</artifactId>
+                <version>${version.jakarta.ws.rs-api}</version>
             </dependency>
             <dependency>
                 <groupId>org.jboss.resteasy</groupId>

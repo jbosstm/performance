@@ -24,26 +24,26 @@
             <artifactId>test-utils</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.jboss.spec.javax.ws.rs</groupId>
-            <artifactId>jboss-jaxrs-api_2.1_spec</artifactId>
-            <version>${version.javax.ws.rs-api}</version>
+            <groupId>jakarta.ws.rs</groupId>
+            <artifactId>jakarta.ws.rs-api</artifactId>
+            <version>${version.jakarta.ws.rs-api}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>org.jboss.spec.javax.ejb</groupId>
-            <artifactId>jboss-ejb-api_3.2_spec</artifactId>
-            <scope>provided</scope>
+            <groupId>jakarta.ejb</groupId>
+            <artifactId>jakarta.ejb-api</artifactId>
+            <version>${version.jakarta.ejb-api}</version>
         </dependency>
         <dependency>
-           <groupId>org.jboss.spec.jakarta.xml.ws</groupId>
-           <artifactId>jboss-jaxws-api_2.3_spec</artifactId>
-           <version>${version.org.jboss.spec.jakarta.xml.ws.jboss-jaxws-api_2.3_spec}</version>
-           <scope>provided</scope>
+            <groupId>org.jboss.spec.jakarta.xml.ws</groupId>
+            <artifactId>jboss-jakarta-xml-ws-api_4.0_spec</artifactId>
+            <version>${version.org.jboss-jakarta-xml-ws-api_4.0_spec}</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>jakarta.annotation</groupId>
             <artifactId>jakarta.annotation-api</artifactId>
-	    <version>${version.javax.annotation}</version>
+            <version>${version.jakarta.annotation-api}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -55,7 +55,7 @@
         <dependency>
             <groupId>jakarta.transaction</groupId>
             <artifactId>jakarta.transaction-api</artifactId>
-            <version>1.2</version>
+            <version>2.0.1</version>
         </dependency>
         <dependency>
             <groupId>junit</groupId>
