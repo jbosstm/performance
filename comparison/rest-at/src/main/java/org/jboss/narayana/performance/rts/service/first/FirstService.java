@@ -1,13 +1,13 @@
 package org.jboss.narayana.performance.rts.service.first;
 
-import javax.annotation.Resource;
-import javax.ejb.Stateless;
-import javax.ejb.TransactionAttribute;
-import javax.ejb.TransactionAttributeType;
-import javax.transaction.Transaction;
-import javax.transaction.TransactionManager;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
+import jakarta.annotation.Resource;
+import jakarta.ejb.Stateless;
+import jakarta.ejb.TransactionAttribute;
+import jakarta.ejb.TransactionAttributeType;
+import jakarta.transaction.Transaction;
+import jakarta.transaction.TransactionManager;
+import jakarta.ws.rs.POST;
+import jakarta.ws.rs.Path;
 
 import org.jboss.logging.Logger;
 import org.jboss.narayana.performance.rts.service.AbstractService;

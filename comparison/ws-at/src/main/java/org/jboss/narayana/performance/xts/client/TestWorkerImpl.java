@@ -7,7 +7,7 @@ import java.net.MalformedURLException;
 
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
-import javax.transaction.TransactionManager;
+import jakarta.transaction.TransactionManager;
 
 import org.jboss.logging.Logger;
 import org.jboss.narayana.performance.xts.service.first.FirstService;

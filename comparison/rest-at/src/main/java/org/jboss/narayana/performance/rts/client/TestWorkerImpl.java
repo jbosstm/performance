@@ -3,10 +3,10 @@ package org.jboss.narayana.performance.rts.client;
 import io.narayana.perf.Measurement;
 import io.narayana.perf.Worker;
 
-import javax.ws.rs.client.Client;
-import javax.ws.rs.client.ClientBuilder;
-import javax.ws.rs.core.Link;
-import javax.ws.rs.core.Response;
+import jakarta.ws.rs.client.Client;
+import jakarta.ws.rs.client.ClientBuilder;
+import jakarta.ws.rs.core.Link;
+import jakarta.ws.rs.core.Response;
 
 import org.jboss.jbossts.star.util.TxLinkNames;
 import org.jboss.jbossts.star.util.TxSupport;

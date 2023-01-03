@@ -21,9 +21,9 @@
  */
 package io.narayana.perf.product;
 
-import javax.transaction.SystemException;
-import javax.transaction.TransactionManager;
-import javax.transaction.UserTransaction;
+import jakarta.transaction.SystemException;
+import jakarta.transaction.TransactionManager;
+import jakarta.transaction.UserTransaction;
 import javax.transaction.xa.XAResource;
 
 interface ProductInterface<T> {

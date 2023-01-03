@@ -1,12 +1,12 @@
 package org.jboss.narayana.performance.jts.service.first;
 
-import javax.annotation.Resource;
-import javax.ejb.RemoteHome;
-import javax.ejb.Stateless;
-import javax.ejb.TransactionAttribute;
-import javax.ejb.TransactionAttributeType;
-import javax.transaction.Transaction;
-import javax.transaction.TransactionManager;
+import jakarta.annotation.Resource;
+import jakarta.ejb.RemoteHome;
+import jakarta.ejb.Stateless;
+import jakarta.ejb.TransactionAttribute;
+import jakarta.ejb.TransactionAttributeType;
+import jakarta.transaction.Transaction;
+import jakarta.transaction.TransactionManager;
 
 import org.jboss.logging.Logger;
 import org.jboss.narayana.performance.jts.service.AbstractEJB;

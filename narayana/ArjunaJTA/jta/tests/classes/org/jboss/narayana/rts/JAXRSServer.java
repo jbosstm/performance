@@ -30,8 +30,8 @@ import org.jboss.resteasy.plugins.server.undertow.UndertowJaxrsServer;
 import org.openjdk.jmh.annotations.Scope;
 import org.openjdk.jmh.annotations.State;
 
-import javax.ws.rs.client.Client;
-import javax.ws.rs.core.Application;
+import jakarta.ws.rs.client.Client;
+import jakarta.ws.rs.core.Application;
 
 @State(Scope.Benchmark)
 public class JAXRSServer {

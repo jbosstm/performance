@@ -2,7 +2,7 @@ package org.jboss.narayana.performance.jts.service.first;
 
 import java.rmi.RemoteException;
 
-import javax.ejb.EJBObject;
+import jakarta.ejb.EJBObject;
 
 public interface FirstEJB extends EJBObject {
 

@@ -29,7 +29,7 @@
         <version.org.jboss.resteasy>4.7.2.Final</version.org.jboss.resteasy>
         <version.junit>[4.13.1,)</version.junit>
         <version.javax.ws.rs-api>2.0.1.Final</version.javax.ws.rs-api>
-	    <version.org.jboss.spec.javax.xml.ws.jboss-jaxws-api_2.3_spec>1.0.0.Final</version.org.jboss.spec.javax.xml.ws.jboss-jaxws-api_2.3_spec>
+	    <version.org.jboss.spec.jakarta.xml.ws.jboss-jaxws-api_2.3_spec>1.0.0.Final</version.org.jboss.spec.jakarta.xml.ws.jboss-jaxws-api_2.3_spec>
 	    <version.javax.annotation>1.2</version.javax.annotation>
 	    <version.jaxws-ri>2.3.5</version.jaxws-ri>
 		<version.jaxb-api>2.3.1</version.jaxb-api>
