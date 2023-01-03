@@ -18,7 +18,7 @@ package org.jboss.narayana.rts;
 
 import org.jboss.jbossts.star.service.TMApplication;
 
-import javax.ws.rs.client.Client;
+import jakarta.ws.rs.client.Client;
 import java.io.IOException;
 
 public class TestBase {

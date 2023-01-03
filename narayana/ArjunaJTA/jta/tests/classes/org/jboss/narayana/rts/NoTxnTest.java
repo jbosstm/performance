@@ -29,7 +29,7 @@ import org.openjdk.jmh.annotations.Level;
 import org.openjdk.jmh.annotations.TearDown;
 import org.openjdk.jmh.annotations.OperationsPerInvocation;
 
-import javax.ws.rs.client.Client;
+import jakarta.ws.rs.client.Client;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 

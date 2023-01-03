@@ -30,7 +30,7 @@ import org.openjdk.jmh.annotations.Level;
 import org.openjdk.jmh.annotations.TearDown;
 import org.openjdk.jmh.infra.Blackhole;
 
-import javax.ws.rs.core.Link;
+import jakarta.ws.rs.core.Link;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.util.ArrayList;

@@ -1,9 +1,9 @@
 package org.jboss.narayana.performance.xts.service.second;
 
-import javax.ejb.Remote;
-import javax.jws.WebMethod;
-import javax.jws.WebService;
-import javax.jws.soap.SOAPBinding;
+import jakarta.ejb.Remote;
+import jakarta.jws.WebMethod;
+import jakarta.jws.WebService;
+import jakarta.jws.soap.SOAPBinding;
 
 /**
  * @author <a href="mailto:gytis@redhat.com">Gytis Trikleris</a>

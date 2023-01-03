@@ -21,7 +21,7 @@ import com.arjuna.ats.arjuna.common.CoreEnvironmentBeanException;
 import com.arjuna.ats.arjuna.common.ObjectStoreEnvironmentBean;
 import com.arjuna.common.internal.util.propertyservice.BeanPopulator;
 
-import javax.transaction.TransactionManager;
+import jakarta.transaction.TransactionManager;
 
 public class JTAStoreBase {
     private static XAResourceImpl resource1;

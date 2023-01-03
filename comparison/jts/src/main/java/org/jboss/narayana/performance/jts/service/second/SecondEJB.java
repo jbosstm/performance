@@ -2,7 +2,7 @@ package org.jboss.narayana.performance.jts.service.second;
 
 import java.rmi.RemoteException;
 
-import javax.ejb.EJBObject;
+import jakarta.ejb.EJBObject;
 
 public interface SecondEJB extends EJBObject {
 

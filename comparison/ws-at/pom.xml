@@ -35,14 +35,14 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-           <groupId>org.jboss.spec.javax.xml.ws</groupId>
+           <groupId>org.jboss.spec.jakarta.xml.ws</groupId>
            <artifactId>jboss-jaxws-api_2.3_spec</artifactId>
-           <version>${version.org.jboss.spec.javax.xml.ws.jboss-jaxws-api_2.3_spec}</version>
+           <version>${version.org.jboss.spec.jakarta.xml.ws.jboss-jaxws-api_2.3_spec}</version>
            <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>javax.annotation</groupId>
-            <artifactId>javax.annotation-api</artifactId>
+            <groupId>jakarta.annotation</groupId>
+            <artifactId>jakarta.annotation-api</artifactId>
 	    <version>${version.javax.annotation}</version>
             <scope>provided</scope>
         </dependency>
@@ -53,8 +53,8 @@
             <type>pom</type>
         </dependency>
         <dependency>
-            <groupId>javax.transaction</groupId>
-            <artifactId>javax.transaction-api</artifactId>
+            <groupId>jakarta.transaction</groupId>
+            <artifactId>jakarta.transaction-api</artifactId>
             <version>1.2</version>
         </dependency>
         <dependency>
