@@ -21,24 +21,24 @@
  */
 package io.narayana.perf.product;
 
-import javax.transaction.HeuristicMixedException;
-import javax.transaction.HeuristicRollbackException;
-import javax.transaction.NotSupportedException;
-import javax.transaction.RollbackException;
-import javax.transaction.SystemException;
-import javax.transaction.TransactionManager;
+import jakarta.transaction.HeuristicMixedException;
+import jakarta.transaction.HeuristicRollbackException;
+import jakarta.transaction.NotSupportedException;
+import jakarta.transaction.RollbackException;
+import jakarta.transaction.SystemException;
+import jakarta.transaction.TransactionManager;
 import javax.transaction.xa.XAResource;
 
-public class ProductWorker<Void> {
+public class ProductWorkerJakarta<Void> {
 
-    ProductInterface prod;
+    ProductInterfaceJakarta prod;
 
     protected XAResource xaResource1;
     protected XAResource xaResource2;
 
     private TransactionManager ut;
 
-    public ProductWorker(ProductInterface prod) {
+    public ProductWorkerJakarta(ProductInterfaceJakarta prod) {
         this.prod = prod;
         xaResource1 = prod.getXAResource();
         xaResource2 = prod.getXAResource();
@@ -69,7 +69,7 @@ public class ProductWorker<Void> {
         return prod.getName();
     }
 
-    public ProductInterface getProduct() {
+    public ProductInterfaceJakarta getProduct() {
         return prod;
     }
 }

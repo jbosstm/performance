@@ -35,16 +35,16 @@ import jakarta.transaction.UserTransaction;
 import javax.transaction.xa.XAResource;
 
 @State(Scope.Benchmark)
-public class NarayanaComparison extends ProductComparison {
+public class NarayanaComparison extends ProductComparisonJakarta {
     public static void main(String[] args) throws RunnerException, CommandLineOptionException, CoreEnvironmentBeanException {
         JMHConfigJTA.runJTABenchmark(NarayanaComparison.class.getSimpleName(), args);
     }
 
-    protected ProductInterface getProductInterface() {
+    protected ProductInterfaceJakarta getProductInterface() {
         return narayana;
     }
 
-    private ProductInterface narayana = new ProductInterface() {
+    private ProductInterfaceJakarta narayana = new ProductInterfaceJakarta() {
         UserTransaction ut;
         TransactionManager tm;
 
