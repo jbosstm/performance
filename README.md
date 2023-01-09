@@ -1,6 +1,6 @@
 performance
 ===========
 
-Performance relatated work for narayana
+Performance related work for Narayana
 
 [Instructions for running performance tests](narayana/README.md)
