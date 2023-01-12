@@ -16,8 +16,6 @@
  */
 package org.jboss.narayana.rts;
 
-import org.apache.http.HttpEntity;
-import org.apache.http.util.EntityUtils;
 import org.jboss.jbossts.star.util.TxLinkNames;
 import org.jboss.jbossts.star.util.TxMediaType;
 import org.jboss.jbossts.star.util.TxStatusMediaType;
@@ -51,7 +49,7 @@ public class TxnHelper {
                     Entity.entity(new Form(), MediaType.APPLICATION_FORM_URLENCODED_TYPE));
             Set<Link> links = response.getLinks();
 
-            EntityUtils.consume((HttpEntity) response.getEntity());
+            response.readEntity(String.class);
             if (response.getStatus() != HttpURLConnection.HTTP_CREATED)
                 throw new RuntimeException("beginTxn returned " + response.getStatus());
 
@@ -71,7 +69,7 @@ public class TxnHelper {
 
             int sc = response.getStatus();
 
-            EntityUtils.consume((HttpEntity) response.getEntity());
+            response.readEntity(String.class);
 
             if (sc != HttpURLConnection.HTTP_OK)
                 throw new RuntimeException("endTxn returned " + sc);

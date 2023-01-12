@@ -34,7 +34,10 @@ import java.util.Set;
 @State(Scope.Benchmark)
 public class EmptyTxnTest extends TestBase {
 
-    static Set<Link> links;
+    @State(Scope.Thread)
+    public static class TestState {
+        public Set<Link> links;
+    }
 
     @Setup(Level.Trial)
     @BeforeClass
@@ -49,15 +52,15 @@ public class EmptyTxnTest extends TestBase {
     }
 
     @Benchmark
-    public void testEmptyTxn(Blackhole bh) throws IOException {
-        bh.consume(beginTx());
+    public void testEmptyTxn(Blackhole bh, TestState state) throws IOException {
+        bh.consume(beginTx(state));
         // make two service calls for comparison with RTSTests#testTxn
         bh.consume(sendRequest());
-        bh.consume(TxnHelper.endTxn(txnClient, links));
+        bh.consume(TxnHelper.endTxn(txnClient, state.links));
     }
 
-    public boolean beginTx() throws IOException {
-        links = TxnHelper.beginTxn(txnClient, TXN_URL);
+    public boolean beginTx(TestState state) throws IOException {
+        state.links = TxnHelper.beginTxn(txnClient, TXN_URL);
         return true;
     }
 

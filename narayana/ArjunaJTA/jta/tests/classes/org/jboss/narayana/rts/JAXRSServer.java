@@ -16,20 +16,18 @@
  */
 package org.jboss.narayana.rts;
 
-import io.undertow.Undertow;
 import org.apache.http.HttpHost;
 import org.apache.http.client.HttpClient;
-
 import org.apache.http.conn.routing.HttpRoute;
-import org.apache.http.impl.client.HttpClients;
+import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
-import org.jboss.jbossts.star.service.TMApplication;
 import org.jboss.resteasy.client.jaxrs.engines.ApacheHttpClient43Engine;
 import org.jboss.resteasy.client.jaxrs.internal.ResteasyClientBuilderImpl;
 import org.jboss.resteasy.plugins.server.undertow.UndertowJaxrsServer;
 import org.openjdk.jmh.annotations.Scope;
 import org.openjdk.jmh.annotations.State;
 
+import io.undertow.Undertow;
 import jakarta.ws.rs.client.Client;
 import jakarta.ws.rs.core.Application;
 
@@ -37,13 +35,10 @@ import jakarta.ws.rs.core.Application;
 public class JAXRSServer {
     private UndertowJaxrsServer server;
 
-    public JAXRSServer(int port) {
-        System.out.printf("starting undertow%n");
+    public JAXRSServer(String message, int port) {
+        System.out.printf("starting undertow (%s)%n", message);
         server = new UndertowJaxrsServer();
         server.start(Undertow.builder().addHttpListener(port, "localhost"));
-
-        server.deploy(new TMApplication(), "/");
-        server.deploy(new TransactionAwareResource.ServiceApp(), "eg");
     }
 
 
@@ -62,8 +57,9 @@ public class JAXRSServer {
 
         setCMConfig(cm);
 
-        HttpClient httpClient = HttpClients.createMinimal(cm);
-
+        HttpClient httpClient = HttpClientBuilder.create()
+                .setConnectionManager(cm)
+                .disableContentCompression().build();
         ApacheHttpClient43Engine engine = new ApacheHttpClient43Engine(httpClient);
 
         return new ResteasyClientBuilderImpl().httpEngine(engine).build();

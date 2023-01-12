@@ -35,17 +35,18 @@ public class TestBase {
     static Client svcClient;
 
     public static void setup() throws Exception {
-        txnServer = new JAXRSServer(TXN_PORT);
+        txnServer = new JAXRSServer("service1", TXN_PORT);
         txnServer.addDeployment(new TMApplication(), "/");
         txnClient = txnServer.createClient();
 
         if (TWO_SERVERS)
-            svcServer = new JAXRSServer(SVC_PORT);
+            svcServer = new JAXRSServer("service2", SVC_PORT);
         else
             svcServer = txnServer;
 
         svcServer.addDeployment(new TransactionAwareResource.ServiceApp(), "eg");
         svcClient = svcServer.createClient();
+        Util.emptyObjectStore();
     }
 
     public static void tearDown() throws IOException {
