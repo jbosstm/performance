@@ -105,11 +105,12 @@ if [ -z $COMPARE_IMPLEMENTATIONS ] || [ $COMPARE_IMPLEMENTATIONS == "y" ]; then
 	mv benchmark.png benchmark-comparison.png
 fi
 
-# JBTM-3193 temporary disable (also, it might be the case that 3 tests can be ran when this is reenabled)
-#JVM_ARGS="-DMAX_ERRORS=10" ./narayana/scripts/hudson/benchmark.sh "ArjunaJTA/jta" "org.jboss.narayana.rts.*TxnTest.*" 2
-#[ $? = 0 ] || fatal "RTS benchmark failed"
-#mv benchmark-output.txt benchmark-rts-output.txt
-#mv benchmark.png benchmark-rts.png
+cd $WORKSPACE
+./build.sh package -f narayana
+JVM_ARGS="-DMAX_ERRORS=10" ./narayana/scripts/hudson/benchmark.sh "ArjunaJTA/jta" "org.jboss.narayana.rts.*TxnTest.*" 3
+[ $? = 0 ] || fatal "RTS benchmark failed"
+mv benchmark-output.txt benchmark-rts-output.txt
+mv benchmark.png benchmark-rts.png
 
 if [ -v OVERRIDE_NARAYANA_VERSION ]; then
   MAVEN_OVERRIDE_NARAYANA_VERSION="-Dnarayana.version=${OVERRIDE_NARAYANA_VERSION}"

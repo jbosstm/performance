@@ -20,7 +20,6 @@ import org.jboss.jbossts.star.util.TxLinkNames;
 import org.jboss.logging.Logger;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.Scope;
@@ -45,12 +44,15 @@ import java.util.concurrent.Callable;
 import static org.junit.Assert.fail;
 
 @State(Scope.Benchmark)
-@Ignore // until JBTM-3193 is fixed
 public class TxnTest extends TestBase {
     protected static final Logger log = Logger.getLogger(TxnTest.class);
     static final ExecutorService threadpool = Executors.newFixedThreadPool(10);
-    static Set<Link> links;
-    static String serviceRequest;
+
+    @State(Scope.Thread)
+    public static class TestState {
+        public Set<Link> links;
+        public String serviceRequest;
+    }
 
     @Setup(Level.Trial)
     @BeforeClass
@@ -65,17 +67,17 @@ public class TxnTest extends TestBase {
     }
 
     @Benchmark
-    public void testTxn(Blackhole bh) throws IOException {
-        bh.consume(preExeTransaction());
+    public void testTxn(Blackhole bh, TestState state) throws IOException {
+        bh.consume(preExeTransaction(state));
         // we want 2 txn participants so make 2 transactional requests
-        bh.consume(sendRequest());
-        bh.consume(TxnHelper.endTxn(txnClient, links));
+        bh.consume(sendRequest(state));
+        bh.consume(TxnHelper.endTxn(txnClient, state.links));
     }
 
-    private boolean preExeTransaction() throws IOException {
-        links = TxnHelper.beginTxn(txnClient, TXN_URL);
-        Link enlistmentLink = TxnHelper.getLink(links, TxLinkNames.PARTICIPANT);
-        serviceRequest = SVC_URL + "?enlistURL=" + enlistmentLink.getUri() +
+    private boolean preExeTransaction(TestState state) throws IOException {
+        state.links = TxnHelper.beginTxn(txnClient, TXN_URL);
+        Link enlistmentLink = TxnHelper.getLink(state.links, TxLinkNames.PARTICIPANT);
+        state.serviceRequest = SVC_URL + "?enlistURL=" + enlistmentLink.getUri() +
                 "&tid=" + Thread.currentThread().getName();
         return true;
     }
@@ -84,9 +86,9 @@ public class TxnTest extends TestBase {
         return TxnHelper.beginTxn(txnClient, TXN_URL);
     }
 
-    private boolean sendRequest() throws IOException {
+    private boolean sendRequest(TestState state) throws IOException {
         for (int svcCallInc = 0; svcCallInc < TxnHelper.NO_OF_SVC_CALLS; svcCallInc++) {
-            TxnHelper.sendRequest(HttpURLConnection.HTTP_OK, svcClient, serviceRequest + svcCallInc);
+            TxnHelper.sendRequest(HttpURLConnection.HTTP_OK, svcClient, state.serviceRequest + svcCallInc);
         }
         return true;
     }

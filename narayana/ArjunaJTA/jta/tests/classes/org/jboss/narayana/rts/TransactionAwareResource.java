@@ -93,7 +93,7 @@ public class TransactionAwareResource {
     }
 
 
-    @ApplicationPath("eg")
+    @ApplicationPath("/")
     public static class ServiceApp extends Application {
         @Override
         public Set<Class<?>> getClasses() {
