@@ -88,12 +88,12 @@ if [ -v OVERRIDE_NARAYANA_VERSION ]; then
 fi
 
 function generate_csv_files {
-  ${WORKSPACE}/build.sh -f narayana/pom.xml package -DskipTests $MAVEN_OVERRIDE_NARAYANA_VERSION # build the benchmarks uber jar
+  ${WORKSPACE}/build.sh -f narayana/pom.xml clean install -DskipTests $MAVEN_OVERRIDE_NARAYANA_VERSION # build the benchmarks uber jar
   run_benchmarks pr # run the benchmarks against the local maven repo (should be the PR)
   
   build_narayana
 
-  ${WORKSPACE}/build.sh -f narayana/pom.xml package -DskipTests # build the benchmarks uber jar
+  ${WORKSPACE}/build.sh -f narayana/pom.xml clean install -DskipTests # build the benchmarks uber jar
   run_benchmarks master # run the benchmarks against this build of master
 }
 

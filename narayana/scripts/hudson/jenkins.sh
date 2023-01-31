@@ -117,7 +117,7 @@ if [ -v OVERRIDE_NARAYANA_VERSION ]; then
 fi
 
 # build the narayana project
-./build.sh -f narayana/pom.xml clean package -DskipTests $MAVEN_OVERRIDE_NARAYANA_VERSION
+./build.sh -f narayana/pom.xml clean install -DskipTests $MAVEN_OVERRIDE_NARAYANA_VERSION
 
 rm -f bm-output.txt benchmark-output.txt benchmark.png
 
