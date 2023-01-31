@@ -106,7 +106,7 @@ if [ -z $COMPARE_IMPLEMENTATIONS ] || [ $COMPARE_IMPLEMENTATIONS == "y" ]; then
 fi
 
 cd $WORKSPACE
-./build.sh package -f narayana
+./build.sh clean install -f narayana
 JVM_ARGS="-DMAX_ERRORS=10" ./narayana/scripts/hudson/benchmark.sh "ArjunaJTA/jta" "org.jboss.narayana.rts.*TxnTest.*" 3
 [ $? = 0 ] || fatal "RTS benchmark failed"
 mv benchmark-output.txt benchmark-rts-output.txt
@@ -117,7 +117,7 @@ if [ -v OVERRIDE_NARAYANA_VERSION ]; then
 fi
 
 if [ -z $COMPARE_TRANSPORTS ] || [ $COMPARE_TRANSPORTS == "y" ] || [ -z $COMPARE_JOURNAL_PARAMETERS ] || [ $COMPARE_JOURNAL_PARAMETERS == "y" ]; then
-	./build.sh -f narayana/pom.xml clean package -DskipTests $MAVEN_OVERRIDE_NARAYANA_VERSION
+	./build.sh clean install -f narayana/pom.xml -DskipTests $MAVEN_OVERRIDE_NARAYANA_VERSION
 fi
 
 if [ -z $COMPARE_TRANSPORTS ] || [ $COMPARE_TRANSPORTS == "y" ]; then
