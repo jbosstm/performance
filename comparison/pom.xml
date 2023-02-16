@@ -23,7 +23,7 @@
         <version.arquillian>1.4.1.Final</version.arquillian>
         <version.arquillian.wildfly.container>2.1.1.Final</version.arquillian.wildfly.container>
         <version.wildfly.core>7.0.0.Final</version.wildfly.core>
-        <version.org.jboss.narayana>6.0.0.Final</version.org.jboss.narayana>
+        <version.org.jboss.narayana>6.0.1.Final-SNAPSHOT</version.org.jboss.narayana>
         <version.jakarta.ejb-api>4.0.1</version.jakarta.ejb-api>
         <version.org.jboss.spec.javax.transaction>1.0.0.Final</version.org.jboss.spec.javax.transaction>
         <version.org.jboss.resteasy>6.2.2.Final</version.org.jboss.resteasy>
