@@ -30,7 +30,7 @@ function rebase_performance {
   rm -rf .git/rebase-apply
   git clean -f -d -x
   
-  export BRANCHPOINT=master
+  export BRANCHPOINT=main
 
   # Update the pull to head  
   git pull --rebase --ff-only origin $BRANCHPOINT
