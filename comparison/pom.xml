@@ -20,7 +20,7 @@
         <jvm.args.other>-server</jvm.args.other>
 
         <!-- Dependency versions -->
-        <version.org.jboss.narayana>6.0.1.Final-SNAPSHOT</version.org.jboss.narayana>
+        <version.org.jboss.narayana>6.0.1.Final</version.org.jboss.narayana>
         <version.wildfly.core>20.0.0.Beta7</version.wildfly.core>
     </properties>
 
