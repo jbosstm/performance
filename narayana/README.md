@@ -1,5 +1,5 @@
 
-The maven poms in the benchmark repository track narayana master (https://github.com/jbosstm/narayana.git) which must be in your local maven repository. If you do not have it already then clone and build it now:
+The maven poms in the benchmark repository track narayana main (https://github.com/jbosstm/narayana.git) which must be in your local maven repository. If you do not have it already then clone and build it now:
 
     git clone https://github.com/jbosstm/narayana.git
     cd narayana
