@@ -66,7 +66,7 @@ function build_narayana {
 
 export GIT_ACCOUNT=jbosstm
 export GIT_REPO=performance
-export GIT_BRANCH="${GIT_BRANCH:-master}"
+export GIT_BRANCH="${GIT_BRANCH:-main}"
 
 PULL_NUMBER=$(echo $GIT_BRANCH | awk -F 'pull' '{ print $2 }' | awk -F '/' '{ print $2 }')
 PULL_DESCRIPTION=$(curl -H "Authorization: token $GITHUB_TOKEN" -s https://api.github.com/repos/$GIT_ACCOUNT/$GIT_REPO/pulls/$PULL_NUMBER)

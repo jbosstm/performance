@@ -94,7 +94,7 @@ function generate_csv_files {
   build_narayana
 
   ${WORKSPACE}/build.sh -f narayana/pom.xml clean install -DskipTests # build the benchmarks uber jar
-  run_benchmarks master # run the benchmarks against this build of master
+  run_benchmarks main # run the benchmarks against this build of main
 }
 
 echo "JMH benchmark run (with args $JMHARGS)\n" > $ofile

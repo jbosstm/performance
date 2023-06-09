@@ -108,7 +108,7 @@ public class Benchmark implements Comparable<Benchmark> {
         for (String fname : args) {
             Map<String, Benchmark> bms = BMParser.readBenchmarks(fname);
 
-            if (fname.endsWith("-master.csv"))
+            if (fname.endsWith("-main.csv"))
                 pbms.putAll(bms);
             else if (fname.endsWith("-pr.csv"))
                 nbms.putAll(bms);
@@ -119,7 +119,7 @@ public class Benchmark implements Comparable<Benchmark> {
         for (Benchmark bm : nbms.values())
             bm.setPrevious(pbms.get(bm.benchmark));
 
-        System.out.printf("Comparison (pull request versus master)%n");
+        System.out.printf("Comparison (pull request versus main)%n");
         System.out.printf("(changes within the %% range [%f, %f] are regarded as insignificant):%n%n",
             PERFORMANCE_DEGRADATION_THRESHOLD, PERFORMANCE_INCREASE_THRESHOLD);
 

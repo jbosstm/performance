@@ -104,7 +104,7 @@ function publish_bm {
   tm=`date`
   git commit -m "Generated on host $host ($tm) using $VERSION_TO_PUBLISH"
   GT=$(urlencode ${GITHUB_TOKEN})
-  git push https://${ARTIFACTS_USER}:${GT}@github.com/${ARTIFACTS_USER}/artifacts.git master
+  git push https://${ARTIFACTS_USER}:${GT}@github.com/${ARTIFACTS_USER}/artifacts.git main
 }
 
 build_narayana
