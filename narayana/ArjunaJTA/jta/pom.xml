@@ -33,9 +33,6 @@
 
         <version.org.jboss.spec.javax.transaction>1.0.0.Final</version.org.jboss.spec.javax.transaction>
 
-        <!-- RTS -->
-        <narayana.version>${project.version}</narayana.version>
-
         <!-- geronimo -->
         <version.org.apache.geronimo.components.geronimo-transaction>3.1.5</version.org.apache.geronimo.components.geronimo-transaction>
         <version.org.apache.geronimo.specs.geronimo-jta_1.1_spec>1.1.1</version.org.apache.geronimo.specs.geronimo-jta_1.1_spec>
@@ -318,6 +315,11 @@
         <dependency>
             <groupId>org.jboss.resteasy</groupId>
             <artifactId>resteasy-client</artifactId>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
             <scope>compile</scope>
         </dependency>
         <dependency>

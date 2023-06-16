@@ -19,7 +19,6 @@
     </license>
   </licenses>
   <properties>
-    <narayana.version>${project.version}</narayana.version>
     <version.com.fasterxml.jackson>2.10.5</version.com.fasterxml.jackson>
     <version.com.fasterxml.jackson-databind>2.13.4.2</version.com.fasterxml.jackson-databind>
     <version.org.jboss.logging.jboss-logging>3.2.1.Final</version.org.jboss.logging.jboss-logging>

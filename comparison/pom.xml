@@ -58,6 +58,13 @@
 		        <type>pom</type>
 		        <scope>import</scope>
 		    </dependency>
+            <dependency>
+                <groupId>org.jboss.narayana</groupId>
+                <artifactId>narayana-bom-test</artifactId>
+                <version>${version.org.jboss.narayana}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
 		    <dependency>
                 <groupId>org.wildfly.core</groupId>
                 <artifactId>wildfly-cli</artifactId>
