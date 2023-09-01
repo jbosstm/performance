@@ -41,8 +41,8 @@
         <version.org.slf4j.slf4j-api>1.7.5</version.org.slf4j.slf4j-api>
         <geronimo.version.org.slf4j.slf4j-simple>1.5.5</geronimo.version.org.slf4j.slf4j-simple>
 
-        <version.com.atomikos.transactions-jta>5.0.9</version.com.atomikos.transactions-jta>
-        <version.com.atomikos.transactions-jdbc>5.0.9</version.com.atomikos.transactions-jdbc>
+        <version.com.atomikos.transactions-jta>6.0.0</version.com.atomikos.transactions-jta>
+        <version.com.atomikos.transactions-jdbc>6.0.0</version.com.atomikos.transactions-jdbc>
         <version.org.codehaus.btm.btm>2.1.4</version.org.codehaus.btm.btm>
         <version.jfreechart>1.0.9</version.jfreechart>
         <version.jfreecommon>1.0.16</version.jfreecommon>

@@ -5,17 +5,18 @@
 
 package io.narayana.perf.product;
 
+import java.util.Collection;
+
 import javax.transaction.xa.XAException;
-import com.atomikos.datasource.RecoverableResource;
-import com.atomikos.datasource.ResourceException;
-import com.atomikos.icatch.RecoveryService;
-import com.atomikos.recovery.PendingTransactionRecord;
-import com.atomikos.datasource.xa.XATransactionalResource;
-import com.atomikos.datasource.xa.XidFactory;
 import javax.transaction.xa.XAResource;
 import javax.transaction.xa.Xid;
 
-import java.util.Collection;
+import com.atomikos.datasource.RecoverableResource;
+import com.atomikos.datasource.ResourceException;
+import com.atomikos.datasource.xa.XATransactionalResource;
+import com.atomikos.datasource.xa.XidFactory;
+import com.atomikos.icatch.RecoveryService;
+import com.atomikos.recovery.PendingTransactionRecord;
 
 public class AomikosXAResource2 extends XATransactionalResource implements com.atomikos.datasource.RecoverableResource, XAResource {
 
@@ -57,12 +58,6 @@ public class AomikosXAResource2 extends XATransactionalResource implements com.a
     public boolean isClosed() {
         return super.isClosed();
     }
-
-    @Override
-    public boolean hasMoreToRecover() {
-        return super.hasMoreToRecover();
-    }
-
 
     @Override
     public void commit(Xid xid, boolean b) throws XAException {
