@@ -29,11 +29,11 @@ function build_narayana {
       then
       if [ ! -d narayana-tmp ]; then
         NARAYANA_REPO=${NARAYANA_REPO:-jbosstm}
-        NARAYANA_BRANCH="${NARAYANA_BRANCH:-${GIT_BRANCH}}"
+        NARAYANA_BRANCH="${NARAYANA_BRANCH:-main}"
         git clone https://github.com/${NARAYANA_REPO}/narayana.git -b ${NARAYANA_BRANCH} narayana-tmp
         [ $? = 0 ] || fatal "git clone https://github.com/${NARAYANA_REPO}/narayana.git failed"
       else
-        NARAYANA_BRANCH="${NARAYANA_BRANCH:-${GIT_BRANCH}}"
+        NARAYANA_BRANCH="${NARAYANA_BRANCH:-main}"
         cd narayana-tmp
         git checkout ${NARAYANA_BRANCH}
         git fetch origin
