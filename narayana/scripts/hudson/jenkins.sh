@@ -101,7 +101,9 @@ function publish_bm {
   cd tmp2
   git add -u
   host=`hostname`
+  [ $? = 0 ] || echo "hostname command not available"
   tm=`date`
+  [ $? = 0 ] || echo "date command not available"
   git commit -m "Generated on host $host ($tm) using $VERSION_TO_PUBLISH"
   GT=$(urlencode ${GITHUB_TOKEN})
   git push https://${ARTIFACTS_USER}:${GT}@github.com/${ARTIFACTS_USER}/artifacts.git main
