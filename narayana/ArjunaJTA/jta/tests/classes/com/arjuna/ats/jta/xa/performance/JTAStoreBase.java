@@ -10,9 +10,16 @@ import com.arjuna.ats.arjuna.common.CoreEnvironmentBeanException;
 import com.arjuna.ats.arjuna.common.ObjectStoreEnvironmentBean;
 import com.arjuna.common.internal.util.propertyservice.BeanPopulator;
 
+import jakarta.transaction.HeuristicMixedException;
+import jakarta.transaction.HeuristicRollbackException;
+import jakarta.transaction.NotSupportedException;
+import jakarta.transaction.RollbackException;
+import jakarta.transaction.SystemException;
 import jakarta.transaction.TransactionManager;
+import org.jboss.logging.Logger;
 
 public class JTAStoreBase {
+    protected static final Logger log = Logger.getLogger(JTAStoreBase.class);
     private static XAResourceImpl resource1;
     private static XAResourceImpl resource2;
     private static TransactionManager tm;
@@ -26,7 +33,7 @@ public class JTAStoreBase {
         resource2 = new XAResourceImpl();
     }
 
-    public boolean jtaTest() {
+    public boolean jtaTest() throws HeuristicRollbackException, SystemException, HeuristicMixedException, NotSupportedException, RollbackException {
         try {
             tm.begin();
 
@@ -35,8 +42,8 @@ public class JTAStoreBase {
 
             tm.commit();
         } catch(Exception e) {
-            System.err.printf("JTAStoreTests#jtaTest: %s%n", e.getMessage());
-            return false;
+            log.warnf("JTAStoreTests#jtaTest%n", e);
+            throw e;
         }
 
         return true;

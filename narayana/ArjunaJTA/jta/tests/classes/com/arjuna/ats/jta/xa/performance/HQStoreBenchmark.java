@@ -9,6 +9,11 @@ import com.arjuna.ats.arjuna.common.CoreEnvironmentBeanException;
 import com.arjuna.ats.internal.arjuna.objectstore.hornetq.HornetqJournalEnvironmentBean;
 import com.arjuna.ats.internal.arjuna.objectstore.hornetq.HornetqObjectStoreAdaptor;
 import com.arjuna.common.internal.util.propertyservice.BeanPopulator;
+import jakarta.transaction.HeuristicMixedException;
+import jakarta.transaction.HeuristicRollbackException;
+import jakarta.transaction.NotSupportedException;
+import jakarta.transaction.RollbackException;
+import jakarta.transaction.SystemException;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.openjdk.jmh.annotations.Benchmark;
@@ -35,7 +40,7 @@ public class HQStoreBenchmark extends JTAStoreBase {
 
     @Test
     @Benchmark
-    public void testHQStore(Blackhole bh) {
+    public void testHQStore(Blackhole bh) throws HeuristicRollbackException, SystemException, HeuristicMixedException, NotSupportedException, RollbackException {
         bh.consume(super.jtaTest());
     }
 }
