@@ -5,6 +5,11 @@
 
 package com.arjuna.ats.jta.xa.performance;
 
+import jakarta.transaction.HeuristicMixedException;
+import jakarta.transaction.HeuristicRollbackException;
+import jakarta.transaction.NotSupportedException;
+import jakarta.transaction.RollbackException;
+import jakarta.transaction.SystemException;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.openjdk.jmh.annotations.Benchmark;
@@ -47,7 +52,7 @@ public class JDBCStoreBenchmark extends JTAStoreBase {
 
     @Test
     @Benchmark
-    public void testJDBCStore(Blackhole bh) {
+    public void testJDBCStore(Blackhole bh) throws HeuristicRollbackException, SystemException, HeuristicMixedException, NotSupportedException, RollbackException {
         bh.consume(super.jtaTest());
     }
 }

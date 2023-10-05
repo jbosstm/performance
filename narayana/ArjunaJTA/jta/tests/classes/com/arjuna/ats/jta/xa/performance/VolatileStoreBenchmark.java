@@ -7,6 +7,11 @@ package com.arjuna.ats.jta.xa.performance;
 
 import com.arjuna.ats.arjuna.common.CoreEnvironmentBeanException;
 import com.arjuna.ats.internal.arjuna.objectstore.VolatileStore;
+import jakarta.transaction.HeuristicMixedException;
+import jakarta.transaction.HeuristicRollbackException;
+import jakarta.transaction.NotSupportedException;
+import jakarta.transaction.RollbackException;
+import jakarta.transaction.SystemException;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.openjdk.jmh.annotations.Benchmark;
@@ -26,7 +31,7 @@ public class VolatileStoreBenchmark extends JTAStoreBase {
 
     @Test
     @Benchmark
-    public void testVolatileStore(Blackhole bh) {
+    public void testVolatileStore(Blackhole bh) throws HeuristicRollbackException, SystemException, HeuristicMixedException, NotSupportedException, RollbackException {
         bh.consume(super.jtaTest());
     }
 }
