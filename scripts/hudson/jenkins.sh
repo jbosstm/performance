@@ -41,7 +41,7 @@ function build_narayana {
         cd narayana-tmp
         git checkout ${NARAYANA_BRANCH}
         git fetch origin
-        git reset --hard origin/${NARAYANA_BRANCH}
+        git reset --hard ${NARAYANA_BRANCH}
         cd ../
       fi
       echo "Checking if need Narayana PR"
