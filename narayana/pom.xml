@@ -40,7 +40,7 @@
         <version.org.wildfly.checkstyle-config>1.0.8.Final</version.org.wildfly.checkstyle-config>
         <skip.checkstyle>false</skip.checkstyle>
         <version.io.netty>4.1.79.Final</version.io.netty>
-
+        <narayana.version>${project.version}</narayana.version>
     </properties>
 
     <build>
@@ -94,7 +94,7 @@
             <dependency>
 		        <groupId>org.jboss.narayana</groupId>
 		        <artifactId>narayana-bom</artifactId>
-		        <version>6.0.3.Final-SNAPSHOT</version>
+		        <version>${narayana.version}</version>
 		        <type>pom</type>
 		        <scope>import</scope>
 		    </dependency>
