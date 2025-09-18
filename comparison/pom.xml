@@ -53,14 +53,14 @@
         <dependencies>
             <dependency>
 		        <groupId>org.jboss.narayana</groupId>
-		        <artifactId>narayana-bom</artifactId>
+		        <artifactId>main-dependency-management</artifactId>
 		        <version>${version.org.jboss.narayana}</version>
 		        <type>pom</type>
 		        <scope>import</scope>
 		    </dependency>
             <dependency>
                 <groupId>org.jboss.narayana</groupId>
-                <artifactId>narayana-bom-test</artifactId>
+                <artifactId>test-dependency-management</artifactId>
                 <version>${version.org.jboss.narayana}</version>
                 <type>pom</type>
                 <scope>import</scope>
