@@ -88,27 +88,6 @@ function urlencode {
     done
 }
 
-# upload the benchmark results to the artifacts git repo:
-function publish_bm {
-  VERSION_TO_PUBLISH=$OVERRIDE_NARAYANA_VERSION
-  if [ ! -v OVERRIDE_NARAYANA_VERSION ]; then
-    VERSION_TO_PUBLISH="`grep "<version>" narayana/pom.xml | head -n 2 | tail -n 1 | sed "s/ *<version>//" | sed "s#</version>##"` (performance repo)"
-  fi
-  rm -rf tmp2
-  ARTIFACTS_USER=${ARTIFACTS_USER:-jbosstm-bot}
-  git clone https://github.com/${ARTIFACTS_USER}/artifacts tmp2
-  cp $1 $2 tmp2/jobs/tm-comparison
-  cd tmp2
-  git add -u
-  host=`hostname`
-  [ $? = 0 ] || echo "hostname command not available"
-  tm=`date`
-  [ $? = 0 ] || echo "date command not available"
-  git commit -m "Generated on host $host ($tm) using $VERSION_TO_PUBLISH"
-  GT=$(urlencode ${GITHUB_TOKEN})
-  git push https://${ARTIFACTS_USER}:${GT}@github.com/${ARTIFACTS_USER}/artifacts.git main
-}
-
 build_narayana
 
 res=0 
@@ -157,9 +136,5 @@ fi
 java -Xms4096m -Xmx4096m -Danonymize=true -classpath "narayana/ArjunaJTA/jta/target/classes"$separator"narayana/ArjunaJTA/jta/target/benchmarks.jar" io.narayana.perf.product.ReportGenerator bm-output.txt $BM_LINE_PATTERN $PATTERN2 >> benchmark-output.txt
 cat benchmark-output.txt
 
-if [ -z ${DO_NOT_PUBLISH} ]
-then
-  publish_bm benchmark-output.txt benchmark.png
-fi
 
 exit $res
