@@ -4,7 +4,7 @@
     <parent>
         <groupId>narayana.performance.ejb</groupId>
         <artifactId>harness</artifactId>
-        <version>1.0</version>
+        <version>7.3.1.Final-SNAPSHOT</version>
     </parent>
     <artifactId>ejb</artifactId>
     <name>local ejb</name>
@@ -36,17 +36,17 @@
         <dependency>
             <groupId>org.jboss.ejb3</groupId>
             <artifactId>jboss-ejb3-ext-api</artifactId>
-            <version>1.0.0</version>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>narayana.performance.ejb</groupId>
             <artifactId>api</artifactId>
-            <version>1.0</version>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>narayana.performance.ejb</groupId>
             <artifactId>ejb2</artifactId>
-            <version>1.0</version>
+            <version>${project.version}</version>
             <classifier>client</classifier>
         </dependency>
     </dependencies>
