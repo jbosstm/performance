@@ -16,7 +16,5 @@
 
   <modules>
     <module>perf-api</module>
-    <module>perf-eap5</module>
-    <module>perf-eap6</module>
   </modules>
 </project>
