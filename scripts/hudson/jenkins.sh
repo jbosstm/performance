@@ -106,7 +106,7 @@ if [ -z $COMPARE_IMPLEMENTATIONS ] || [ $COMPARE_IMPLEMENTATIONS == "y" ]; then
 fi
 
 cd $WORKSPACE
-./build.sh clean install -f narayana
+./build.sh clean install
 JVM_ARGS="-DMAX_ERRORS=10" ./narayana/scripts/hudson/benchmark.sh "ArjunaJTA/jta" "org.jboss.narayana.rts.*TxnTest.*" 3
 [ $? = 0 ] || fatal "RTS benchmark failed"
 mv benchmark-output.txt benchmark-rts-output.txt
