@@ -84,6 +84,7 @@
         <module>ArjunaJTS/jts</module>
         <module>ArjunaJTA/jta</module>
         <module>ArjunaCore/arjuna</module>
+        <module>stm</module>
         <module>tools</module>
     </modules>
 
