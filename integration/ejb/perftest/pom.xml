@@ -9,7 +9,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>narayana.performance.ejb</groupId>
   <artifactId>jts-perf-test</artifactId>
-  <version>7.3.1.Final</version>
+  <version>7.3.2.Final-SNAPSHOT</version>
   <name>perf-parent</name>
   <description>JTS Performance Testing</description>
   <packaging>pom</packaging>

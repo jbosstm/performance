@@ -7,7 +7,7 @@
     <parent>
         <groupId>org.jboss.narayana.performance</groupId>
         <artifactId>comparison-parent</artifactId>
-        <version>7.3.1.Final</version>
+        <version>7.3.2.Final-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
