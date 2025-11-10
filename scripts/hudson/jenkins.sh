@@ -138,7 +138,7 @@ if [ -z $COMPARE_TRANSPORTS ] || [ $COMPARE_TRANSPORTS == "y" ]; then
 	export JBOSS_HOME="${WILDFLY_HOME}"
 	[ ! -d "${JBOSS_HOME}" ] && fatal "JBOSS_HOME directory '${JBOSS_HOME}' does not exist"
 	cd -
-	./build.sh -f comparison/pom.xml clean install
+	./build.sh -f comparison/pom.xml clean install -Parq
 	[ $? = 0 ] || fatal "Transport comparison failed"
 fi
 
