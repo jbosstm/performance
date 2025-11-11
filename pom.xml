@@ -7,7 +7,7 @@
     <groupId>org.jboss.narayana.performance</groupId>
     <artifactId>peformance-parent</artifactId>
     <packaging>pom</packaging>
-    <version>7.3.3.Final</version>
+    <version>7.3.4.Final-SNAPSHOT</version>
 
     <licenses>
       <license>
