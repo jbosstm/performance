@@ -30,9 +30,6 @@
     </licenses>
 
     <properties>
-        <maven.compiler.source>11</maven.compiler.source>
-	    <maven.compiler.target>11</maven.compiler.target>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <jmh.version>1.36</jmh.version>
         <version.org.jboss.spec.javax.transaction>1.0.0.Final</version.org.jboss.spec.javax.transaction>
         <version.org.jboss.jboss-transaction-spi>7.6.1.Final</version.org.jboss.jboss-transaction-spi>
