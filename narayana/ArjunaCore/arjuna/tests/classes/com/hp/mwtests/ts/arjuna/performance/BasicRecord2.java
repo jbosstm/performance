@@ -1,0 +1,122 @@
+/*
+ * Copyright The Narayana Authors
+ * SPDX short identifier: Apache-2.0
+ */
+
+
+
+package com.hp.mwtests.ts.arjuna.performance;
+
+import com.arjuna.ats.arjuna.common.Uid;
+import com.arjuna.ats.arjuna.coordinator.AbstractRecord;
+import com.arjuna.ats.arjuna.coordinator.RecordType;
+import com.arjuna.ats.arjuna.coordinator.TwoPhaseOutcome;
+import com.arjuna.ats.arjuna.state.InputObjectState;
+import com.arjuna.ats.arjuna.state.OutputObjectState;
+
+import java.io.PrintWriter;
+
+public class BasicRecord2 extends AbstractRecord {
+
+    private final int msDelay;
+
+    public BasicRecord2(int msDelay) {
+        super(new Uid());
+        this.msDelay = msDelay;
+    }
+
+    public BasicRecord2() {
+        this(0);
+    }
+
+    private int delay(int retVal) {
+        try {
+            Thread.sleep(0, msDelay);
+        } catch (InterruptedException ignore) {
+        }
+
+        return retVal;
+    }
+
+    public int typeIs() {
+        return RecordType.USER_DEF_FIRST0;
+    }
+
+    public int nestedAbort() {
+        return delay(TwoPhaseOutcome.FINISH_OK);
+    }
+
+    public int nestedCommit() {
+        return delay(TwoPhaseOutcome.FINISH_ERROR);
+    }
+
+    public int nestedPrepare() {
+        return delay(TwoPhaseOutcome.PREPARE_NOTOK);
+    }
+
+    public int topLevelAbort() {
+        return delay(TwoPhaseOutcome.FINISH_OK);
+    }
+
+    public int topLevelCommit() {
+        return delay(TwoPhaseOutcome.FINISH_OK);
+    }
+
+    public int topLevelPrepare() {
+        return delay(TwoPhaseOutcome.PREPARE_OK);
+    }
+
+    public void print(PrintWriter strm) {
+        super.print(strm);
+    }
+
+    public boolean doSave() {
+        return true;
+    }
+
+    public boolean save_state(OutputObjectState os, int ot) {
+        return true;
+    }
+
+    public boolean restore_state(InputObjectState os, int ot) {
+        return true;
+    }
+
+    public String type() {
+        return "/StateManager/AbstractRecord/BasicRecord";
+    }
+
+    public boolean shouldAdd(AbstractRecord a) {
+        return false;
+    }
+
+    public boolean shouldMerge(AbstractRecord a) {
+        return false;
+    }
+
+    public boolean shouldReplace(AbstractRecord a) {
+        return false;
+    }
+
+    public boolean shouldAlter(AbstractRecord a) {
+        return false;
+    }
+
+    public void merge(AbstractRecord a) {
+    }
+
+    public void alter(AbstractRecord a) {
+    }
+
+    /**
+     * @return <code>Object</code> to be used to order.
+     */
+
+    public Object value() {
+        return null;
+    }
+
+    public void setValue(Object o) {
+    }
+
+}
