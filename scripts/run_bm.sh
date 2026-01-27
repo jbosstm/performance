@@ -60,11 +60,13 @@ function build_narayana {
 }
 
 BM1="com.hp.mwtests.ts.arjuna.performance.Performance1.*"
+BM4="com.hp.mwtests.ts.arjuna.performance.VTPerformanceTest.*"
 BM2="com.hp.mwtests.ts.arjuna.atomicaction.CheckedActionTest.*"
 BM3="com.arjuna.ats.jta.xa.performance.JTAStoreTests.*"
 
 function run_benchmarks {
   run_bm narayana/ArjunaCore/arjuna "$BM1" $1
+  run_bm narayana/ArjunaCore/arjuna "$BM4" $1
   run_bm narayana/ArjunaJTA/jta "$BM3" $1
 }
 
