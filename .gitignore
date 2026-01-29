@@ -18,3 +18,5 @@ benchmark-output.txt
 benchmark.png
 bm-output.txt
 .metadata*
+.mvn/
+*.csv
