@@ -1,0 +1,118 @@
+name: performance
+
+on:
+  workflow_call:
+    inputs:
+      jdk_version:
+        description: 'JDK version'
+        required: true
+        type: string
+      pull_request_repo:
+        description: 'Repository to check out'
+        required: true
+        type: string
+        default: 'jbosstm/performance'
+      pull_request_ref:
+        description: 'Branch or commit to test'
+        required: true
+        type: string
+      environment_variables:
+        description: 'Environment variables'
+        required: false
+        type: string
+        default: '{}'
+
+# Only run the latest job
+concurrency:
+  group: 'performance @ ${{ github.workflow }} @ ${{ github.head_ref || github.ref }} @ jdk${{ inputs.jdk_version }}'
+  cancel-in-progress: true
+
+jobs:
+  performance-test:
+    name: Testing PERFORMANCE with JDK ${{ inputs.jdk_version }}
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Load Dynamic Environment Variables
+        uses: actions/github-script@v7
+        if: ${{ inputs.environment_variables != '' && inputs.environment_variables != '{}' }}
+        env:
+          ENV_JSON: ${{ inputs.environment_variables }}
+        with:
+          script: |
+            const envs = JSON.parse(process.env.ENV_JSON);
+            for (const [key, value] of Object.entries(envs)) {
+              core.exportVariable(key, value);
+              core.info(`Set ${key}=${value}`);
+            }
+
+      - name: Log run context
+        run: |
+          echo "Triggered by: ${{ github.event_name }}"
+          echo "Repository: ${{ inputs.pull_request_repo || github.repository }}"
+          echo "Branch/Ref: ${{ inputs.pull_request_ref || github.ref }}"
+
+      - name: Checkout code
+        uses: actions/checkout@v6
+        with:
+          repository: '${{ inputs.pull_request_repo || github.repository }}'
+          ref: ${{ inputs.pull_request_ref || github.ref }}
+
+      - name: Set up JDK ${{ inputs.jdk_version }}
+        uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: ${{ inputs.jdk_version }}
+          cache: 'maven'
+
+      - name: PERFORMANCE testing axis
+        id: performance
+        run: |
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git config --global user.name "github-actions[bot]"
+          OVERRIDE_NARAYANA_VERSION=7.3.3.Final BUILD_NARAYANA=y WORKSPACE=$(pwd) ./scripts/run_bm.sh || :
+          res=$?
+          cd $WORKSPACE
+          # Linux / CI
+          echo "uname -a:"; uname -a
+
+          echo "os-release:"
+          [ -f /etc/redhat-release ] && cat /etc/redhat-release
+          [ -f /etc/os-release ] && cat /etc/os-release
+
+          echo "java version:"; java -version
+          echo "free:"; command -v free >/dev/null && free -m
+          echo "cpuinfo:"; [ -r /proc/cpuinfo ] && cat /proc/cpuinfo
+          echo "meminfo:"; [ -r /proc/meminfo ] && cat /proc/meminfo
+          echo "devices:"; [ -r /proc/devices ] && cat /proc/devices
+          echo "scsi:"; [ -r /proc/scsi/scsi ] && cat /proc/scsi/scsi
+          echo "partitions:"; [ -r /proc/partitions ] && cat /proc/partitions
+          echo "lspci:"; command -v lspci >/dev/null && timeout 5s lspci || echo "skipped"
+          echo "lsusb:"; command -v lsusb >/dev/null && timeout 5s lsusb || echo "skipped"
+          echo "lsblk:"; command -v lsblk >/dev/null && timeout 5s lsblk || echo "skipped"
+          echo "df:"; df
+          echo "mount:"; mount | grep -E 'ext[234]|xfs|btrfs' || true
+          [ $res = 0 ] || (echo "there were regressions in one or more of the benchmarks (see previous PR comment for details" && exit -1)
+
+      - uses: actions/upload-artifact@v6
+        if: ${{ failure() && steps.performance.conclusion == 'failure' || cancelled() && steps.performance.conclusion == 'cancelled' }}
+        with:
+          retention-days: 30
+          name: performance-logs-jdk${{ inputs.jdk_version }}
+          path: |
+            **/*.*log*
+            **/ObjectStore*/**
+            **/tx-object-store/**
+            **/*tx-object-store.zip
+            **/target/*surefire-reports*/**
+            **/target/*failsafe-reports*/**
+          if-no-files-found: warn
+
+      - name: Uploading PERFORMANCE results
+        uses: actions/upload-artifact@v6
+        with:
+          retention-days: 30
+          name: performance-results-jdk${{ inputs.jdk_version }}
+          path: |
+            **/target/**/*.csv
+          if-no-files-found: error
