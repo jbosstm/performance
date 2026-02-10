@@ -12,6 +12,7 @@ import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.Fork;
 import org.openjdk.jmh.annotations.Level;
 import org.openjdk.jmh.annotations.Measurement;
+import org.openjdk.jmh.annotations.Mode;
 import org.openjdk.jmh.annotations.OutputTimeUnit;
 import org.openjdk.jmh.annotations.Param;
 import org.openjdk.jmh.annotations.Scope;
@@ -20,6 +21,12 @@ import org.openjdk.jmh.annotations.State;
 import org.openjdk.jmh.annotations.TearDown;
 import org.openjdk.jmh.annotations.Threads;
 import org.openjdk.jmh.annotations.Warmup;
+import org.openjdk.jmh.profile.JavaFlightRecorderProfiler;
+import org.openjdk.jmh.runner.Runner;
+import org.openjdk.jmh.runner.RunnerException;
+import org.openjdk.jmh.runner.options.Options;
+import org.openjdk.jmh.runner.options.OptionsBuilder;
+import org.openjdk.jmh.runner.options.TimeValue;
 
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
@@ -39,8 +46,8 @@ import static com.hp.mwtests.ts.arjuna.performance.VTPerformanceTest.THREADS;
 @Warmup(iterations = VTPerformanceTest.ITERATIONS, time = VTPerformanceTest.TIME_PER_ITER, timeUnit = TimeUnit.SECONDS)
 @Measurement(iterations = VTPerformanceTest.ITERATIONS, time = VTPerformanceTest.TIME_PER_ITER, timeUnit = TimeUnit.SECONDS)
 public class VTPerformanceTest {
-    static final int THREADS = 10;//_000; //Threads.MAX;
-    static final int FORKS = 2;
+    static final int THREADS = 240;//10;//_000; //Threads.MAX;
+    static final int FORKS = 1;
     static final int ITERATIONS = 5;
     static final int TIME_PER_ITER = 2;
 
@@ -50,6 +57,32 @@ public class VTPerformanceTest {
     private static MethodHandle restartExecutorMH; // method handle to restart the executor
     private static MethodHandle shutdownExecutorMH; // method handle to shut down the executor
     private static boolean isVirtualThreadPerTaskExecutor;
+
+    public static void main(String[] args) throws RunnerException {
+        // Sometimes it is useful to run the benchmark directly from an IDE:
+        Options opt = new OptionsBuilder()
+                .include(VTPerformanceTest.class.getSimpleName() + ".standardThreadsBenchmark")
+                .timeUnit(TimeUnit.SECONDS)
+                .threads(THREADS)
+                .forks(FORKS)
+                .mode(Mode.Throughput)
+                .warmupIterations(1)
+                .warmupTime(TimeValue.seconds(1))
+                .measurementIterations(ITERATIONS)
+                .measurementTime(TimeValue.seconds(TIME_PER_ITER))
+                .param("networkDelay", "0") // don't simulate network using MS_DELAY
+                .shouldDoGC(true)
+                // use JFR as the profiler, the recording will appear in the User working directory with the
+                // name "<package name>-xxx/profile.jfr", which you can change to "wherever" using
+                // addProfiler(JavaFlightRecorderProfiler.class, "dir=wherever"). Java Flight Recorder data files
+                // can be viewed with the jmc graphical tool or with the jfr command line tool which is in the java
+                // bin directory
+                .addProfiler(JavaFlightRecorderProfiler.class)
+                .jvmArgs("-Djmh.executor=FJP") // ForkJoinPool
+                .build();
+
+        new Runner(opt).run();
+    }
 
     @State(Scope.Benchmark)
     public static class VTBenchmarkState {
@@ -128,6 +161,11 @@ public class VTPerformanceTest {
 
     public static void beforeClass(String msg, boolean async, boolean enableVT) {
         CoordinatorEnvironmentBean configBean = arjPropertyManager.getCoordinatorEnvironmentBean();
+
+        // size the standard TwoPhaseCommit thread pool to match the number of threads used for the benchmark,
+        // this provides a fairer comparison between the standard fork-join pool and the virtual threads executor,
+        // refer to the various TwoPhaseCommitThreadPool implementations for details
+        configBean.setMaxTwoPhaseCommitThreads(THREADS);
 
         configBean.setAsyncPrepare(async);
         configBean.setAsyncCommit(async);
