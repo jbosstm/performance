@@ -107,5 +107,12 @@
             <groupId>org.jboss.logging</groupId>
             <artifactId>jboss-logging-processor</artifactId>
         </dependency>
+        <!-- Source: https://mvnrepository.com/artifact/tools.profiler/async-profiler -->
+        <dependency>
+            <groupId>tools.profiler</groupId>
+            <artifactId>async-profiler</artifactId>
+            <version>4.3</version>
+            <scope>compile</scope>
+        </dependency>
     </dependencies>
 </project>

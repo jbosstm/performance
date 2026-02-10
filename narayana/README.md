@@ -33,6 +33,14 @@ Here we have overridden the defaults and specified "-i 1 -wi 2 -f 1 -t 2 -r 10" 
 
 We also passed in a wild card (.\*) to say run all benchmark methods contained in the class VolatileStoreBenchmark. 
 
+To run the benchmark with a profiler pass the appropriate profiler options via the java command line. For example to the run the VTPerformanceTest using the JFR profiler use the following options:
+
+    java -XX:+FlightRecorder -XX:StartFlightRecording=duration=200s,filename=flight.jfr -jar ArjunaCore/arjuna/target/benchmarks.jar com.hp.mwtests.ts.arjuna.performance.VTPerformanceTest
+
+Some benchmarks, such as the one just referenced, also have a main method to simplify profiling and running from an IDE.
+
+Profiler data can be viewed with tools specific to the profiler, for example JFR data can be viewed with the jmc graphical tool or with the jfr command line tool located in the java bin directory.
+
 And finally, to debug a benchmark use the surefire debug property, for example `mvn clean test -Dtest=TestBenchmark#testImprovement -Dmaven.surefire.debug`
 
 It is straightforward to write your own benchmark code, just tell the framework which methods are benchmarks by annotating them with @Benchmark. There are plenty of examples in this git repository.
