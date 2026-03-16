@@ -65,15 +65,8 @@ jobs:
           java-version: ${{ inputs.jdk_version }}
           cache: 'maven'
 
-      - name: PERFORMANCE testing axis
-        id: performance
+      - name: Describe Environment
         run: |
-          git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git config --global user.name "github-actions[bot]"
-          BUILD_NARAYANA=y WORKSPACE=$(pwd) ./scripts/run_bm.sh || :
-          res=$?
-          cd $WORKSPACE
-          # Linux / CI
           echo "uname -a:"; uname -a
 
           echo "os-release:"
@@ -92,6 +85,14 @@ jobs:
           echo "lsblk:"; command -v lsblk >/dev/null && timeout 5s lsblk || echo "skipped"
           echo "df:"; df
           echo "mount:"; mount | grep -E 'ext[234]|xfs|btrfs' || true
+
+      - name: PERFORMANCE testing axis
+        id: performance
+        run: |
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git config --global user.name "github-actions[bot]"
+          BUILD_NARAYANA=y WORKSPACE=$(pwd) ./.github/scripts/performance.sh
+          res=$?
           [ $res = 0 ] || (echo "there were regressions in one or more of the benchmarks (see previous PR comment for details" && exit -1)
 
       - uses: actions/upload-artifact@v6

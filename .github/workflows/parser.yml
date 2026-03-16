@@ -32,6 +32,58 @@ on:
         description: 'WILDFLY_RELEASE_VERSION: the version of WildFly to checkout.'
         required: false
         type: string
+      NARAYANA_REPO:
+        description: 'NARAYANA_REPO: the git repo to use for Narayana (default: jbosstm)'
+        required: false
+        type: string
+      NARAYANA_BRANCH:
+        description: 'NARAYANA_BRANCH: the git branch to checkout for Narayana (default: main)'
+        required: false
+        type: string
+      NY_BRANCH:
+        description: 'NY_BRANCH: Narayana PR branch to test'
+        required: false
+        type: string
+      OVERRIDE_NARAYANA_VERSION:
+        description: 'OVERRIDE_NARAYANA_VERSION: override the Narayana version'
+        required: false
+        type: string
+      JMHARGS:
+        description: 'JMHARGS: JMH benchmark arguments'
+        required: false
+        type: string
+      THREAD_COUNTS:
+        description: 'THREAD_COUNTS: thread counts for benchmarks'
+        required: false
+        type: string
+      COMPARE_STORES:
+        description: 'COMPARE_STORES: run store benchmarks (y/n)'
+        required: false
+        type: string
+      COMPARE_IMPLEMENTATIONS:
+        description: 'COMPARE_IMPLEMENTATIONS: run implementation comparison benchmarks (y/n)'
+        required: false
+        type: string
+      COMPARE_TRANSPORTS:
+        description: 'COMPARE_TRANSPORTS: run transport comparison benchmarks (y/n)'
+        required: false
+        type: string
+      COMPARE_JOURNAL_PARAMETERS:
+        description: 'COMPARE_JOURNAL_PARAMETERS: run journal parameter benchmarks (y/n)'
+        required: false
+        type: string
+      LRA_REPO:
+        description: 'LRA_REPO: the git repo to use for LRA'
+        required: false
+        type: string
+      LRA_PR_BRANCH:
+        description: 'LRA_PR_BRANCH: LRA PR branch to test'
+        required: false
+        type: string
+      LRA_CURRENT_VERSION:
+        description: 'LRA_CURRENT_VERSION: override the LRA version'
+        required: false
+        type: string
   workflow_call:
     inputs:
       jdk_versions:
@@ -64,8 +116,9 @@ jobs:
     runs-on: ubuntu-latest
 
     outputs:
-      jdk_versions: ${{ steps.parse.outputs.jdk_versions || steps.set-axes-inputs.outputs.jdk_versions || '["25"]' }}
-      environment_variables: ${{ steps.parse.outputs.environment_variables || steps.set-axes-inputs.outputs.environment_variables || '{}' }}
+      PERFORMANCE: ${{ steps.parse.outputs.PERFORMANCE || 'true' }}
+      jdk_versions: ${{ steps.parse.outputs.jdk_versions || steps.set-jdk-and-env-vars.outputs.jdk_versions || '["25"]' }}
+      environment_variables: ${{ steps.parse.outputs.environment_variables || steps.set-jdk-and-env-vars.outputs.environment_variables || '{}' }}
       pr_number: ${{ steps.set-pr-data.outputs.pr_number }}
       pr_ref: ${{ steps.set-pr-data.outputs.pr_ref }}
       pr_repo: ${{ steps.set-pr-data.outputs.pr_repo }}
@@ -88,6 +141,14 @@ jobs:
             const pr = context.payload.pull_request;
             const prBody = pr.body || '';
             
+            // Normalise description: replace newlines and commas with spaces and split the result into a set of tokens
+            const tokens = new Set(prBody.replace(/[\r\n,]/g, ' ').split(/\s+/));
+            
+            if (tokens.has('NO_TESTS')) {
+              core.info('NO_TESTS was requested. PERFORMANCE test will not be started.');
+              core.setOutput('PERFORMANCE', 'false');
+            }
+            
             // Matches JDK17, JDK21, etc.
             const jdkRegex = /\bJDK(17|21|25)\b/gi;
             const matches = [...prBody.matchAll(jdkRegex)];
@@ -101,11 +162,24 @@ jobs:
             core.setOutput('jdk_versions', JSON.stringify(jdk_versions));
             
             const possibleEnvVars = [
-              'WILDFLY_RELEASE_VERSION'
+              'WILDFLY_RELEASE_VERSION',
+              'NARAYANA_REPO',
+              'NARAYANA_BRANCH',
+              'NY_BRANCH',
+              'OVERRIDE_NARAYANA_VERSION',
+              'JMHARGS',
+              'THREAD_COUNTS',
+              'COMPARE_STORES',
+              'COMPARE_IMPLEMENTATIONS',
+              'COMPARE_TRANSPORTS',
+              'COMPARE_JOURNAL_PARAMETERS',
+              'LRA_REPO',
+              'LRA_PR_BRANCH',
+              'LRA_CURRENT_VERSION'
             ];
-            
+
             const extractedEnvVars = {};
-            
+
             for (const varName of possibleEnvVars) {
               // Matches "VAR=value" stopping at the first whitespace
               const regex = new RegExp(`\\b${varName}=([^\\s]+)`);
@@ -121,7 +195,7 @@ jobs:
             core.setOutput('environment_variables', JSON.stringify(extractedEnvVars));
 
       - name: Set axes according to triggering event
-        id: set-axes-inputs
+        id: set-jdk-and-env-vars
         if: ${{ github.event_name == 'workflow_dispatch' }}
         uses: actions/github-script@v8
         with:
@@ -136,7 +210,20 @@ jobs:
             core.setOutput('jdk_versions', JSON.stringify(jdk_versions));
             
             const extractedEnvVars = Object.fromEntries([
-              ['WILDFLY_RELEASE_VERSION', '${{ inputs.WILDFLY_RELEASE_VERSION }}']
+              ['WILDFLY_RELEASE_VERSION', '${{ inputs.WILDFLY_RELEASE_VERSION }}'],
+              ['NARAYANA_REPO', '${{ inputs.NARAYANA_REPO }}'],
+              ['NARAYANA_BRANCH', '${{ inputs.NARAYANA_BRANCH }}'],
+              ['NY_BRANCH', '${{ inputs.NY_BRANCH }}'],
+              ['OVERRIDE_NARAYANA_VERSION', '${{ inputs.OVERRIDE_NARAYANA_VERSION }}'],
+              ['JMHARGS', '${{ inputs.JMHARGS }}'],
+              ['THREAD_COUNTS', '${{ inputs.THREAD_COUNTS }}'],
+              ['COMPARE_STORES', '${{ inputs.COMPARE_STORES }}'],
+              ['COMPARE_IMPLEMENTATIONS', '${{ inputs.COMPARE_IMPLEMENTATIONS }}'],
+              ['COMPARE_TRANSPORTS', '${{ inputs.COMPARE_TRANSPORTS }}'],
+              ['COMPARE_JOURNAL_PARAMETERS', '${{ inputs.COMPARE_JOURNAL_PARAMETERS }}'],
+              ['LRA_REPO', '${{ inputs.LRA_REPO }}'],
+              ['LRA_PR_BRANCH', '${{ inputs.LRA_PR_BRANCH }}'],
+              ['LRA_CURRENT_VERSION', '${{ inputs.LRA_CURRENT_VERSION }}']
             ].filter(entry => entry[1] !== ''));
 
             core.info(`Custom Envs: ${JSON.stringify(extractedEnvVars)}`);
@@ -144,6 +231,7 @@ jobs:
 
   performance:
     needs: parser
+    if: ${{ needs.parser.outputs.PERFORMANCE == 'true' }}
     uses: ./.github/workflows/performance.yml
     strategy:
       matrix:
