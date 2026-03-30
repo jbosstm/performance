@@ -51,6 +51,7 @@ function build_narayana_lra {
   # INITIALIZE LRA ENV
   export MAVEN_OPTS="-Xmx1024m -XX:MaxMetaspaceSize=512m"
 
+  LRA_REPO=${LRA_REPO:-jbosstm}
   LRA_BRANCH=main
   #rm -rf ~/.m2/repository/
   rm -rf lra
