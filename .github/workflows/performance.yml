@@ -115,5 +115,7 @@ jobs:
           retention-days: 30
           name: performance-results-jdk${{ inputs.jdk_version }}
           path: |
-            **/target/**/*.csv
+            **/*.csv
+            **/benchmark*.png
+            **/benchmark*.txt
           if-no-files-found: error
