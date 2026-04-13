@@ -38,4 +38,4 @@ description: the version of WildFly to checkout.'
 * APP_SERVER_ZIP_LOCATION:
   * description: URL of the app
 
-Pull requests build and run with one of the following JDKs: JDK17, JDK21, and JDK25. If the JDK version is omitted, JDK25 will be used.
+Pull requests build and run with one of the following JDKs (to select a JDK, please do not use a space): JDK 17, JDK 21, and JDK 25. If the JDK version is omitted, JDK 25 will be used.
