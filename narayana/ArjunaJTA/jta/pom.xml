@@ -26,8 +26,8 @@
     </prerequisites>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <maven.compiler.target>11</maven.compiler.target>
-        <maven.compiler.source>11</maven.compiler.source>
+        <maven.compiler.target>25</maven.compiler.target>
+        <maven.compiler.source>25</maven.compiler.source>
 
         <version.org.jboss.logging.jboss-logging>3.2.1.Final</version.org.jboss.logging.jboss-logging>
 
@@ -105,6 +105,10 @@
                             <name>com.atomikos.icatch.file</name>
                             <value>${project.build.directory}/classes/atomikos.properties</value>
                         </property>
+                        <property>
+                            <name>narayana.storeLocation</name>
+                            <value>${project.build.directory}</value>
+                        </property>
                     </systemProperties>
 
                     <includes>
@@ -118,10 +122,6 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <configuration>
-                    <source>11</source>
-                    <target>11</target>
-                </configuration>
             </plugin>
 
         </plugins>
@@ -177,6 +177,10 @@
         <dependency>
             <groupId>org.apache.activemq</groupId>
             <artifactId>artemis-journal</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.infinispan</groupId>
+            <artifactId>infinispan-core</artifactId>
         </dependency>
         <dependency>
             <groupId>jakarta.transaction</groupId>
