@@ -31,13 +31,14 @@
     </licenses>
 
     <properties>
-        <maven.compiler.source>17</maven.compiler.source>
-        <maven.compiler.target>17</maven.compiler.target>
+        <maven.compiler.source>25</maven.compiler.source>
+        <maven.compiler.target>25</maven.compiler.target>
         <jmh.version>1.37</jmh.version>
         <version.org.jboss.spec.javax.transaction>1.0.0.Final</version.org.jboss.spec.javax.transaction>
         <version.org.jboss.jboss-transaction-spi>7.6.1.Final</version.org.jboss.jboss-transaction-spi>
         <version.junit>[4.13.1,)</version.junit>
 	    <version.org.apache.activemq>2.19.0</version.org.apache.activemq>
+        <version.infinispan>16.0.5</version.infinispan>
         <version.org.wildfly.checkstyle-config>1.0.8.Final</version.org.wildfly.checkstyle-config>
         <skip.checkstyle>false</skip.checkstyle>
         <version.io.netty>4.1.79.Final</version.io.netty>
@@ -173,6 +174,13 @@
                 <groupId>org.apache.activemq</groupId>
                 <artifactId>artemis-journal</artifactId>
                 <version>${version.org.apache.activemq}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.infinispan</groupId>
+                <artifactId>infinispan-bom</artifactId>
+                <version>${version.infinispan}</version>
+                <type>pom</type>
+                <scope>import</scope>
             </dependency>
         </dependencies>
     </dependencyManagement>
