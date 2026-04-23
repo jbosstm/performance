@@ -93,19 +93,20 @@ public class GeronimoComparison extends ProductComparison {
             buildDir = buildDir + "/geronimo";
 
             howlLog = new HOWLLog(
-                    "org.objectweb.howl.log.BlockLogBuffer", //                "bufferClassName",
-                    4, //                "bufferSizeKBytes",
-                    true, //                "checksumEnabled",
-                    true, //                "adler32Checksum",
-                    20, //                "flushSleepTime",
-                    buildDir, //                "logFileDir",
-                    "log", //                "logFileExt",
-                    LOG_FILE_NAME, //                "logFileName",
-                    400, //                "maxBlocksPerFile",
-                    16, //                "maxBuffers",
-                    100, //                "maxLogFiles",
-                    16, //                "minBuffers"
-                    10,//                "threadsWaitingForceThreshold"});
+                    "org.objectweb.howl.log.BlockLogBuffer",
+                    32,
+                    true,
+                    true,
+                    50,
+                    buildDir,
+                    "log",
+                    LOG_FILE_NAME,
+                    200,
+                    128,
+                    100,
+                    128,
+                    50,
+                    false,
                     xidFactory,
                     new File(buildDir)
             );

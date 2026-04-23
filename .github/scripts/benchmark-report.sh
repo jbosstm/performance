@@ -13,40 +13,15 @@
 # COMPARISON: a regex pattern which determines which java class names to use when looking for benchmarks
 # COMPARISON_COUNT: and this is the expected number of class names that match the pattern
 
-# Keep ./narayana/scripts/hudson/jenkins.sh ./scripts/hudson/jenkins.sh ./scripts/run_bm.sh uniform
 # build the main narayana repo
 function build_narayana {
-    if [ -z $BUILD_NARAYANA ] || [ $BUILD_NARAYANA != "n" ];
-      then
-      if [ ! -d narayana-tmp ]; then
-        NARAYANA_REPO=${NARAYANA_REPO:-jbosstm}
-        NARAYANA_BRANCH="${NARAYANA_BRANCH:-main}"
-        git clone https://github.com/${NARAYANA_REPO}/narayana.git -b ${NARAYANA_BRANCH} narayana-tmp
-        [ $? = 0 ] || fatal "git clone https://github.com/${NARAYANA_REPO}/narayana.git failed"
-      else
-        NARAYANA_BRANCH="${NARAYANA_BRANCH:-main}"
-        cd narayana-tmp
-        git checkout ${NARAYANA_BRANCH}
-        git fetch origin
-        git reset --hard origin/${NARAYANA_BRANCH}
-        cd ../
-      fi
-      echo "Checking if need Narayana PR"
-      if [ -n "$NY_BRANCH" ]; then
-        echo "Building NY PR"
-        cd narayana-tmp
-        git fetch origin +refs/pull/*/head:refs/remotes/jbosstm/pull/*/head
-        [ $? = 0 ] || fatal "git fetch of pulls failed"
-        git checkout $NY_BRANCH
-        [ $? = 0 ] || fatal "git fetch of pull branch failed"
-        cd ../
-      fi
-      ./build.sh -f narayana-tmp/pom.xml clean install -B -DskipTests -Pcommunity
+    if [ -z $BUILD_NARAYANA ] || [ $BUILD_NARAYANA != "n" ]; then
+      WORKSPACE="$WORKSPACE" ./.github/scripts/build-narayana.sh
       if [ $? != 0 ]; then
-          comment_on_pull "Narayana build failed: $BUILD_URL";
-          exit -1
+          echo "Narayana build failed"
+          exit 1
       fi
-      OVERRIDE_NARAYANA_VERSION=`grep "<version>" narayana-tmp/pom.xml | head -n 2 | tail -n 1 | sed "s/ *<version>//" | sed "s#</version>##"`
+      OVERRIDE_NARAYANA_VERSION=$(grep "<version>" narayana-tmp/pom.xml | head -n 2 | tail -n 1 | sed "s/ *<version>//" | sed "s#</version>##")
     fi
 }
 
@@ -67,8 +42,8 @@ function preamble {
 # run all of the benchmarks in the ArjunaJTA/jta module
 function bm {
   echo "NEXT RUN using $JMHARGS"
-  chmod 755 ./narayana/scripts/hudson/benchmark.sh
-  ./narayana/scripts/hudson/benchmark.sh "ArjunaJTA/jta" "$2" "$3"
+  chmod 755 ./.github/scripts/benchmark.sh
+  ./.github/scripts/benchmark.sh "ArjunaJTA/jta" "$2" "$3"
   [ $? = 0 ] || res=1
   cat benchmark-output.txt >> $1
   echo "RUN status: $res"
