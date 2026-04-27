@@ -35,7 +35,6 @@
 
         <!-- geronimo -->
         <version.org.apache.geronimo.components.geronimo-transaction>4.0.0</version.org.apache.geronimo.components.geronimo-transaction>
-        <version.org.apache.geronimo.specs.geronimo-jta_1.1_spec>1.1.1</version.org.apache.geronimo.specs.geronimo-jta_1.1_spec>
         <org.objectweb.howl-howl>1.0.1-1</org.objectweb.howl-howl>
         <version.org.slf4j.slf4j-simple>1.6.4</version.org.slf4j.slf4j-simple>
         <version.org.slf4j.slf4j-api>1.7.5</version.org.slf4j.slf4j-api>
@@ -246,11 +245,6 @@
             <groupId>org.apache.geronimo.components</groupId>
             <artifactId>geronimo-transaction</artifactId>
             <version>${version.org.apache.geronimo.components.geronimo-transaction}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.geronimo.specs</groupId>
-            <artifactId>geronimo-jta_1.1_spec</artifactId>
-            <version>${version.org.apache.geronimo.specs.geronimo-jta_1.1_spec}</version>
         </dependency>
         <dependency>
             <groupId>org.objectweb.howl</groupId>

@@ -17,23 +17,23 @@ import org.openjdk.jmh.annotations.State;
 import org.openjdk.jmh.runner.RunnerException;
 import org.openjdk.jmh.runner.options.CommandLineOptionException;
 
-import javax.transaction.SystemException;
-import javax.transaction.TransactionManager;
-import javax.transaction.UserTransaction;
+import jakarta.transaction.SystemException;
+import jakarta.transaction.TransactionManager;
+import jakarta.transaction.UserTransaction;
 import javax.transaction.xa.XAResource;
 import java.io.File;
 
 @State(Scope.Benchmark)
-public class GeronimoComparison extends ProductComparison {
+public class GeronimoComparison extends ProductComparisonJakarta {
     public static void main(String[] args) throws RunnerException, CommandLineOptionException, CoreEnvironmentBeanException {
         JMHConfigJTA.runJTABenchmark(GeronimoComparison.class.getSimpleName(), args);
     }
 
-    protected ProductInterface getProductInterface() {
+    protected ProductInterfaceJakarta getProductInterface() {
         return geronimo;
     }
 
-    private ProductInterface geronimo = new ProductInterface() {
+    private ProductInterfaceJakarta geronimo = new ProductInterfaceJakarta() {
         private final String LOG_FILE_NAME = "geronimo_howl_test_";
         private HOWLLog howlLog;
         private UserTransaction ut;
