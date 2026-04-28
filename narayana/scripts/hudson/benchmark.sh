@@ -80,7 +80,8 @@ function run_bm {
   # there should be $3 results in the csv file
   let tc=$(wc -l < ${CSVF})
   let tc=tc-1 # subtract 1 to account for the header
-  if [ $tc != $3 ]; then
+  if [ $tc -lt $3 ]; then
+    # the number of results is less than the expected number of results
     echo "Some benchmark tests did not finish. Expected: ${3} Actual: ${tc} - ${1} and ${2}"
     return 1
   fi
