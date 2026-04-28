@@ -14,6 +14,12 @@ description: the version of WildFly to checkout.'
 * NY_BRANCH:
   * description: Narayana PR branch to test'
 
+* LRA_REPO
+  * description: the git repo to use for LRA
+
+* LRA_BRANCH
+  * description: LRA PR branch to test'
+
 * OVERRIDE_NARAYANA_VERSION:
   * description: override the Narayana version'
 
