@@ -174,7 +174,7 @@ jobs:
               'COMPARE_TRANSPORTS',
               'COMPARE_JOURNAL_PARAMETERS',
               'LRA_REPO',
-              'LRA_PR_BRANCH',
+              'LRA_BRANCH',
               'LRA_CURRENT_VERSION'
             ];
 

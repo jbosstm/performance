@@ -52,35 +52,28 @@ function build_narayana_lra {
   export MAVEN_OPTS="-Xmx1024m -XX:MaxMetaspaceSize=512m"
 
   LRA_REPO=${LRA_REPO:-jbosstm}
-  LRA_BRANCH=main
+  LRA_BRANCH=${LRA_BRANCH:-main}
   #rm -rf ~/.m2/repository/
   rm -rf lra
-  git clone https://github.com/${LRA_REPO}/lra.git -b ${LRA_BRANCH}
+  git clone https://github.com/${LRA_REPO}/lra.git
   [ $? = 0 ] || fatal "git clone https://github.com/${LRA_REPO}/lra.git failed"
-  echo "Checking if need Narayana LRA PR"
-  if [ -n "$LRA_PR_BRANCH" ]; then
-    echo "Building LRA PR ${LRA_PR_BRANCH}"
-    cd lra
-    git fetch origin +refs/pull/*/head:refs/remotes/jbosstm/pull/*/head
-    [ $? = 0 ] || fatal "git fetch of pulls failed"
-    git checkout $LRA_PR_BRANCH
-    [ $? = 0 ] || fatal "git fetch of pull branch failed"
-    cd ../
-  fi
-
-  if [ $? != 0 ]; then
-    echo "Checkout failed"
-    exit -1
-  fi
+  echo "Checking if need an LRA PR"
+  echo "Building LRA PR ${LRA_BRANCH}"
   cd lra
+  git fetch origin +refs/pull/*/head:refs/remotes/jbosstm/pull/*/head
+  [ $? = 0 ] || fatal "git fetch of pulls failed"
+  git checkout $LRA_BRANCH
+  [ $? = 0 ] || fatal "Checkout failed: $BUILD_URL";
+
   ./build.sh clean install -B -DskipTests
   [ $LRA_CURRENT_VERSION ] || export LRA_CURRENT_VERSION=`grep "<version>" pom.xml | head -n 2 | tail -n 1 | sed "s/ *<version>//" | sed "s#</version>##"`
-  cd ..
 
   if [ $? != 0 ]; then
     echo "Narayana LRA build failed";
     exit -1
   fi
+
+  cd ..
 }
 
 function download_and_update_as {
