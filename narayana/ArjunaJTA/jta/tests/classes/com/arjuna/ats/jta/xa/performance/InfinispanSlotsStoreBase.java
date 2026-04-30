@@ -151,6 +151,7 @@ public class InfinispanSlotsStoreBase extends JTAStoreBase {
                 ConcurrentMap.class
         );
 
+        @SuppressWarnings("unchecked")
         ConcurrentMap<String, Object> beanInstances = (ConcurrentMap<String, Object>) varHandle.get();
 
         beanInstances.put(SlotStoreEnvironmentBean.class.getName(), bean);

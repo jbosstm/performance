@@ -110,7 +110,7 @@ BM4b="ArjunaJTA/jta io.narayana.perf.product.GeronimoComparison.* 1"
 BM4c="ArjunaJTA/jta io.narayana.perf.product.NarayanaComparison.* 1"
 BM4d="ArjunaJTA/jta io.narayana.perf.product.AtomikosComparison.* 1"
 #ArjunaJTA/jta/tests/classes/io/narayana/perf/product/ProductComparison.java
-BM5="ArjunaJTA/jta com.arjuna.ats.jta.xa.performance.*StoreBenchmark.* 6"
+BM5="ArjunaJTA/jta com.arjuna.ats.jta.xa.performance.*StoreBenchmark.* 5"
 #ArjunaJTA/jta/tests/classes/com/arjuna/ats/jta/xa/performance/HQStoreBenchmark.java
 #ArjunaJTA/jta/tests/classes/com/arjuna/ats/jta/xa/performance/VolatileStoreBenchmark.java
 #ArjunaJTA/jta/tests/classes/com/arjuna/ats/jta/xa/performance/ShadowNoFileLockStoreBenchmark.java
