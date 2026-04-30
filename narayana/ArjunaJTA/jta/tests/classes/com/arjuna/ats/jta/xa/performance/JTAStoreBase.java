@@ -42,8 +42,8 @@ public class JTAStoreBase {
 
             tm.commit();
         } catch(Exception e) {
-            log.warnf("JTAStoreTests#jtaTest%n", e);
-            throw e;
+            log.fatal("JTAStoreTests#jtaTest%n", e);
+            throw new Error(e);
         }
 
         return true;
