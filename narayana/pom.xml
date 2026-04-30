@@ -33,6 +33,7 @@
         <maven.compiler.source>25</maven.compiler.source>
         <maven.compiler.target>25</maven.compiler.target>
         <jmh.version>1.37</jmh.version>
+        <version.org.vafer>2.15</version.org.vafer>
         <version.org.jboss.spec.javax.transaction>1.0.0.Final</version.org.jboss.spec.javax.transaction>
         <version.org.jboss.jboss-transaction-spi>7.6.1.Final</version.org.jboss.jboss-transaction-spi>
         <version.junit>[4.13.1,)</version.junit>
@@ -117,6 +118,11 @@
                 <artifactId>jmh-generator-annprocess</artifactId>
                 <version>${jmh.version}</version>
                 <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.vafer</groupId>
+                <artifactId>jdependency</artifactId>
+                <version>${version.org.vafer}</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.logging.log4j</groupId>

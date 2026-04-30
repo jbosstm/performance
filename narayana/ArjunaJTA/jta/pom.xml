@@ -74,6 +74,16 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
+                <!-- for java 25 support the shade plugin requires org.vafer:jdependency
+                 https://github.com/apache/maven-shade-plugin/issues/747#issuecomment-3846737362
+                 -->
+                <dependencies>
+                    <dependency>
+                        <groupId>org.vafer</groupId>
+                        <artifactId>jdependency</artifactId>
+                        <version>${version.org.vafer}</version>
+                    </dependency>
+                </dependencies>
                 <executions>
                     <execution>
                         <phase>package</phase>
@@ -91,7 +101,18 @@
                                     implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
                                     <resource>META-INF/services/jakarta.ws.rs.ext.Providers</resource>
                                 </transformer>
+<!--                                <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer" />-->
+
                             </transformers>
+                            <filters>
+                                <filter>
+                                    <artifact>*:*</artifact>
+                                    <excludes>
+                                        <exclude>module-info.class</exclude>
+                                    </excludes>
+                                </filter>
+                            </filters>
+<!--                            <minimizeJar>true</minimizeJar>-->
                         </configuration>
                     </execution>
                 </executions>
@@ -181,6 +202,10 @@
         <dependency>
             <groupId>org.infinispan</groupId>
             <artifactId>infinispan-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.infinispan</groupId>
+            <artifactId>infinispan-component-annotations</artifactId>
         </dependency>
         <dependency>
             <groupId>jakarta.transaction</groupId>
