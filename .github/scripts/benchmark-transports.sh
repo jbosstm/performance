@@ -23,7 +23,7 @@ function build_narayana_lra {
   LRA_REPO=${LRA_REPO:-jbosstm}
   LRA_BRANCH=${LRA_BRANCH:-main}
   rm -rf lra
-  git clone "https://github.com/${LRA_REPO}/lra.git""
+  git clone "https://github.com/${LRA_REPO}/lra.git"
   [ $? = 0 ] || fatal "git clone https://github.com/${LRA_REPO}/lra.git failed"
   echo "Checking if need an LRA PR"
   echo "Building LRA PR ${LRA_BRANCH}"
