@@ -35,8 +35,7 @@ public class InfinispanSlotsStoreBase extends JTAStoreBase {
     // the name of the cluster and the shared cache used for the object store
     static final String CLUSTER_NAME = "objectStoreCluster";
     // location of the file system store (with surefire it will be the build directory)
-    static final String STORE_DIR = System.getProperty("narayana.storeLocation") + "/infinispan-caches";
-
+    static final String STORE_DIR = System.getProperty("user.dir") + "/infinispan-caches";
 
     // record bringing together various data related to a slot store instance
     record Store(DefaultCacheManager manager, // the infinispan cache manager

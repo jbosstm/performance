@@ -15,13 +15,15 @@ import jakarta.transaction.NotSupportedException;
 import jakarta.transaction.RollbackException;
 import jakarta.transaction.SystemException;
 import org.junit.BeforeClass;
-import org.junit.Test;
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.Scope;
 import org.openjdk.jmh.annotations.State;
 import org.openjdk.jmh.annotations.Setup;
 import org.openjdk.jmh.annotations.Level;
+import org.openjdk.jmh.annotations.TearDown;
 import org.openjdk.jmh.infra.Blackhole;
+
+import java.nio.file.Paths;
 
 @State(Scope.Benchmark)
 public class HQStoreBenchmark extends JTAStoreBase {
@@ -30,6 +32,7 @@ public class HQStoreBenchmark extends JTAStoreBase {
     @BeforeClass
     public static void setup() throws CoreEnvironmentBeanException {
         HornetqJournalEnvironmentBean hornetqJournalEnvironmentBean = BeanPopulator.getDefaultInstance(HornetqJournalEnvironmentBean.class);
+        cleanStore(Paths.get(hornetqJournalEnvironmentBean.getStoreDir()).toFile());
         // Please keep the journal config in line with the journal config in narayana/ArjunaJTA/jta/etc/jbossts-properties.xml
         hornetqJournalEnvironmentBean.setAsyncIO(true);
         hornetqJournalEnvironmentBean.setSyncDeletes(false);
@@ -38,7 +41,12 @@ public class HQStoreBenchmark extends JTAStoreBase {
         JTAStoreBase.setup(HornetqObjectStoreAdaptor.class.getName());
     }
 
-    @Test
+    @TearDown
+    public static void tearDown() {
+        String storeDir = BeanPopulator.getDefaultInstance(HornetqJournalEnvironmentBean.class).getStoreDir();
+        cleanStore(Paths.get(storeDir).toFile());
+    }
+
     @Benchmark
     public void testHQStore(Blackhole bh) throws HeuristicRollbackException, SystemException, HeuristicMixedException, NotSupportedException, RollbackException {
         bh.consume(super.jtaTest());

@@ -22,6 +22,7 @@ import org.openjdk.jmh.annotations.Mode;
 import org.openjdk.jmh.annotations.Scope;
 import org.openjdk.jmh.annotations.Setup;
 import org.openjdk.jmh.annotations.State;
+import org.openjdk.jmh.annotations.TearDown;
 import org.openjdk.jmh.infra.Blackhole;
 import org.openjdk.jmh.profile.JavaFlightRecorderProfiler;
 import org.openjdk.jmh.runner.Runner;
@@ -30,11 +31,14 @@ import org.openjdk.jmh.runner.options.Options;
 import org.openjdk.jmh.runner.options.OptionsBuilder;
 import org.openjdk.jmh.runner.options.TimeValue;
 
+import java.nio.file.Paths;
 import java.util.concurrent.TimeUnit;
 
 @State(Scope.Benchmark)
 public class DiskSlotsStoreBenchmark extends JTAStoreBase {
     static final int THREADS = 240;//10;//_000; //Threads.MAX;
+    static final String BM_CLASS_NAME = DiskSlotsStoreBenchmark.class.getSimpleName();
+
     static final int FORKS = 1;
     static final int ITERATIONS = 5;
     static final int TIME_PER_ITER = 2;
@@ -42,8 +46,7 @@ public class DiskSlotsStoreBenchmark extends JTAStoreBase {
     public static void main(String[] args) throws RunnerException {
         // Sometimes it is useful to run the benchmark directly from an IDE:
         Options opt = new OptionsBuilder()
-                .include(InfinispanSlotsStoreBenchmark.class.getSimpleName() + ".testInfinispanStore")
-
+                .include(BM_CLASS_NAME + ".testDiskSlotsStore")
                 .timeUnit(TimeUnit.SECONDS)
                 .threads(THREADS)
                 .forks(FORKS)
@@ -61,6 +64,7 @@ public class DiskSlotsStoreBenchmark extends JTAStoreBase {
                 // bin directory
                 .addProfiler(JavaFlightRecorderProfiler.class)
                 .jvmArgs("-Djmh.executor=FJP") // ForkJoinPool
+                // to debug the forks use "-agentlib:jdwp=transport=dt_socket,address=5005,server=y,suspend=y"
                 .build();
 
         new Runner(opt).run();
@@ -71,8 +75,20 @@ public class DiskSlotsStoreBenchmark extends JTAStoreBase {
     public static void setup() throws CoreEnvironmentBeanException {
         JTAStoreBase.setup(SlotStoreAdaptor.class.getName());
         SlotStoreEnvironmentBean configBean = BeanPopulator.getDefaultInstance(SlotStoreEnvironmentBean.class);
+        int threadCount = getThreadCountFromProperties(THREADS);
 
+        // set the slot size, making sure it's a sensible multiple
+        configBean.setNumberOfSlots(roundUp(256, threadCount));
         configBean.setBackingSlotsClassName(DiskSlots.class.getName());
+
+        cleanStore(Paths.get(configBean.getStoreDir()).toFile());
+    }
+
+    @TearDown(Level.Trial)
+    public static void tearDown() {
+        SlotStoreEnvironmentBean configBean = BeanPopulator.getDefaultInstance(SlotStoreEnvironmentBean.class);
+
+        cleanStore(Paths.get(configBean.getStoreDir()).toFile());
     }
 
     @Benchmark
