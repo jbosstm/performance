@@ -7,6 +7,7 @@ package com.arjuna.ats.jta.xa.performance;
 
 import com.arjuna.ats.internal.arjuna.objectstore.slot.SlotStoreAdaptor;
 import com.arjuna.ats.internal.arjuna.objectstore.slot.infinispan.InfinispanSlots;
+import com.arjuna.ats.internal.arjuna.objectstore.slot.infinispan.InfinispanStoreEnvironmentBean;
 import jakarta.transaction.HeuristicMixedException;
 import jakarta.transaction.HeuristicRollbackException;
 import jakarta.transaction.NotSupportedException;
@@ -28,12 +29,12 @@ import org.openjdk.jmh.runner.options.Options;
 import org.openjdk.jmh.runner.options.OptionsBuilder;
 import org.openjdk.jmh.runner.options.TimeValue;
 
+import java.nio.file.Paths;
 import java.util.concurrent.TimeUnit;
 
 @State(Scope.Benchmark)
 public class InfinispanSlotsStoreBenchmark extends InfinispanSlotsStoreBase {
-    // the name of the cluster and the shared cache used for the object store
-    static final String CLUSTER_NAME = "objectStoreCluster";
+    static final String BM_CLASS_NAME = InfinispanSlotsStoreBenchmark.class.getSimpleName();
 
     static Store store;
     static final int THREADS = 240;//10;//_000; //Threads.MAX;
@@ -44,7 +45,7 @@ public class InfinispanSlotsStoreBenchmark extends InfinispanSlotsStoreBase {
     public static void main(String[] args) throws RunnerException {
         // Sometimes it is useful to run the benchmark directly from an IDE:
         Options opt = new OptionsBuilder()
-                .include(InfinispanSlotsStoreBenchmark.class.getSimpleName() + ".testWriteThroughCache")
+                .include(BM_CLASS_NAME + ".testInfinispanStore")
 
                 .timeUnit(TimeUnit.SECONDS)
                 .threads(THREADS)
@@ -67,20 +68,29 @@ public class InfinispanSlotsStoreBenchmark extends InfinispanSlotsStoreBase {
         new Runner(opt).run();
     }
 
-
     @Setup(Level.Trial)
     public static void setup() throws Throwable {
-        store = getStore("node1", CacheMode.REPL_SYNC, 3, null, true, false, null);
-        store.config().setBackingSlotsClassName(InfinispanSlots.class.getName());
-        replaceEnvironmentBean(store.config());
-        store.start();
-
         JTAStoreBase.setup(SlotStoreAdaptor.class.getName());
+
+        store = getStore("node1", CacheMode.REPL_SYNC, 3, null, true, false, null);
+        InfinispanStoreEnvironmentBean configBean = store.config();
+
+        // set the slot size, making sure it's a sensible multiple
+        int threadCount = getThreadCountFromProperties(THREADS);
+        configBean.setNumberOfSlots(roundUp(256, threadCount));
+        configBean.setBackingSlotsClassName(InfinispanSlots.class.getName());
+
+        replaceEnvironmentBean(configBean);
+
+        cleanStore(Paths.get(configBean.getStoreDir()).toFile());
+
+        store.start();
     }
 
     @TearDown
     public static void tearDown() {
         store.stop();
+        cleanStore(Paths.get(store.config().getStoreDir()).toFile());
     }
 
     @Benchmark
