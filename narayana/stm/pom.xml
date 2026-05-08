@@ -4,7 +4,7 @@
 
     <groupId>org.jboss.narayana.stm</groupId>
     <artifactId>stm-benchmark</artifactId>
-    <version>7.3.4.Final-SNAPSHOT</version>
+    <version>7.3.4.Final</version>
     <packaging>jar</packaging>
 
     <name>JMH benchmarks: stm vs local jta</name>
