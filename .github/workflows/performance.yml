@@ -22,6 +22,33 @@ on:
         type: string
         default: '{}'
 
+  workflow_dispatch:
+    inputs:
+      jdk_version:
+        description: 'JDK version'
+        required: true
+        type: choice
+        options:
+          - '21'
+          - '17'
+          - '11'
+        default: '21'
+      pull_request_repo:
+        description: 'Repository to check out'
+        required: false
+        type: string
+        default: 'jbosstm/performance'
+      pull_request_ref:
+        description: 'Branch or commit to test'
+        required: false
+        type: string
+        default: 'main'
+      environment_variables:
+        description: 'Environment variables (JSON format: {"COMPARE_STORES":"y","THREAD_COUNTS":"10"})'
+        required: false
+        type: string
+        default: '{"COMPARE_STORES":"y"}'
+
 # Only run the latest job
 concurrency:
   group: 'performance @ ${{ github.workflow }} @ ${{ github.head_ref || github.ref }} @ jdk${{ inputs.jdk_version }}'
