@@ -43,6 +43,7 @@
         <version.org.wildfly.checkstyle-config>1.0.8.Final</version.org.wildfly.checkstyle-config>
         <skip.checkstyle>false</skip.checkstyle>
         <version.io.netty>4.1.79.Final</version.io.netty>
+        <version.microprofile.config-api>3.1.2</version.microprofile.config-api>
         <narayana.version>${project.version}</narayana.version>
     </properties>
 
@@ -180,6 +181,11 @@
                 <groupId>org.apache.activemq</groupId>
                 <artifactId>artemis-journal</artifactId>
                 <version>${version.org.apache.activemq}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.microprofile.config</groupId>
+                <artifactId>microprofile-config-api</artifactId>
+                <version>${version.microprofile.config-api}</version>
             </dependency>
             <dependency>
                 <groupId>org.infinispan</groupId>
