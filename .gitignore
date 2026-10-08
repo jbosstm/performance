@@ -20,3 +20,4 @@ bm-output.txt
 .metadata*
 .mvn/
 *.csv
+dependency-reduced-pom.xml

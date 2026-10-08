@@ -308,11 +308,6 @@
             <artifactId>slf4j-simple</artifactId>
             <scope>compile</scope>
         </dependency>
-        <dependency>
-            <groupId>org.jboss.logging</groupId>
-            <artifactId>jboss-logging</artifactId>
-            <scope>compile</scope>
-        </dependency>
 
         <!-- rts -->
         <!-- REST-AT helper -->
@@ -363,6 +358,7 @@
         <dependency>
             <groupId>org.eclipse.microprofile.config</groupId>
             <artifactId>microprofile-config-api</artifactId>
+            <version>${version.microprofile.config-api}</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
