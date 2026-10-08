@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project>
     <modelVersion>4.0.0</modelVersion>
-    <groupId>narayana.performance.ejb</groupId>
+    <groupId>org.jboss.narayana.performance.ejb</groupId>
     <version>7.3.5.Final-SNAPSHOT</version>
     <artifactId>api</artifactId>
     <name>business logic</name>
