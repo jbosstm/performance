@@ -206,6 +206,13 @@
             <groupId>org.infinispan</groupId>
             <artifactId>infinispan-component-annotations</artifactId>
         </dependency>
+        <!--    experimental module-->
+        <dependency>
+            <groupId>org.jboss.narayana.experimental</groupId>
+            <artifactId>infinispan-store</artifactId>
+            <scope>compile</scope>
+            <version>${narayana.version}</version>
+        </dependency>
         <dependency>
             <groupId>jakarta.transaction</groupId>
             <artifactId>jakarta.transaction-api</artifactId>

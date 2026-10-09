@@ -37,7 +37,7 @@ if [ -n "$NY_BRANCH" ]; then
   cd ../
 fi
 
-./build.sh -f narayana-tmp/pom.xml clean install -B -DskipTests -Pcommunity
+./build.sh -f narayana-tmp/pom.xml clean install -B -DskipTests -Pcommunity,experimental
 [ $? = 0 ] || fatal "Narayana build failed"
 
 NARAYANA_VERSION=$(grep "<version>" narayana-tmp/pom.xml | head -n 2 | tail -n 1 | sed "s/ *<version>//" | sed "s#</version>##")
