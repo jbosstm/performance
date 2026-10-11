@@ -83,11 +83,11 @@ public class JTAStoreBase {
 
     protected static int roundUp(int increment, int value) {
         int res = value % increment;
-        // round up to nearest multiple of increment (eg a h/w page size)
+        // round up to nearest multiple of increment with one page of headroom
         if (res == 0) {
-            return value;
+            return value + increment;
         } else {
-            return value + increment - res;
+            return ((value + increment) - res) + increment;
         }
     }
 
@@ -101,18 +101,21 @@ public class JTAStoreBase {
     }
 
     public boolean jtaTest() throws HeuristicRollbackException, SystemException, HeuristicMixedException, NotSupportedException, RollbackException {
+        tm.begin();
         try {
-            tm.begin();
-
             tm.getTransaction().enlistResource(resource1);
             tm.getTransaction().enlistResource(resource2);
-
             tm.commit();
-        } catch(Exception e) {
-            log.fatal("JTAStoreTests#jtaTest%n", e);
-            throw new Error(e);
+        } catch (Exception e) {
+            try {
+                if (tm.getTransaction() != null) {
+                    tm.rollback();
+                }
+            } catch (Exception suppressed) {
+                e.addSuppressed(suppressed);
+            }
+            throw e;
         }
-
         return true;
     }
 }
