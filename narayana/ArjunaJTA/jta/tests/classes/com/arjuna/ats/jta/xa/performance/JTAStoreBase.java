@@ -101,18 +101,21 @@ public class JTAStoreBase {
     }
 
     public boolean jtaTest() throws HeuristicRollbackException, SystemException, HeuristicMixedException, NotSupportedException, RollbackException {
+        tm.begin();
         try {
-            tm.begin();
-
             tm.getTransaction().enlistResource(resource1);
             tm.getTransaction().enlistResource(resource2);
-
             tm.commit();
-        } catch(Exception e) {
-            log.fatal("JTAStoreTests#jtaTest%n", e);
-            throw new Error(e);
+        } catch (Exception e) {
+            try {
+                if (tm.getTransaction() != null) {
+                    tm.rollback();
+                }
+            } catch (Exception suppressed) {
+                e.addSuppressed(suppressed);
+            }
+            throw e;
         }
-
         return true;
     }
 }
