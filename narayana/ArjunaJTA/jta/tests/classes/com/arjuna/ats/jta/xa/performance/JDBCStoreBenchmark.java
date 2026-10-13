@@ -10,13 +10,13 @@ import jakarta.transaction.HeuristicRollbackException;
 import jakarta.transaction.NotSupportedException;
 import jakarta.transaction.RollbackException;
 import jakarta.transaction.SystemException;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.Level;
 import org.openjdk.jmh.annotations.Scope;
 import org.openjdk.jmh.annotations.Setup;
 import org.openjdk.jmh.annotations.State;
+import org.openjdk.jmh.infra.BenchmarkParams;
 import org.openjdk.jmh.infra.Blackhole;
 
 import com.arjuna.ats.arjuna.common.CoreEnvironmentBeanException;
@@ -27,9 +27,26 @@ import com.arjuna.common.internal.util.propertyservice.BeanPopulator;
 
 @State(Scope.Benchmark)
 public class JDBCStoreBenchmark extends JTAStoreBase {
+    static final String MAX_OPEN_TRANSACTIONS_PROPERTY = "h2.maxOpenTransactions"; // H2 property
+    static final int MAX_OPEN_TRANSACTIONS = 255; // matches the H2 default
+
+    // By default, H2 only allows MAX_OPEN_TRANSACTIONS to be running. Since the thread count for the benchmark
+    // determines the number of concurrent transactions it must not exceed what H2 allows, the thread count
+    // must be read and used to configure H2 before running setup which starts H2 during the initStore calls.
+    // Note we cannot use getThreadCountFromProperties since that only checks the JMHARGS env variable.
     @Setup(Level.Trial)
-    @BeforeClass
-    public static void setup() throws CoreEnvironmentBeanException {
+    public void setupTrial(BenchmarkParams params) throws CoreEnvironmentBeanException {
+        int threadCount = params.getThreads();
+
+        // MAX_OPEN_TRANSACTIONS_PROPERTY takes precedence allowing it to be overridden from the command line
+        if (threadCount > MAX_OPEN_TRANSACTIONS && System.getProperty(MAX_OPEN_TRANSACTIONS_PROPERTY) == null) {
+            System.setProperty(MAX_OPEN_TRANSACTIONS_PROPERTY, Integer.toString(roundUp(256, threadCount)));
+        }
+
+        setup();
+    }
+
+    void setup() throws CoreEnvironmentBeanException {
         String storeType = JDBCStore.class.getName();
         String jdbcAccess = DynamicDataSourceJDBCAccess.class.getName() + ";ClassName=org.h2.jdbcx.JdbcDataSource;URL=jdbc:h2:./h2/JBTMDB;User=sa;Password=sa";
 
