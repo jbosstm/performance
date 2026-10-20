@@ -67,7 +67,7 @@ jobs:
 
     steps:
       - name: Load Dynamic Environment Variables
-        uses: actions/github-script@v7
+        uses: actions/github-script@f28e40c7f34bde8b3046d885e986cb6290c5673b # v7
         if: ${{ inputs.environment_variables != '' && inputs.environment_variables != '{}' }}
         env:
           ENV_JSON: ${{ inputs.environment_variables }}
@@ -106,13 +106,13 @@ jobs:
           echo "Branch/Ref: ${{ inputs.pull_request_ref || github.ref }}"
 
       - name: Checkout code
-        uses: actions/checkout@v6
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
         with:
           repository: '${{ inputs.pull_request_repo || github.repository }}'
           ref: ${{ inputs.pull_request_ref || github.ref }}
 
       - name: Set up JDK ${{ inputs.jdk_version }}
-        uses: actions/setup-java@v5
+        uses: actions/setup-java@b6effb05e454b25005698d916606bdc6ffcbf961 # v5
         with:
           distribution: temurin
           java-version: ${{ inputs.jdk_version }}
@@ -128,7 +128,7 @@ jobs:
           echo "narayana-version=$NARAYANA_VERSION" >> "$GITHUB_OUTPUT"
 
       - name: Upload Narayana Maven artifacts
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6
         with:
           name: narayana-m2-jdk${{ inputs.jdk_version }}
           retention-days: 1
@@ -150,7 +150,7 @@ jobs:
 
     steps:
       - name: Load Dynamic Environment Variables
-        uses: actions/github-script@v7
+        uses: actions/github-script@f28e40c7f34bde8b3046d885e986cb6290c5673b # v7
         if: ${{ inputs.environment_variables != '' && inputs.environment_variables != '{}' }}
         env:
           ENV_JSON: ${{ inputs.environment_variables }}
@@ -163,13 +163,13 @@ jobs:
             }
 
       - name: Checkout code
-        uses: actions/checkout@v6
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
         with:
           repository: '${{ inputs.pull_request_repo || github.repository }}'
           ref: ${{ inputs.pull_request_ref || github.ref }}
 
       - name: Set up JDK ${{ inputs.jdk_version }}
-        uses: actions/setup-java@v5
+        uses: actions/setup-java@b6effb05e454b25005698d916606bdc6ffcbf961 # v5
         with:
           distribution: temurin
           java-version: ${{ inputs.jdk_version }}
@@ -197,7 +197,7 @@ jobs:
           echo "mount:"; mount | grep -E 'ext[234]|xfs|btrfs' || true
 
       - name: Download Narayana Maven artifacts
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
         with:
           name: narayana-m2-jdk${{ inputs.jdk_version }}
           path: ~/.m2/repository/org/jboss/narayana/
@@ -210,7 +210,7 @@ jobs:
           WORKSPACE=$(pwd) ./.github/scripts/run-benchmark.sh "${{ matrix.benchmark }}"
 
       - name: Upload logs
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6
         if: ${{ failure() && steps.benchmark.conclusion == 'failure' || cancelled() && steps.benchmark.conclusion == 'cancelled' }}
         with:
           retention-days: 10
@@ -225,7 +225,7 @@ jobs:
           if-no-files-found: warn
 
       - name: Upload results
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6
         with:
           retention-days: 10
           name: benchmark-${{ matrix.benchmark }}-results-jdk${{ inputs.jdk_version }}
@@ -248,7 +248,7 @@ jobs:
 
     steps:
       - name: Download all benchmark results
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
         with:
           pattern: benchmark-*-results-jdk${{ inputs.jdk_version }}
           path: collected-results/
@@ -261,7 +261,7 @@ jobs:
           echo "==================================="
 
       - name: Upload combined results
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6
         with:
           retention-days: 10
           name: performance-results-jdk${{ inputs.jdk_version }}
