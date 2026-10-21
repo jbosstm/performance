@@ -83,11 +83,11 @@ public class JTAStoreBase {
 
     protected static int roundUp(int increment, int value) {
         int res = value % increment;
-        // round up to nearest multiple of increment (eg a h/w page size)
+        // round up to nearest multiple of increment with one page of headroom
         if (res == 0) {
-            return value;
+            return value + increment;
         } else {
-            return value + increment - res;
+            return ((value + increment) - res) + increment;
         }
     }
 
