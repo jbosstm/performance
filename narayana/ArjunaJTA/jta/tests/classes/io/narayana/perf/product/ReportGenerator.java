@@ -114,6 +114,10 @@ public class ReportGenerator {
         // pick out fields 0, 2 and 4
         String[] fields = data.split(",");
         if (fields.length == 7) {
+            // skip JMH sub-metrics (e.g. ":committed", ":rolledBack") — only process the aggregate
+            if (fields[0].contains(":"))
+                return;
+
             // first field contains the name of the class that performs the comparison
             Optional productName = Arrays.stream(fields[0].split("\\.")).filter(name -> name.contains(PATTERN2)).findFirst();
 
@@ -130,8 +134,8 @@ public class ReportGenerator {
                 results.put(tcnt, row);
             }
 
-            // the class names follow the format: <product>Comparison
-            row.addColumn(prod.substring(0, prod.length() - "Comparison".length()), tput.doubleValue());
+            // the class names follow the format: <product><PATTERN2> e.g. NarayanaComparison or DiskSlotsStoreBenchmark
+            row.addColumn(prod.substring(0, prod.length() - PATTERN2.length()), tput.doubleValue());
         }
     }
 
