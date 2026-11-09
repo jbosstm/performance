@@ -50,11 +50,11 @@ public class JTAStoreBase {
                 try {
                     threadCount = Integer.parseInt(matcher.group(1));
                 } catch (NumberFormatException e) {
-                    System.err.printf("JMHARGS args -t option (%s) invalid%n", jmhArgs);
+                    log.warnf("JMHARGS args -t option (%s) invalid%n", jmhArgs);
                 }
             }
 
-            System.out.printf("JMHARGS=%s%nUsing %d threads%n", jmhArgs, threadCount);
+            log.warnf("JMHARGS=%s%nUsing %d threads%n", jmhArgs, threadCount);
         }
 
         return threadCount;
@@ -64,10 +64,10 @@ public class JTAStoreBase {
         try {
             // clean up the storage otherwise it may interfere with the next run
             if (!purgeFiles(storeDir)) {
-                System.err.printf("problem removing slot store file storage (%s)%n", storeDir);
+                log.warnf("problem removing slot store file storage (%s)%n", storeDir);
             }
         } catch (Exception e) {
-            System.err.printf("Warn: problem cleaning the object store (%s): %s%n", storeDir, e.getMessage());
+            log.warnf("Warn: problem cleaning the object store (%s): %s%n", storeDir, e.getMessage());
         }
     }
 
@@ -116,15 +116,14 @@ public class JTAStoreBase {
             Transaction tx = tm.getTransaction();
 
             if (elapsedMillis > timeoutMillis) {
-                // TODO use log.errorf when https://github.com/jbosstm/performance/issues/251 is fixed
-                System.err.printf("%s: Transaction timed out after %d ms with timeout = %d ms." +
+                log.warnf("%s: Transaction timed out after %d ms with timeout = %d ms." +
                                 " Tx status=%d active threads=%d CPU cores=%d" +
                                 " (the fix is to increase the timeout or reduce the thread" +
                                 " count or run the benchmark with more resources)",
                         e.getMessage(), elapsedMillis, timeoutMillis,
                         tx.getStatus(), Thread.activeCount(), Runtime.getRuntime().availableProcessors());
             } else {
-                System.err.printf("%s: Transaction failed." +
+                log.warnf("%s: Transaction failed." +
                                 " Tx status=%d active threads=%d CPU cores=%d",
                         e.getMessage(), tx.getStatus(), Thread.activeCount(),
                         Runtime.getRuntime().availableProcessors());

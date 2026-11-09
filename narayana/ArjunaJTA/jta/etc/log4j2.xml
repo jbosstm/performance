@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="WARN">
+    <Appenders>
+        <Console name="console" target="SYSTEM_OUT">
+            <ThresholdFilter level="WARN" onMatch="ACCEPT" onMismatch="DENY"/>
+            <PatternLayout pattern="%d{ABSOLUTE} {%8.8t} (%X) [%-5p,%-10c{1}] %m%n"/>
+        </Console>
+
+        <File name="file" fileName="logs/test.log" append="true">
+            <ThresholdFilter level="WARN" onMatch="ACCEPT" onMismatch="DENY"/>
+            <PatternLayout pattern="%d [%t] %p - %m%n"/>
+        </File>
+    </Appenders>
+
+    <Loggers>
+        <!-- WARNING carol is not threadsafe when trace is enabled 
+             specifically org.ow2.carol.rmi.multi.MultiPRODelegate#addObject
+          -->
+        <Logger name="org.ow2.carol" level="WARN" additivity="false">
+            <AppenderRef ref="console"/>
+            <AppenderRef ref="file"/>
+        </Logger>
+
+        <Logger name="com.atomikos" level="WARN" additivity="false">
+            <AppenderRef ref="console"/>
+            <AppenderRef ref="file"/>
+        </Logger>
+
+        <Logger name="org.jboss.narayana.rts" level="WARN" additivity="false">
+            <AppenderRef ref="console"/>
+            <AppenderRef ref="file"/>
+        </Logger>
+
+        <Logger name="org.jboss.resteasy" level="WARN" additivity="false">
+            <AppenderRef ref="console"/>
+            <AppenderRef ref="file"/>
+        </Logger>
+
+        <Logger name="org.jboss.jbossts.star.service" level="WARN" additivity="false">
+            <AppenderRef ref="console"/>
+            <AppenderRef ref="file"/>
+        </Logger>
+
+        <Logger name="com.arjuna" level="WARN" additivity="false">
+            <AppenderRef ref="console"/>
+            <AppenderRef ref="file"/>
+        </Logger>
+
+        <!-- Root logger is commented out in original, keeping it commented -->
+        <Root level="WARN">
+            <AppenderRef ref="console"/>
+            <AppenderRef ref="file"/>
+        </Root>
+    </Loggers>
+</Configuration>
