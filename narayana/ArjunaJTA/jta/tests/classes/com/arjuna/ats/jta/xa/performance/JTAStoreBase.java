@@ -8,6 +8,7 @@ package com.arjuna.ats.jta.xa.performance;
 import com.arjuna.ats.arjuna.common.CoreEnvironmentBean;
 import com.arjuna.ats.arjuna.common.CoreEnvironmentBeanException;
 import com.arjuna.ats.arjuna.common.ObjectStoreEnvironmentBean;
+import com.arjuna.ats.arjuna.coordinator.TxControl;
 import com.arjuna.common.internal.util.propertyservice.BeanPopulator;
 
 import jakarta.transaction.HeuristicMixedException;
@@ -15,6 +16,7 @@ import jakarta.transaction.HeuristicRollbackException;
 import jakarta.transaction.NotSupportedException;
 import jakarta.transaction.RollbackException;
 import jakarta.transaction.SystemException;
+import jakarta.transaction.Transaction;
 import jakarta.transaction.TransactionManager;
 import org.jboss.logging.Logger;
 
@@ -101,12 +103,33 @@ public class JTAStoreBase {
     }
 
     public boolean jtaTest() throws HeuristicRollbackException, SystemException, HeuristicMixedException, NotSupportedException, RollbackException {
+        long startTime = System.nanoTime();
+
         tm.begin();
         try {
             tm.getTransaction().enlistResource(resource1);
             tm.getTransaction().enlistResource(resource2);
             tm.commit();
         } catch (Exception e) {
+            long elapsedMillis = (System.nanoTime() - startTime) / 1_000_000L;
+            long timeoutMillis = TxControl.getDefaultTimeout() * 1000L;
+            Transaction tx = tm.getTransaction();
+
+            if (elapsedMillis > timeoutMillis) {
+                // TODO use log.errorf when https://github.com/jbosstm/performance/issues/251 is fixed
+                System.err.printf("%s: Transaction timed out after %d ms with timeout = %d ms." +
+                                " Tx status=%d active threads=%d CPU cores=%d" +
+                                " (the fix is to increase the timeout or reduce the thread" +
+                                " count or run the benchmark with more resources)",
+                        e.getMessage(), elapsedMillis, timeoutMillis,
+                        tx.getStatus(), Thread.activeCount(), Runtime.getRuntime().availableProcessors());
+            } else {
+                System.err.printf("%s: Transaction failed." +
+                                " Tx status=%d active threads=%d CPU cores=%d",
+                        e.getMessage(), tx.getStatus(), Thread.activeCount(),
+                        Runtime.getRuntime().availableProcessors());
+            }
+
             try {
                 if (tm.getTransaction() != null) {
                     tm.rollback();
